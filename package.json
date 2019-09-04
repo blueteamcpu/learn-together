@@ -1,0 +1,50 @@
+{
+  "name": "learn-together",
+  "version": "1.0.0",
+  "description": "A social application to create local learning communities around online curriculum.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server/index.js",
+    "server:dev": "./node_modules/.bin/nodemon ./server/index.js --ignore public/ --ignore src/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blueteamcpu/learn-together.git"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "sequelize",
+    "postgresql",
+    "oauth",
+    "react",
+    "redux",
+    "react-router-dom",
+    "react-redux",
+    "fullstack",
+    "social",
+    "CRUD"
+  ],
+  "author": "Conner, Justin, Katherine, Nicholas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blueteamcpu/learn-together/issues"
+  },
+  "homepage": "https://github.com/blueteamcpu/learn-together#readme",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "helmet": "^3.21.0",
+    "morgan": "^1.9.1",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "react": "^16.9.0",
+    "react-redux": "^7.1.1",
+    "react-router-dom": "^5.0.1",
+    "redux": "^4.0.4",
+    "sequelize": "^5.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  }
+}

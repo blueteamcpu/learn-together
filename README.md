@@ -1,2 +1,3 @@
 # learn-together
-# learn-together
+
+# createdb 'learn-together'
