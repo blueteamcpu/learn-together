@@ -1,5 +1,7 @@
-import { Model, STRING, UUID, UUIDV4 } from 'sequelize';
-import db from '../connection';
+const { Model, STRING, UUID, UUIDV4 } = require('sequelize');
+const bcrypt = require('bcryptjs');
+const db = require('../connection');
+const { hash, titleCase } = require('../../../utils/index');
 
 class User extends Model {}
 User.init(
@@ -58,3 +60,40 @@ User.init(
     modelName: 'user',
   }
 );
+
+User.beforeCreate(async instance => {
+  try {
+    if (
+      instance.hasOwnProperty('password') &&
+      typeof instance.password === 'string'
+    ) {
+      instance.password = await hash(instance.password);
+    }
+    instance.firstName = titleCase(instance.firstName);
+    instance.lastName = titleCase(instance.lastName);
+  } catch (error) {
+    throw error;
+  }
+});
+
+User.beforeUpdate(async instance => {
+  try {
+    if (instance.changed('password')) {
+      instance.password = await hash(instance.password);
+    }
+    if (instance.changed('firstName')) {
+      instance.firstName = titleCase(instance.firstName);
+    }
+    if (instance.changed('lastName')) {
+      instance.lastName = titleCase(instance.lastName);
+    }
+  } catch (error) {
+    throw error;
+  }
+});
+
+User.prototype.toJSON = function() {
+  const values = this.get();
+  delete values.password;
+  return values;
+};
