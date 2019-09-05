@@ -1,7 +1,8 @@
-const { Model, STRING, UUID, UUIDV4 } = require('sequelize');
+const { Model, STRING, INTEGER, UUID, UUIDV4 } = require('sequelize');
 const bcrypt = require('bcryptjs');
 const db = require('../connection');
 const { hash, titleCase } = require('../../../utils/index');
+const { AuthenticationError } = require('../../../utils/backend');
 
 class User extends Model {}
 User.init(
@@ -42,6 +43,11 @@ User.init(
         notEmpty: true,
         isEmail: true,
       },
+    },
+    zipcode: {
+      type: INTEGER,
+      // leave true b/c Oauth will not have zipcode
+      allowNull: true,
     },
     password: {
       type: STRING,
@@ -96,4 +102,40 @@ User.prototype.toJSON = function() {
   const values = this.get();
   delete values.password;
   return values;
+};
+
+User.signup = async function({
+  firstName,
+  lastName,
+  username,
+  email,
+  zipcode,
+  password,
+}) {
+  try {
+    if (!password) {
+      throw new AuthenticationError('password', 'Password is required');
+    }
+
+    const [user, created] = await this.findOrCreate({
+      where: { email },
+      defaults: {
+        firstName,
+        lastName,
+        username,
+        zipcode,
+      },
+    });
+
+    if (created) {
+      return user;
+    }
+
+    throw new AuthenticationError(
+      'email',
+      'An account is already registered to this email address.'
+    );
+  } catch (error) {
+    throw error;
+  }
 };
