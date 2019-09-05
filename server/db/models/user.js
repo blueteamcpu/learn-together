@@ -1,9 +1,15 @@
-import { Model, STRING } from 'sequelize';
+import { Model, STRING, UUID, UUIDV4 } from 'sequelize';
 import db from '../connection';
 
 class User extends Model {}
 User.init(
   {
+    id: {
+      type: UUID,
+      defaultValue: UUIDV4,
+      unique: true,
+      primaryKey: true,
+    },
     firstName: {
       type: STRING,
       allowNull: false,
@@ -43,7 +49,7 @@ User.init(
         notEmpty: true,
         len: [8],
         // passwords must be at least 8 characters with one letter and one number
-        is: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+        is: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
       },
     },
   },
