@@ -1,4 +1,4 @@
-const { Model, STRING, INTEGER, UUID, UUIDV4 } = require('sequelize');
+const { Model, STRING, INTEGER, UUID, UUIDV4, BOOLEAN } = require('sequelize');
 const db = require('../connection');
 const {
   makeHash,
@@ -52,6 +52,14 @@ User.init(
       // leave true b/c Oauth will not have zipcode
       allowNull: true,
     },
+    imageURL: {
+      type: STRING,
+      defaultValue:
+        'https://upload.wikimedia.org/wikipedia/commons/6/67/User_Avatar.png',
+      validate: {
+        isUrl: true,
+      },
+    },
     password: {
       type: STRING,
       // leave true b/c Oauth will not have password
@@ -63,7 +71,10 @@ User.init(
         is: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
       },
     },
-    
+    isSiteAdmin: {
+      type: BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     sequelize: db,
@@ -113,6 +124,7 @@ User.signup = async function({
   lastName,
   username,
   email,
+  imageURL,
   zipcode,
   password,
 }) {
@@ -121,14 +133,15 @@ User.signup = async function({
       throw new AuthenticationError('password', 'Password is required');
     }
 
+    const defaults = { firstName, lastName, username, zipcode };
+
+    if (imageURL) {
+      defaults.imageURL = imageURL;
+    }
+
     const [user, created] = await this.findOrCreate({
       where: { email },
-      defaults: {
-        firstName,
-        lastName,
-        username,
-        zipcode,
-      },
+      defaults,
     });
 
     if (created) {
