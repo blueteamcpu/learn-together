@@ -1,7 +1,11 @@
 const bcrypt = require('bcryptjs');
 
-const hash = str => {
+const makeHash = str => {
   return bcrypt.hash(str, 12);
+};
+
+const compareStrAgainstHash = (str, hash) => {
+  return bcrypt.compare(str, hash);
 };
 
 const titleCase = str => {
@@ -13,6 +17,7 @@ const titleCase = str => {
 };
 
 module.exports = {
-  hash,
+  makeHash,
   titleCase,
+  compareStrAgainstHash,
 };

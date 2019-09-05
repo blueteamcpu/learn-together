@@ -1,7 +1,10 @@
 const { Model, STRING, INTEGER, UUID, UUIDV4 } = require('sequelize');
-const bcrypt = require('bcryptjs');
 const db = require('../connection');
-const { hash, titleCase } = require('../../../utils/index');
+const {
+  makeHash,
+  titleCase,
+  compareStrAgainstHash,
+} = require('../../../utils/index');
 const { AuthenticationError } = require('../../../utils/backend');
 
 class User extends Model {}
@@ -60,6 +63,7 @@ User.init(
         is: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
       },
     },
+    
   },
   {
     sequelize: db,
@@ -73,7 +77,7 @@ User.beforeCreate(async instance => {
       instance.hasOwnProperty('password') &&
       typeof instance.password === 'string'
     ) {
-      instance.password = await hash(instance.password);
+      instance.password = await makeHash(instance.password);
     }
     instance.firstName = titleCase(instance.firstName);
     instance.lastName = titleCase(instance.lastName);
@@ -85,7 +89,7 @@ User.beforeCreate(async instance => {
 User.beforeUpdate(async instance => {
   try {
     if (instance.changed('password')) {
-      instance.password = await hash(instance.password);
+      instance.password = await makeHash(instance.password);
     }
     if (instance.changed('firstName')) {
       instance.firstName = titleCase(instance.firstName);
@@ -139,3 +143,28 @@ User.signup = async function({
     throw error;
   }
 };
+
+User.login = async function(email, password) {
+  try {
+    const user = await this.findOne({ where: { email } });
+
+    if (!user) {
+      throw new AuthenticationError(
+        'email',
+        'There is no user registered to that email address.'
+      );
+    }
+
+    const isPassword = await compareStrAgainstHash(password, user.password);
+
+    if (isPassword) {
+      return user;
+    } else {
+      throw new AuthenticationError('password', 'Invalid password.');
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = User;
