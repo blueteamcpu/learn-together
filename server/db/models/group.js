@@ -3,8 +3,6 @@ const db = require('../connection');
 
 class Group extends Model{}
 
-module.exports = Group;
-
 Group.init(
     {
         id: {
@@ -50,3 +48,5 @@ Group.init(
         modelName: 'user',
 }
 );
+
+module.exports = Group;
