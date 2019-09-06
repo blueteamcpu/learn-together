@@ -14,7 +14,14 @@ Comment.init(
     },
     content: {
       type: sequelize.TEXT,
-      allowNull: true,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
-  }  
+  },
+  {
+    sequelize: db,
+    modelName: 'comment',
+  }
 );

@@ -14,12 +14,21 @@ Post.init(
     },
     topic: {
       type: sequelize.STRING,
-      unique: true,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
     },
     description: {
       type: sequelize.TEXT,
       allowNull: true,
-    }
+      validate: {
+        notEmpty: true,
+      },
+    },
+  },
+  {
+    sequelize: db,
+    modelName: 'post',
   }
 );

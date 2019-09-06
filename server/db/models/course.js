@@ -18,5 +18,9 @@ Course.init(
       allowNull: false,
       link: sequelize.STRING(4096),
     },
+  },
+  {
+    sequelize: db,
+    modelName: 'course',
   }
 );
