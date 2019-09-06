@@ -3,6 +3,9 @@ const User = require('./models/user');
 const Provider = require('./models/provider')
 const UserProvider = require('./models/userProvider')
 const Session = require('./models/session');
+const Comment = require('./models/comment');
+const Post = require('./models/post');
+const Course = require('./models/course');
 
 module.exports = {
   db,
@@ -10,4 +13,7 @@ module.exports = {
   Provider,
   UserProvider,
   Session,
+  Comment,
+  Post,
+  Course,
 };
