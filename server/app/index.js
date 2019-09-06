@@ -13,7 +13,7 @@ app.use(require('./sessionMiddleware'));
 
 app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 
-app.use(require('./sessionMiddleware'));
+app.use(require('./serializeUserMiddleware'));
 
 app.get('/hello', (req, res) => {
   res.send('Hello there!');
