@@ -1,7 +1,5 @@
 const db = require('../connection');
-const sequelize = require('sequilize');
-
-module.exports = Post;
+const sequelize = require('sequelize');
 
 class Post extends sequelize.Model {}
 Post.init(
@@ -32,3 +30,5 @@ Post.init(
     modelName: 'post',
   }
 );
+
+module.exports = Post;

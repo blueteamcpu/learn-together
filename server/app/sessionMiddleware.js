@@ -12,7 +12,7 @@ function extendDefaultFields(defaults, _session) {
 
 const store = new SequelizeStore({
   db,
-  table: 'Session',
+  table: 'session',
   extendDefaultFields,
 });
 

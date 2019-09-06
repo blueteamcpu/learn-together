@@ -1,7 +1,5 @@
 const db = require('../connection');
-const sequelize = require('sequilize');
-
-module.exports = Course;
+const sequelize = require('sequelize');
 
 class Course extends sequelize.Model {}
 Course.init(
@@ -28,3 +26,5 @@ Course.init(
     modelName: 'course',
   }
 );
+
+module.exports = Course;
