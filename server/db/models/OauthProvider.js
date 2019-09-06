@@ -1,4 +1,4 @@
-const { Model, STRING, INTEGER, UUID, UUIDV4, BOOLEAN } = require('sequelize');
+const { Model, UUID, UUIDV4 } = require('sequelize');
 const db = require('../connection');
 
 class OauthProvider extends Model {}
