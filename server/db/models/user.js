@@ -18,14 +18,14 @@ User.init(
     },
     firstName: {
       type: STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         notEmpty: true,
       },
     },
     lastName: {
       type: STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         notEmpty: true,
       },
