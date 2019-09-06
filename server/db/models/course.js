@@ -16,7 +16,11 @@ Course.init(
       type: sequelize.STRING(1024),
       unique: true,
       allowNull: false,
-      link: sequelize.STRING(4096),
+    },
+    link: {
+      type: sequelize.STRING(4096),
+      unique: true,
+      allowNull: true,
     },
   },
   {
