@@ -128,7 +128,7 @@ User.signup = async function({
       throw new AuthenticationError('password', 'Password is required');
     }
 
-    const defaults = { firstName, lastName, username, zipcode };
+    const defaults = { firstName, lastName, username, zipcode, password };
 
     if (imageURL) {
       defaults.imageURL = imageURL;
