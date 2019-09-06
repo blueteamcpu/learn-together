@@ -67,8 +67,6 @@ User.init(
       validate: {
         notEmpty: true,
         len: [8],
-        // passwords must be at least 8 characters with one letter and one number
-        is: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
       },
     },
     isSiteAdmin: {
@@ -84,10 +82,7 @@ User.init(
 
 User.beforeCreate(async instance => {
   try {
-    if (
-      instance.hasOwnProperty('password') &&
-      typeof instance.password === 'string'
-    ) {
+    if (instance.password) {
       instance.password = await makeHash(instance.password);
     }
     instance.firstName = titleCase(instance.firstName);
