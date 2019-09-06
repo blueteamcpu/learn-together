@@ -1,10 +1,11 @@
-const { User } = require('../../../../server/db/index');
+const { User, db } = require('../../../../server/db/index');
 const { compareStrAgainstHash } = require('../../../../utils/index');
 const { AuthenticationError } = require('../../../../utils/backend');
 
 let user = null;
 
 beforeAll(async () => {
+  await db.sync();
   user = await User.create({
     firstName: 'Jman',
     lastName: 'Cook',
@@ -18,6 +19,7 @@ beforeAll(async () => {
 afterAll(async () => {
   user = null;
   await User.destroy({ where: { firstName: 'Jman' } });
+  await db.close();
 });
 
 describe('User hashes a password when it is created', function() {
