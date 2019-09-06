@@ -1,8 +1,8 @@
-const { Model, STRING, UUID, UUIDV4} = require('sequelize');
+const { Model, STRING, UUID, UUIDV4 } = require('sequelize');
 const db = require('../connection');
 
 class UserProvider extends Model {}
-Provider.init(
+UserProvider.init(
   {
     id: {
       type: UUID,
@@ -15,12 +15,12 @@ Provider.init(
       allowNull: false,
       validate: {
         notEmpty: true,
-      }
-    }
+      },
+    },
   },
   {
     sequelize: db,
-    modelName: 'userprovider',
+    modelName: 'user_provider',
   }
 );
 
