@@ -44,8 +44,10 @@ Group.init(
             type: TEXT,
             allowNull: true
         },
-        sequelize: db,
-        modelName: 'user',
+},
+{
+    sequelize: db,
+    modelName: 'user',
 }
 );
 
