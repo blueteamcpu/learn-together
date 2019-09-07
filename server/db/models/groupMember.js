@@ -4,6 +4,10 @@ const db = require('../connection');
 class GroupMember extends Model{}
 
 GroupMember.init({
+        id: {
+            type: UUID,
+            defaultValue: UUIDV4
+        },
         isAdmin: {
             type: BOOLEAN,
         }
