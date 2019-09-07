@@ -12,6 +12,8 @@ const groupMember = require('./models/groupMember');
 const eventAttendee = require('./models/eventAttendee');
 const courseGroup = require('./models/courseGroup');
 
+Group.hasMany(User, {through: groupMember});
+User.hasMany(Group, {through: })
 
 module.exports = {
   db,
