@@ -3,7 +3,12 @@ const db = require('../connection');
 
 class EventAttendee extends Model{}
 
-EventAttendee.init(
+EventAttendee.init({
+        id: {
+            type: UUID,
+            defaultValue: UUIDV4,
+        }
+    },
     {
         sequelize: db,
         modelName: 'event-attendee',
