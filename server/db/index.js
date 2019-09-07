@@ -8,6 +8,9 @@ const Post = require('./models/post');
 const Course = require('./models/course');
 const Event = require('./models/event');
 const Group = require('./models/group');
+const groupMember = require('./models/groupMember');
+const eventAttendee = require('./models/eventAttendee');
+const courseGroup = require('./models/courseGroup');
 
 
 module.exports = {
@@ -20,5 +23,8 @@ module.exports = {
   Post,
   Course,
   Event,
-  Group
+  Group,
+  groupMember,
+  eventAttendee,
+  courseGroup,
 };
