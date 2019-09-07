@@ -6,6 +6,9 @@ const Session = require('./models/session');
 const Comment = require('./models/comment');
 const Post = require('./models/post');
 const Course = require('./models/course');
+const Event = require('./models/event');
+const Group = require('./models/group');
+
 
 module.exports = {
   db,
@@ -16,4 +19,6 @@ module.exports = {
   Comment,
   Post,
   Course,
+  Event,
+  Group
 };
