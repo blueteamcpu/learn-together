@@ -20,7 +20,10 @@ Event.init(
         },
         description: {
             type: TEXT,
-            allowNull: true
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         day: {
             type: DATE,
@@ -50,6 +53,17 @@ Event.init(
                 notEmpty: true
             }
         },
+        duration: {
+            type: DATE,
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
+        }
+    },
+    {
+        sequelize: db,
+        modelName: 'event',
     }
 );
 
