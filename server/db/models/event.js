@@ -5,7 +5,7 @@ const {
   UUID,
   UUIDV4,
   TEXT,
-  DATEONLY,
+  DATE,
   TIME,
 } = require('sequelize');
 const db = require('../connection');
@@ -35,7 +35,7 @@ Event.init(
       },
     },
     day: {
-      type: DATEONL,
+      type: DATE,
       allowNull: false,
       validate: {
         notEmpty: true,
