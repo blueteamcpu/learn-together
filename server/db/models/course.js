@@ -11,14 +11,17 @@ Course.init(
       primaryKey: true,
     },
     name: {
-      type: sequelize.STRING(1024),
+      type: sequelize.TEXT,
       unique: true,
       allowNull: false,
     },
     link: {
-      type: sequelize.STRING(4096),
+      type: sequelize.TEXT,
       unique: true,
       allowNull: true,
+      validate: {
+        isUrl: true,
+      },
     },
   },
   {

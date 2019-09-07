@@ -1,20 +1,24 @@
-const { Model, STRING, INTEGER, UUID, UUIDV4, BOOLEAN, TEXT, DATE, TIME } = require('sequelize');
+const { Model, UUID, UUIDV4, BOOLEAN } = require('sequelize');
 const db = require('../connection');
 
-class GroupMember extends Model{}
+class GroupMember extends Model {}
 
-GroupMember.init({
-        id: {
-            type: UUID,
-            defaultValue: UUIDV4
-        },
-        isAdmin: {
-            type: BOOLEAN,
-        }
+GroupMember.init(
+  {
+    id: {
+      primaryKey: true,
+      type: UUID,
+      defaultValue: UUIDV4,
     },
-    {
-        sequelize: db,
-        modelName: 'group-member',
-    });
+    isAdmin: {
+      type: BOOLEAN,
+      defaultValue: false,
+    },
+  },
+  {
+    sequelize: db,
+    modelName: 'group_member',
+  }
+);
 
-    module.exports = GroupMember;
+module.exports = GroupMember;
