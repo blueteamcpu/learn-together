@@ -8,6 +8,8 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import Axios from 'axios';
+
 
 class LoginForm extends Component {
   constructor(props) {
@@ -30,8 +32,27 @@ class LoginForm extends Component {
     }));
   };
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
+
+    try {
+      const { data } = await Axios.put('/auth/local/login', this.state.values, {
+        validateStatus: function(status) {
+          return status === 200 || status === 401;
+        },
+      });
+
+      if (data.error) {
+        this.setState(state => ({
+          ...state,
+          errors: { ...state.errors, ...data.error },
+        }));
+      } else {
+        this.props.gotUser(data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   render() {
@@ -55,6 +76,7 @@ class LoginForm extends Component {
                 iconPosition="left"
                 placeholder="Email"
                 name="email"
+                error={errors.email ? errors.email : null}
                 value={values.email}
                 onChange={this.handleChange}
               />
@@ -65,6 +87,7 @@ class LoginForm extends Component {
                 placeholder="Password"
                 type="password"
                 name="password"
+                error={errors.password ? errors.password : null}
                 value={values.password}
                 onChange={this.handleChange}
               />

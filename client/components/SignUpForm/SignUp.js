@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { gotUser as _gotUser } from '../../actions/authentication';
-import LoginForm from './LoginFormDumb';
+import SignUpDumb from './SignUpDumb';
 
 const mapDispatchToProps = (dispatch, { history }) => ({
   gotUser(user) {
@@ -12,4 +12,4 @@ const mapDispatchToProps = (dispatch, { history }) => ({
 export default connect(
   null,
   mapDispatchToProps
-)(LoginForm);
+)(SignUpDumb);

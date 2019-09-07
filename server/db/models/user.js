@@ -82,11 +82,15 @@ User.init(
 
 User.beforeCreate(async instance => {
   try {
+    if (instance.firstName) {
+      instance.firstName = titleCase(instance.firstName);
+    }
+    if (instance.lastName) {
+      instance.lastName = titleCase(instance.lastName);
+    }
     if (instance.password) {
       instance.password = await makeHash(instance.password);
     }
-    instance.firstName = titleCase(instance.firstName);
-    instance.lastName = titleCase(instance.lastName);
   } catch (error) {
     throw error;
   }
@@ -128,8 +132,14 @@ User.signup = async function({
       throw new AuthenticationError('password', 'Password is required');
     }
 
-    const defaults = { firstName, lastName, username, zipcode, password };
+    const defaults = { username, zipcode, password };
 
+    if (firstName) {
+      defaults.firstName = firstName;
+    }
+    if (lastName) {
+      defaults.lastName = lastName;
+    }
     if (imageURL) {
       defaults.imageURL = imageURL;
     }
