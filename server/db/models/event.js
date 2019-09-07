@@ -5,7 +5,7 @@ const {
   UUID,
   UUIDV4,
   TEXT,
-  DATE,
+  DATEONLY,
   TIME,
 } = require('sequelize');
 const db = require('../connection');
@@ -35,13 +35,20 @@ Event.init(
       },
     },
     day: {
-      type: DATE,
+      type: DATEONL,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    time: {
+    startTime: {
+      type: TIME,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    endTime: {
       type: TIME,
       allowNull: false,
       validate: {
@@ -51,23 +58,10 @@ Event.init(
     location: {
       type: STRING,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
     zipcode: {
       type: INTEGER,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    duration: {
-      type: DATE,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
   },
   {
