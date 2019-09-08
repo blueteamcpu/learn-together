@@ -1,0 +1,27 @@
+* How to use various learning resources apis
+** khanacademy.org
+Their api does not require any keys. Just flat request to url
+http://www.khanacademy.org/api/v1/topictree?kind=topic
+This will send the entire topic tree from khanacademy site
+*** Pull in the data to our database
+The data is topic driven from *root*. All the topics from root have children
+The key points to look for are *translated_standalone_title* which give the actual topic course name and *domain_slug* which gives the parent topic
+
+I think this is all we need to do what we want at this time.
+
+** edx.org
+Requires authentication to access. Access token, Client ID, Client Secret
+URL for api access is
+http://www.api.edx.org
+
+Requires active website URL, business address, and such things. Picky picky.
+Currently waiting on EDX accepting our api request
+
+*** Edx.org login credentials
+Email: blueteamcpu@gmail.com
+Uname: blueteamcpu
+Pswrd: c0d31tUP0208
+
+** Heroku
+Email: blueteamcpu@gmail.com
+Pswrd: c0d31tUP0208!
