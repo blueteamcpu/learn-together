@@ -3,6 +3,11 @@ const db = require('../server/db/index.js');
 const fs = require('fs');
 const path = require('path');
 
+// Make sure our 'courseLists' directory is available to use
+if ( ! fs.existsSync(path.join(__dirname, 'courseLists'))) {
+  fs.mkdirSync(path.join(__dirname, 'courseLists'), 0777);
+}
+
 const currentFiles = fs.readdirSync(path.join(__dirname, 'courseLists'));
 
 // Add all files to create here as needed
@@ -20,9 +25,17 @@ const apiInformation = [
   }
 ];
 
+const currentTime = new Date();
+// One week time in milliseconds - So not really a magic number anymore
+const weekMS = 604800000;
+
 const listOfGets = filesToCheck.filter(file => {
   if(!currentFiles.includes(file)) return true;
-  else return false;
+  const stats = fs.statSync(path.join(__dirname, 'courseLists', file));
+  // Check and see if the existing file is more than a week old
+  // If it is we add to the list to get new data
+  if(currentTime - stats.mtime > weekMS) return true;
+  return false;
 });
 
 getAllCourses();
@@ -40,8 +53,9 @@ async function getAllCourses() {
       
       // write the data out to a file so we don't have to do this so often
       // Maybe once a week or so?
-      await fs.writeFile(path.join(__dirname, 'courseLists', file), JSON.stringify(requestData),
-			 (err) => { console.log("Nick is an idiot, ", err); });
+      let filePath = path.join(__dirname, 'courseLists', file);
+      await fs.writeFile(filePath, JSON.stringify(requestData),
+			 (err) => { console.log("Created: ", file, " | Errors: ", err); });
     }
     catch(e) {
       console.log("Nick failed! ", e);
