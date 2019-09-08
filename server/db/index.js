@@ -49,7 +49,6 @@ Course.belongsTo(Provider);
 
 Course.belongsTo(Topic);
 Group.belongsTo(Topic);
-Event.belongsTo(Topic);
 
 module.exports = {
   db,
