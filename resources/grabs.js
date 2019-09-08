@@ -70,7 +70,7 @@ async function getAllCourses() {
       }, {});
       // Finally. Lets make some courses
       await Promise.all(courses.map(c => {
-	db.Course.create({ ...c, topicId: topics[c.topic] });
+	return db.Course.create({ ...c, topicId: topics[c.topic] });
       }));
     }
     catch(e) {
