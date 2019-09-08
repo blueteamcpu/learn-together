@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Route, Switch } from 'react-router-dom';
+import GuestOnly from '../GuestOnly/GuestOnly';
 import Home from '../Home/HomeDumb';
 import LoginForm from '../LoginForm/LoginForm';
 import SignUp from '../SignUpForm/SignUp';
@@ -16,8 +17,8 @@ class App extends Component {
         <Nav />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/login" component={LoginForm} />
-          <Route exact path="/signup" component={SignUp} />
+          <GuestOnly exact={true} path="/login" component={LoginForm} />
+          <GuestOnly exact={true} path="/signup" component={SignUp} />
         </Switch>
       </Fragment>
     );
