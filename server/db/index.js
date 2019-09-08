@@ -11,6 +11,7 @@ const Group = require('./models/group');
 const GroupMember = require('./models/groupMember');
 const EventAttendee = require('./models/eventAttendee');
 const CourseGroup = require('./models/courseGroup');
+const Topic = require('./models/topic');
 
 Group.belongsToMany(User, { through: 'group_member' });
 Group.belongsTo(User, { as: 'Owner', foreignKey: 'ownerId' });
@@ -46,6 +47,9 @@ Comment.belongsTo(User);
 Provider.hasMany(Course);
 Course.belongsTo(Provider);
 
+Course.belongsTo(Topic);
+Group.belongsTo(Topic);
+
 module.exports = {
   db,
   User,
@@ -60,4 +64,5 @@ module.exports = {
   GroupMember,
   EventAttendee,
   CourseGroup,
+  Topic,
 };

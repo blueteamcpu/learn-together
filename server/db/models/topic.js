@@ -1,8 +1,8 @@
 const db = require('../connection');
 const sequelize = require('sequelize');
 
-class Post extends sequelize.Model {}
-Post.init(
+class Topic extends sequelize.Model {}
+Topic.init(
   {
     id: {
       type: sequelize.UUID,
@@ -10,25 +10,19 @@ Post.init(
       unique: true,
       primaryKey: true,
     },
-    // topic: {
-    //   type: sequelize.STRING,
-    //   allowNull: false,
-    //   validate: {
-    //     notEmpty: true,
-    //   },
-    //},
-    description: {
+    name: {
       type: sequelize.TEXT,
-      allowNull: true,
+      allowNull: false,
       validate: {
         notEmpty: true,
       },
-    },
+    },      
+
   },
   {
     sequelize: db,
-    modelName: 'post',
+    modelName: 'topic',
   }
 );
 
-module.exports = Post;
+module.exports = Topic;
