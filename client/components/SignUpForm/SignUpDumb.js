@@ -67,7 +67,7 @@ class SignUpForm extends Component {
     return (
       <Grid
         textAlign="center"
-        style={{ height: '100vh' }}
+        style={{ height: '85vh' }}
         verticalAlign="middle"
       >
         <Grid.Column style={{ maxWidth: 450 }}>
@@ -99,7 +99,7 @@ class SignUpForm extends Component {
 
             <Form.Input
               fluid
-              icon="user"
+              icon="image outline"
               iconPosition="left"
               placeholder="Profile photo URL (optional)"
               name="imageURL"
@@ -110,11 +110,11 @@ class SignUpForm extends Component {
 
             <Form.Input
               fluid
-              icon="user"
+              icon="home"
               iconPosition="left"
               required={true}
               type="number"
-              placeholder="Zip Code"
+              placeholder="Zip code"
               name="zipcode"
               error={errors.zipcode ? errors.zipcode : null}
               value={values.zipcode}
@@ -123,7 +123,7 @@ class SignUpForm extends Component {
 
             <Form.Input
               fluid
-              icon="user"
+              icon="user secret"
               iconPosition="left"
               required={true}
               placeholder="Username"
@@ -135,7 +135,7 @@ class SignUpForm extends Component {
 
             <Form.Input
               fluid
-              icon="user"
+              icon="inbox"
               iconPosition="left"
               required={true}
               placeholder="Email"

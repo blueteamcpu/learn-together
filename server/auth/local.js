@@ -3,8 +3,6 @@ const { User } = require('../db/index');
 
 router.post('/signup', async (req, res, next) => {
   try {
-    console.log(req.body);
-
     const user = await User.signup(req.body);
     req.session.userId = user.id;
     res.json(user);

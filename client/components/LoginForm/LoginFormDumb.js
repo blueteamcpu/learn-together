@@ -61,7 +61,7 @@ class LoginForm extends Component {
     return (
       <Grid
         textAlign="center"
-        style={{ height: '100vh' }}
+        style={{ height: '85vh' }}
         verticalAlign="middle"
       >
         <Grid.Column style={{ maxWidth: 450 }}>
@@ -72,7 +72,7 @@ class LoginForm extends Component {
             <Segment stacked>
               <Form.Input
                 fluid
-                icon="user"
+                icon="inbox"
                 iconPosition="left"
                 placeholder="Email"
                 name="email"
