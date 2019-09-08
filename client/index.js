@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import { HashRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './store';
-import App from './components/App/AppDumb'
+import App from './components/App/App';
 
 ReactDOM.render(
   <Router>
