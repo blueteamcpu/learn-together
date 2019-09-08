@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Group, GroupMember } = require('../db/index');
+const { Group, GroupMember, User } = require('../db/index');
 
 router.get('/all/:next', async (req, res, next) => {
   try {
@@ -35,10 +35,8 @@ router.get('/all/:next', async (req, res, next) => {
 router.get('/user', async (req, res, next) => {
   try{
     // I think this is right, I'm going to have to test it.
-    const userGroups = await Group.findAll({ include: [{ through: { model: GroupMember },
-							 where: { userId: req.session.userId }
-						       }]
-					   });
+    const user = await User.findByPk(req.session.userId);
+    const userGroups = await user.getGroups();
     res.send(userGroups);
   }
   catch (error) {
@@ -64,7 +62,7 @@ router.post('/addmember', async (req, res, next) => {
     // Sneaky people can do. We need to check on the server as well.
     let validOwner = GroupMember.findOne({ where: { groupId: req.body.groupId, userId: req.session.userId, isAdmin: true }});
     if (validOwner) {
-      const group = await GroupMember.create({ userId: req.body.selecteduser, groupId: req.body.groupId});      
+      const group = await GroupMember.create({ userId: req.body.userId, groupId: req.body.groupId});      
       res.status(201).send();
     }
     else {
