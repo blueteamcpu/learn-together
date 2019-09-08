@@ -1,6 +1,16 @@
 const router = require('express').Router();
 const { Group, GroupMember, User } = require('../db/index');
 
+router.post('/newgroup', async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.session.userId);
+    const newGroup = Group.create({...req.body.group});
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
 router.get('/all/:next', async (req, res, next) => {
   try {
     let filters = {};
@@ -32,6 +42,19 @@ router.get('/all/:next', async (req, res, next) => {
   }
 });
 
+// Gets all users for a specific group
+router.get('/groupusers', async (req, res, next) => {
+  try {
+    const group = Group.findByPk(req.body.groupId);
+    const groupUsers = group.getUsers();
+    res.send(groupUsers);
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+// Gets all groups for a specific user
 router.get('/user', async (req, res, next) => {
   try{
     // I think this is right, I'm going to have to test it.
@@ -74,6 +97,7 @@ router.post('/addmember', async (req, res, next) => {
   }
 });
 
+// This is for an admin/owner to remove a user from a group
 router.delete('/removemember', async (req, res, next) => {
   try{
     // So we need to check that the logged in user can actually add a person to the group
