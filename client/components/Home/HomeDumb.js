@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Nav from '../Nav/NavDumb'
+import Nav from '../Nav/NavDumb';
 import {
   Button,
   Container,
@@ -73,7 +73,6 @@ class DesktopContainer extends Component {
 
   render() {
     const { children } = this.props;
-    
 
     return (
       <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
@@ -82,16 +81,15 @@ class DesktopContainer extends Component {
           onBottomPassed={this.showFixedMenu}
           onBottomPassedReverse={this.hideFixedMenu}
         >
-        <Segment
-          inverted
-          textAlign="center"
-          style={{ minHeight: 700, padding: '1em 0em' }}
-          vertical>
-          <Nav />
-          <HomepageHeading />
-        </Segment>
+          <Segment
+            inverted
+            textAlign="center"
+            style={{ minHeight: 700, padding: '1em 0em' }}
+            vertical
+          >
+            <HomepageHeading />
+          </Segment>
         </Visibility>
-
         {children}
       </Responsive>
     );
@@ -120,22 +118,6 @@ class MobileContainer extends Component {
         getWidth={getWidth}
         maxWidth={Responsive.onlyMobile.maxWidth}
       >
-        <Sidebar
-          as={Menu}
-          animation="push"
-          inverted
-          onHide={this.handleSidebarHide}
-          vertical
-          visible={sidebarOpened}
-        >
-          <Menu.Item as="a" active>
-            Home
-          </Menu.Item>
-          <Menu.Item as="a">Explore</Menu.Item>
-          <Menu.Item as="a">Log in</Menu.Item>
-          <Menu.Item as="a">Sign Up</Menu.Item>
-        </Sidebar>
-
         <Sidebar.Pusher dimmed={sidebarOpened}>
           <Segment
             inverted
@@ -143,24 +125,8 @@ class MobileContainer extends Component {
             style={{ minHeight: 350, padding: '1em 0em' }}
             vertical
           >
-            <Container>
-              <Menu inverted pointing secondary size="large">
-                <Menu.Item onClick={this.handleToggle}>
-                  <Icon name="sidebar" />
-                </Menu.Item>
-                <Menu.Item position="right">
-                  <Button as="a" inverted>
-                    Log in
-                  </Button>
-                  <Button as="a" inverted style={{ marginLeft: '0.5em' }}>
-                    Sign Up
-                  </Button>
-                </Menu.Item>
-              </Menu>
-            </Container>
             <HomepageHeading mobile />
           </Segment>
-
           {children}
         </Sidebar.Pusher>
       </Responsive>
@@ -188,20 +154,22 @@ class Home extends Component {
     return (
       <ResponsiveContainer>
         <Segment style={{ padding: '8em 0em' }} vertical>
-          <Grid container stackable verticalAlign="middle" textAlign='center'>
+          <Grid container stackable verticalAlign="middle" textAlign="center">
             <Grid.Row>
               <Grid.Column width={8}>
                 <Header as="h3" style={{ fontSize: '2em' }}>
                   We Help People Learn Together
                 </Header>
                 <p style={{ fontSize: '1.33em' }}>
-                  We help you connect with people locally that are pursuing similar educational goals. 
+                  We help you connect with people locally that are pursuing
+                  similar educational goals.
                 </p>
                 <Header as="h3" style={{ fontSize: '2em' }}>
                   Online Education Doesn't Have to be a Solo Endeavor
                 </Header>
                 <p style={{ fontSize: '1.33em' }}>
-                  Find a community of people taking courses from your favorite online educational platform such as KhanAcademy and EdX.
+                  Find a community of people taking courses from your favorite
+                  online educational platform such as KhanAcademy and EdX.
                 </p>
               </Grid.Column>
             </Grid.Row>

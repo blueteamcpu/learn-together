@@ -15,7 +15,7 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case GOT_USER: {
-      return { ...state, user: action.user };
+      return { ...state, user: action.user, loadingUser: false };
     }
     case REMOVED_USER: {
       return { ...state, user: {} };

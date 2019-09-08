@@ -11,7 +11,7 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-router.get('/login', async (req, res, next) => {
+router.put('/login', async (req, res, next) => {
   try {
     const user = await User.login(req.body.email, req.body.password);
     req.session.userId = user.id;
@@ -23,9 +23,7 @@ router.get('/login', async (req, res, next) => {
 
 router.use((error, req, res, next) => {
   if (error.type === 'Authentication') {
-    res
-      .status(error.status)
-      .json({ error: { [error.field]: error.message } });
+    res.status(error.status).json({ error: { [error.field]: error.message } });
   } else {
     next(error);
   }
