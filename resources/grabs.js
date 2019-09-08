@@ -84,7 +84,7 @@ async function getAllCourses() {
       }, {});
       // Finally. Lets make some courses
       await Promise.all(courses.map(c => {
-	return db.Course.create({ ...c, topicId: topics[c.topic] });
+	return db.Course.create({ ...c, topicId: topics[c.topic], providerId: provider[0].id });
       }));
     }
     catch(e) {
@@ -98,6 +98,7 @@ async function makeApiRequest(api) {
   // I think we can monitor the http request status as the download happens. Haven't figured
   // that out yet. Maybe Axios is not the right thing to use and we should just use node http
   // instead
+  console.log("Fetching: ", api);
   const { data } = await axios.get(api.url, api.headers);
   return data;
 }
