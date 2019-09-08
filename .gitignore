@@ -1,4 +1,4 @@
 node_modules
 .DS_STORE
 public/bundle.js*
-resources/courseLists*
+resources/courseLists/*
