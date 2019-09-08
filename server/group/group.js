@@ -1,7 +1,7 @@
 const router = require('express').Router();
-const { Group } = require('../db/index');
+const { Group, GroupMember } = require('../db/index');
 
-router.get('/groups/all/:next', async (req, res, next) => {
+router.get('/all/:next', async (req, res, next) => {
   try {
     let filters = {};
     let order = {};
@@ -14,7 +14,7 @@ router.get('/groups/all/:next', async (req, res, next) => {
       }
       for(let o of req.body.order) {
 	if(o.hasOwnProperty('createdAt')) {
-	  // All all custom filters here
+	  // All all custom order here
 	  filters.createdAt = o.createdAt;
 	}
       }
@@ -25,11 +25,96 @@ router.get('/groups/all/:next', async (req, res, next) => {
 	 order: [...order],
        }
       ]);
-    res.send({groupsAll});
+    res.send(groupsAll);
   }
   catch (error) {
     next(error);
   }
+});
+
+router.get('/user', async (req, res, next) => {
+  try{
+    // I think this is right, I'm going to have to test it.
+    const userGroups = await Group.findAll({ include: [{ through: { model: GroupMember },
+							 where: { userId: req.session.userId }
+						       }]
+					   });
+    res.send(userGroups);
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+router.post('/create', async (req, res, next) => {
+  try {
+    
+  }
+  catch (error) {
+    next(error);
+  }  
+});
+
+// This will allow a user to add themself to a group, or allow a group owner or admin
+// Add a user to the group of their behalf
+router.post('/addmember', async (req, res, next) => {
+  try{
+    // So we need to check that the logged in user can actually add a person to the group
+    // The client should put checks in place to not let this happen, but who knows what
+    // Sneaky people can do. We need to check on the server as well.
+    let validOwner = GroupMember.findOne({ where: { groupId: req.body.groupId, userId: req.session.userId, isAdmin: true }});
+    if (validOwner) {
+      const group = await GroupMember.create({ userId: req.body.selecteduser, groupId: req.body.groupId});      
+      res.status(201).send();
+    }
+    else {
+      res.status(403).send();
+    }
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+router.delete('/removemember', async (req, res, next) => {
+  try{
+    // So we need to check that the logged in user can actually add a person to the group
+    // The client should put checks in place to not let this happen, but who knows what
+    // Sneaky people can do. We need to check on the server as well.
+    let validOwner = GroupMember.findOne({ where: { groupId: req.body.groupId, userId: req.session.userId, isAdmin: true }});
+    if (validOwner) {
+      const numberRemoved = await GroupMember.destroy({ where: {userId: req.body.userId, groupId: req.body.groupId}});
+      if(numberRemoved) res.status(201).send();    
+      else throw new Error('Groups', 'Unable to remove member from group');      
+    }
+    else {
+      res.status(403).send();
+    }
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
+router.post('/addself', async (req, res, next) => {
+  try {
+    const group = await GroupMember.create({ userId: req.session.userId, groupId: req.body.groupId});
+    res.status(201).send();
+  }
+  catch (error) {
+    next(error);
+  }  
+});
+
+router.delete('/removeself', async (req, res, next) => {
+  try {
+    const numberRemoved = await GroupMember.destroy({ where: {userId: req.session.userId, groupId: req.body.groupId}});
+    if(numberRemoved) res.status(201).send();    
+    else throw new Error('Groups', 'Unable to remove member from group');
+  }
+  catch (error) {
+    next(error);
+  }    
 });
 
 router.use((error, req, res, next) => {
