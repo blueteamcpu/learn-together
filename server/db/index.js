@@ -48,8 +48,7 @@ Provider.hasMany(Course);
 Course.belongsTo(Provider);
 
 Course.belongsTo(Topic);
-Post.belongsTo(Topic);
-Event.belongsTo(Topic);
+Group.belongsTo(Topic);
 
 module.exports = {
   db,
