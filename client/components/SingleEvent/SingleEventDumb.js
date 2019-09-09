@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Event extends Component {
+class SingleEvent extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
@@ -12,4 +12,4 @@ class Event extends Component {
     }
 }
  
-export default Event;
+export default SingleEvent;
