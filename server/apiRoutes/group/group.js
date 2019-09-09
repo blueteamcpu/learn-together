@@ -4,17 +4,20 @@ const { Group, GroupMember, User } = require('../db/index');
 router.post('/newgroup', async (req, res, next) => {
   try {
     const user = await User.findByPk(req.session.userId);
-    const newGroup = Group.create({...req.body.group});
+    const newGroup = user.addGroup({...req.body.group}, { through: { ownerId: user.id }});
+    //    const newGroup = Group.create({...req.body.group});
+    res.status(201).send(newGroup);
   }
   catch (error) {
     next(error);
   }
 });
 
-router.get('/all/:next', async (req, res, next) => {
+router.get('/all/:section?', async (req, res, next) => {
   try {
     let filters = {};
     let order = {};
+    const section = req.params.section ? req.params.section * 25 : 0;
     if (req.body.filter) {
       for(let f of req.body.filter) {
 	if(f.hasOwnProperty('zipcode')) {
@@ -22,19 +25,21 @@ router.get('/all/:next', async (req, res, next) => {
 	  filters.zipcode = f.zipcode;
 	}
       }
+    }
+    if (req.body.order) {
       for(let o of req.body.order) {
 	if(o.hasOwnProperty('createdAt')) {
 	  // All all custom order here
-	  filters.createdAt = o.createdAt;
+	  order.createdAt = o.createdAt;
 	}
       }
     }
-    const groupsAll = await Group.findAll(
-      [{ offset: req.params.next * 25, limit: 25,
-	 where: { ...filters },
-	 order: [...order],
-       }
-      ]);
+    const groupsAll = await Group.findAll({
+      where: { ...filters },
+      order: Object.keys(order).length !== 0 ? [...order] : null,
+      offset: section * 25,
+      limit: 25,
+    });
     res.send(groupsAll);
   }
   catch (error) {
@@ -55,7 +60,7 @@ router.get('/groupusers', async (req, res, next) => {
 });
 
 // Gets all groups for a specific user
-router.get('/user', async (req, res, next) => {
+router.get('/mygroups', async (req, res, next) => {
   try{
     // I think this is right, I'm going to have to test it.
     const user = await User.findByPk(req.session.userId);
