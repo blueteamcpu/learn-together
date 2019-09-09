@@ -33,13 +33,13 @@ Group.init(
         notEmpty: true,
       },
     },
-    topic: {
-      type: STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
+    // topic: {
+    //   type: STRING,
+    //   allowNull: false,
+    //   validate: {
+    //     notEmpty: true,
+    //   },
+    // },
     zipcode: {
       type: INTEGER,
       allowNull: false,
