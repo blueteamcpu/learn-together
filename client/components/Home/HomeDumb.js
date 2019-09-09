@@ -27,7 +27,7 @@ const getWidth = () => {
 /* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
  * such things.
  */
-const HomepageHeading = ({ mobile }) => (
+const HomepageHeading = ({ mobile, history }) => (
   <Container text>
     <Header
       as="h1"
@@ -50,7 +50,7 @@ const HomepageHeading = ({ mobile }) => (
         marginTop: mobile ? '0.5em' : '1.5em',
       }}
     />
-    <Button primary size="huge">
+    <Button primary size="huge" onClick={() => history.push('/explore')}>
       Get Started
       <Icon name="right arrow" />
     </Button>
@@ -87,7 +87,7 @@ class DesktopContainer extends Component {
             style={{ minHeight: 700, padding: '1em 0em' }}
             vertical
           >
-            <HomepageHeading />
+            <HomepageHeading history={this.props.history} />
           </Segment>
         </Visibility>
         {children}
@@ -125,7 +125,7 @@ class MobileContainer extends Component {
             style={{ minHeight: 350, padding: '1em 0em' }}
             vertical
           >
-            <HomepageHeading mobile />
+            <HomepageHeading mobile history={this.props.history} />
           </Segment>
           {children}
         </Sidebar.Pusher>
@@ -138,10 +138,10 @@ MobileContainer.propTypes = {
   children: PropTypes.node,
 };
 
-const ResponsiveContainer = ({ children }) => (
+const ResponsiveContainer = ({ children, history }) => (
   <div>
-    <DesktopContainer>{children}</DesktopContainer>
-    <MobileContainer>{children}</MobileContainer>
+    <DesktopContainer history={history}>{children}</DesktopContainer>
+    <MobileContainer history={history}>{children}</MobileContainer>
   </div>
 );
 
@@ -152,7 +152,7 @@ ResponsiveContainer.propTypes = {
 class Home extends Component {
   render() {
     return (
-      <ResponsiveContainer>
+      <ResponsiveContainer history={this.props.history}>
         <Segment style={{ padding: '8em 0em' }} vertical>
           <Grid container stackable verticalAlign="middle" textAlign="center">
             <Grid.Row>
@@ -175,7 +175,12 @@ class Home extends Component {
             </Grid.Row>
             <Grid.Row>
               <Grid.Column textAlign="center">
-                <Button size="huge">Check It Out</Button>
+                <Button
+                  size="huge"
+                  onClick={() => this.props.history.push('/explore')}
+                >
+                  Check It Out
+                </Button>
               </Grid.Column>
             </Grid.Row>
           </Grid>
