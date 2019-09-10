@@ -66,7 +66,6 @@ class CreateEventForm extends Component {
         const { values } = this.state;
         return ( 
             <Fragment>
-                <button onClick={()=>console.log(this.state)}>log</button>
             <Grid
                 textAlign="center"
                 style={{ height: '85vh' }}
