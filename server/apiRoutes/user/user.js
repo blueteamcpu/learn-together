@@ -10,12 +10,13 @@ router.post('/updateUser', async (req, res, next) => {
         zipcode: req.body.zipcode,
         username: req.body.username
     }, {
+        returning: true,
         where: {
             id: req.session.userId
         }
     });
     if (newUser){
-        res.send('User Updated')
+        res.send(newUser);
     }
 } catch (err){
     next(err);
