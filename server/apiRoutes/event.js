@@ -117,3 +117,6 @@ router.delete('/deleteattendee', async(req, res, next) => {
         next(err);
     }
 });
+
+
+module.exports = router;
