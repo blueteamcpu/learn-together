@@ -110,7 +110,7 @@ router.post('/addattendee', async(req, res, next) => {
 //remove user from attending event
 router.delete('/deleteattendee', async(req, res, next) => {
     try{
-        const attendee = await EventAttendee.destroy({ wehre: { userId: req.user.id, eventId: req.body.eventId }});
+        const attendee = await EventAttendee.destroy({ where: { userId: req.user.id, eventId: req.body.eventId }});
         if (attendee) res.status(201).send();
         else throw new Error('Events', 'Unable to delete attendee')
     } catch(err) {
