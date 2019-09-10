@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Group, GroupMember, User } = require('../db/index');
+const { Group, GroupMember, User } = require('../../db/index.js');
 
 router.post('/newgroup', async (req, res, next) => {
   try {
@@ -81,7 +81,6 @@ router.post('/create', async (req, res, next) => {
   }  
 });
 
-// This will allow a user to add themself to a group, or allow a group owner or admin
 // Add a user to the group of their behalf
 router.post('/addmember', async (req, res, next) => {
   try{
