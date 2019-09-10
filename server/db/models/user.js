@@ -83,13 +83,15 @@ User.init(
 User.beforeCreate(async instance => {
   try {
     if (instance.firstName) {
-      instance.firstName = titleCase(instance.firstName);
+      instance.firstName = titleCase(instance.firstName.trim());
     }
     if (instance.lastName) {
-      instance.lastName = titleCase(instance.lastName);
+      instance.lastName = titleCase(instance.lastName.trim());
     }
+    instance.username = instance.username.trim();
+    instance.email = instance.email.trim();
     if (instance.password) {
-      instance.password = await makeHash(instance.password);
+      instance.password = await makeHash(instance.password.trim());
     }
   } catch (error) {
     throw error;
@@ -99,13 +101,19 @@ User.beforeCreate(async instance => {
 User.beforeUpdate(async instance => {
   try {
     if (instance.changed('password')) {
-      instance.password = await makeHash(instance.password);
+      instance.password = await makeHash(instance.password.trim());
     }
     if (instance.changed('firstName')) {
-      instance.firstName = titleCase(instance.firstName);
+      instance.firstName = titleCase(instance.firstName.trim());
     }
     if (instance.changed('lastName')) {
-      instance.lastName = titleCase(instance.lastName);
+      instance.lastName = titleCase(instance.lastName.trim());
+    }
+    if (instance.changed('username')) {
+      instance.username = instance.username.trim();
+    }
+    if (instance.changed('email')) {
+      instance.email = instance.email.trim();
     }
   } catch (error) {
     throw error;
