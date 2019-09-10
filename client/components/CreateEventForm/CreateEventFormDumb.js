@@ -4,14 +4,9 @@ import {
   Form,
   Grid,
   Header,
-  Message,
   Segment,
-  TextArea
 } from 'semantic-ui-react';
-const { DateInput,
-    TimeInput,
-    DateTimeInput,
-    DatesRangeInput } = SemanticUiCalendarReact;
+const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -36,13 +31,12 @@ class CreateEventForm extends Component {
         this.setState({groupId: this.props.match.params.groupId})
     }
 
-    handleChange = e => {
-        const { name, value } = e.target;
-        console.log(e.target)
+    handleChange = (e, {name, value}) => {
+        console.log('name: ', name)
     
         this.setState(state => ({
-          ...state,
-          values: { ...state.values, [name]: value },
+        ...state,
+        values: { ...state.values, [name]: value },
         }));
       };
 
@@ -75,9 +69,7 @@ class CreateEventForm extends Component {
         console.log('CreateEventForm Component State: ', this.state.values)
         return ( 
             <Fragment>
-            <Form>
-                
-            </Form>
+                <button onClick={()=>console.log(this.state)}>log</button>
             <Grid
                 textAlign="center"
                 style={{ height: '85vh' }}
@@ -91,9 +83,9 @@ class CreateEventForm extends Component {
                     <Segment stacked>
                     <Form.Input
                         fluid
-                        placeholder="Title"
-                        name="title"
-                        value={values.title}
+                        placeholder="Event Name"
+                        name="name"
+                        value={values.name}
                         onChange={this.handleChange}
                     />
                     <Form.TextArea
@@ -104,7 +96,7 @@ class CreateEventForm extends Component {
                         onChange={this.handleChange}
                     />
                     <DateInput
-                    name="date"
+                    name="day"
                     placeholder="Date"
                     value={values.day}
                     iconPosition="left"
@@ -139,7 +131,7 @@ class CreateEventForm extends Component {
                         onChange={this.handleChange}
                     />
 
-                    <Button color="teal" fluid size="large" typ="submit">
+                    <Button color="teal" fluid size="large" type="submit">
                         Create
                     </Button>
                     </Segment>
