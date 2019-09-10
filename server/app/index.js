@@ -20,6 +20,7 @@ app.use(require('./serializeUserMiddleware'));
 
 app.use('/auth', require('../auth/index'));
 app.use('/group', require('../apiRoutes/group/group'));
+app.use('/user', require('../apiRoutes/user/user'));
 
 app.get('/hello', (req, res) => {
   res.send('Hello there!');
