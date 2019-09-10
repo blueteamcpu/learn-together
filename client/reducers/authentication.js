@@ -5,6 +5,10 @@ import {
   FAILEDTOLOGOUT,
 } from '../actions/authentication';
 
+import {
+  UPDATEUSER,
+} from '../actions/user';
+
 const initialState = {
   failedToGetUser: false,
   failedToLogOut: false,
@@ -25,6 +29,10 @@ export default (state = initialState, action) => {
     }
     case FAILEDTOLOGOUT: {
       return { ...state, failedToLogOut: true };
+    }
+    case UPDATEUSER: {
+      const user = action.user;
+      return {...state, user};
     }
     default:
       return state;
