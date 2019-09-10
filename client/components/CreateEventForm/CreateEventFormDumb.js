@@ -28,12 +28,10 @@ class CreateEventForm extends Component {
     }
 
     componentDidMount() {
-        this.setState({groupId: this.props.match.params.groupId})
+        this.setState({values: {groupId: this.props.match.params.groupId}});
     }
 
     handleChange = (e, {name, value}) => {
-        console.log('name: ', name)
-    
         this.setState(state => ({
         ...state,
         values: { ...state.values, [name]: value },
@@ -66,7 +64,6 @@ class CreateEventForm extends Component {
 
     render() { 
         const { values } = this.state;
-        console.log('CreateEventForm Component State: ', this.state.values)
         return ( 
             <Fragment>
                 <button onClick={()=>console.log(this.state)}>log</button>
