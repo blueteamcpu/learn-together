@@ -7,13 +7,26 @@ import {
   Select,
   Grid,
   Card,
+  Loader,
+  Dimmer,
+  Segment,
+  Image,
 } from 'semantic-ui-react';
-import { thisTypeAnnotation } from '@babel/types';
 
 class Explore extends Component {
   state = {
     term: '',
   };
+
+  componentDidMount() {
+    if (this.props.category === 'Groups') {
+      this.props.fetchGroups();
+    } else if (this.props.category === 'Events') {
+      // this.props.fetchEvents()
+    } else {
+      this.props.changeCategory('Groups');
+    }
+  }
 
   handelChange = e => {
     const { value } = e.target;
@@ -30,15 +43,15 @@ class Explore extends Component {
     }
   };
 
-  componentDidMount() {
+  makeItems = () => {
     if (this.props.category === 'Groups') {
-      this.props.fetchGroups();
-    } else if (this.props.category === 'Events') {
-      // this.props.fetchEvents()
-    } else {
-      this.props.changeCategory('Groups');
+      return this.props.items.map(({ group, memberCount }) => ({
+        header: group.name,
+        meta: `Members: ${memberCount}`,
+        description: group.description,
+      }));
     }
-  }
+  };
 
   render() {
     return (
@@ -73,13 +86,20 @@ class Explore extends Component {
             </Form>
           </Grid.Row>
           <Grid.Row centered>
-            <Card.Group
-              items={this.props.items.map(({ group, memberCount }) => ({
-                header: group.name,
-                meta: `Members: ${memberCount}`,
-                description: group.description,
-              }))}
-            />
+            {this.props.fetching ? (
+              <Segment>
+                <Dimmer active>
+                  <Loader />
+                </Dimmer>
+                <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+              </Segment>
+            ) : this.props.items.length ? (
+              <Card.Group items={this.makeItems()} />
+            ) : (
+              <Container textAlign="center">
+                {`There are no ${this.props.category.toLowerCase()} that meet your specifications.`}
+              </Container>
+            )}
           </Grid.Row>
         </Grid>
       </main>
