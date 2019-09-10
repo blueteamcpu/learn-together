@@ -117,7 +117,7 @@ class MobileView extends Component {
       <Responsive
         as={Sidebar.Pushable}
         maxWidth={Responsive.onlyMobile.maxWidth}
-        inverted={location.pathname === '/'}
+        inverted={location.pathname === '/' ? 'true' : 'false'}
       >
         <Sidebar
           as={Menu}
