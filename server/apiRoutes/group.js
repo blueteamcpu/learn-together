@@ -6,13 +6,12 @@ const { titleCase } = require('../../utils/index');
 router.get('/explore', async (req, res, next) => {
   try {
     let { term, section } = req.query;
-    term = term.trim().toLowerCase();
-
     const query = { limit: 20 };
 
     query.offset = section ? parseInt(section, 10) * 20 : 0;
 
     if (term) {
+      term = term.trim().toLowerCase();
       query.where = {
         [Op.or]: [
           { subject: { [Op.iLike]: term } },

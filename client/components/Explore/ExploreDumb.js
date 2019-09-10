@@ -8,8 +8,38 @@ import {
   Grid,
   Card,
 } from 'semantic-ui-react';
+import { thisTypeAnnotation } from '@babel/types';
 
 class Explore extends Component {
+  state = {
+    term: '',
+  };
+
+  handelChange = e => {
+    const { value } = e.target;
+    this.setState({ term: value });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+
+    if (this.state.term.length) {
+      if (this.props.category === 'Groups') {
+        this.props.fetchGroups(this.state.term);
+      }
+    }
+  };
+
+  componentDidMount() {
+    if (this.props.category === 'Groups') {
+      this.props.fetchGroups();
+    } else if (this.props.category === 'Events') {
+      // this.props.fetchEvents()
+    } else {
+      this.props.changeCategory('Groups');
+    }
+  }
+
   render() {
     return (
       <main style={{ marginTop: '1em' }}>
@@ -20,9 +50,10 @@ class Explore extends Component {
             </Container>
           </Grid.Row>
           <Grid.Row centered>
-            <Form>
+            <Form onSubmit={this.handleSubmit}>
               <Form.Group>
                 <Select
+                  onChange={e => this.props.changeCategory(e.target.value)}
                   defaultValue="Groups"
                   options={['Groups', 'Events'].map(value => ({
                     key: value,
@@ -30,7 +61,11 @@ class Explore extends Component {
                     text: value,
                   }))}
                 />
-                <Form.Input placeholder="Search..." />
+                <Form.Input
+                  placeholder="Search..."
+                  value={this.state.term}
+                  onChange={this.handelChange}
+                />
                 <Button type="submit" color="blue" basic>
                   Submit
                 </Button>
@@ -39,26 +74,11 @@ class Explore extends Component {
           </Grid.Row>
           <Grid.Row centered>
             <Card.Group
-              items={[
-                {
-                  header: 'Project Report - April',
-                  description:
-                    'Leverage agile frameworks to provide a robust synopsis for high level overviews.',
-                  meta: 'ROI: 30%',
-                },
-                {
-                  header: 'Project Report - May',
-                  description:
-                    'Bring to the table win-win survival strategies to ensure proactive domination.',
-                  meta: 'ROI: 34%',
-                },
-                {
-                  header: 'Project Report - June',
-                  description:
-                    'Capitalise on low hanging fruit to identify a ballpark value added activity to beta test.',
-                  meta: 'ROI: 27%',
-                },
-              ]}
+              items={this.props.items.map(({ group, memberCount }) => ({
+                header: group.name,
+                meta: `Members: ${memberCount}`,
+                description: group.description,
+              }))}
             />
           </Grid.Row>
         </Grid>

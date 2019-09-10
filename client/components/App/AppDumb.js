@@ -5,7 +5,7 @@ import Home from '../Home/HomeDumb';
 import LoginForm from '../LoginForm/LoginForm';
 import SignUp from '../SignUpForm/SignUp';
 import Nav from '../Nav/Nav';
-import Explore from '../Explore/ExploreDumb';
+import Explore from '../Explore/Explore';
 
 class App extends Component {
   componentDidMount() {
