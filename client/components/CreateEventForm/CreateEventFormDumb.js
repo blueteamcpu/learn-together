@@ -42,20 +42,8 @@ class CreateEventForm extends Component {
     e.preventDefault();
 
     try {
-        const { data } = await Axios.put('/auth/local/login', this.state.values, {
-        validateStatus: function(status) {
-            return status === 200 || status === 401;
-        },
-        });
-
-        if (data.error) {
-        this.setState(state => ({
-            ...state,
-            errors: { ...state.errors, ...data.error },
-        }));
-        } else {
-        this.props.gotUser(data);
-        }
+        const { data } = await Axios.put('/newevent', this.state.values);
+        this.props.createEvent(data);
     } catch (error) {
         console.error(error);
     }
