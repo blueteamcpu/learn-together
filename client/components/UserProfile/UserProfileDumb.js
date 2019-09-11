@@ -17,10 +17,13 @@ class UserProfileDumb extends Component {
                 username: '',
                 email: '',
                 zipcode: 0,
+                password: '',
                 loading: true,
+                changePassword: false,
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this._changePassword = this._changePassword.bind(this);
     }
 
     async componentDidMount(){
@@ -50,12 +53,17 @@ class UserProfileDumb extends Component {
       this.props.updateUser(firstName, lastName, username, email, zipcode);
     }
 
+    _changePassword(){
+      this.setState({changePassword: true})
+    }
+
     render(){
         if (this.state.loading === true){
           return null
         } else {
-        const {firstName, lastName, email, username, zipcode} = this.state;
+        const {firstName, lastName, email, username, zipcode, changePassword, password} = this.state;
         return (
+          <div>
             <Grid
               textAlign="center"
               style={{ height: '85vh' }}
@@ -126,11 +134,74 @@ class UserProfileDumb extends Component {
                     <Button color="teal" fluid size="large" type="submit">
                       Change Details
                     </Button>
+                  </Segment>
+                  <Segment>
+            {
+              !changePassword ?
+              <Button color="teal" fluid size="large" type="submit" onClick = {this._changePassword}>Change Password</Button> :
+              <Grid.Column style={{ maxWidth: 450 }}>
+              <Header as="h2" color="teal" textAlign="center">
+                Change Password
+              </Header>
+              <Form size="large" onSubmit={this.handleSubmit}>
+                <Segment stacked>
 
+                <Form.Input
+                      fluid
+                      icon = "user secret"
+                      iconPosition = "left"
+                      placeholder = "Current Password"
+                      type = "password"
+                      name = "password"
+                      value = {password}
+                      onChange = {this.handleChange}
+                  />
+
+                  <Button color="teal" fluid size="large" type="submit">
+                    Change Password
+                  </Button>
+
+                </Segment>
+              </Form>
+              </Grid.Column>
+            }
                   </Segment>
                 </Form>
               </Grid.Column>
             </Grid>
+            {/* <Grid
+              disabled = {changePassword === false}
+              textAlign="center"
+              style={{ height: '85vh' }}
+              verticalAlign="middle"
+            >
+              <Grid.Column style={{ maxWidth: 450 }}>
+                <Header as="h2" color="teal" textAlign="center">
+                  Change Password
+                </Header>
+                <Form size="large" onSubmit={this.handleSubmit}>
+                  <Segment stacked>
+
+                  <Form.Input
+                        fluid
+                        icon = "user secret"
+                        iconPosition = "left"
+                        placeholder = "Current Password"
+                        type = "password"
+                        name = "password"
+                        value = {password}
+                        onChange = {this.handleChange}
+                    />
+
+                    <Button color="teal" fluid size="large" type="submit">
+                      Change Password
+                    </Button>
+
+                  </Segment>
+                </Form>
+              </Grid.Column>
+            </Grid> */}
+          </div>
           );
         }
     }
