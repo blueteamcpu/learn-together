@@ -2,12 +2,14 @@ import qs from 'query-string';
 
 // ACTION TYPES
 export const FETCHING = 'FETCHING';
+export const DELAY_OVER = 'DELAY_OVER';
 export const FAILED_TO_FETCH_CONTENT = 'FAILED_TO_FETCH_CONTENT';
 export const GOT_CONTENT = 'GOT_CONTENT';
 export const CHANGED_CATEGORY = 'CHANGED_CATEGORY';
 
 // ACTION CREATORS
 const fetching = () => ({ type: FETCHING });
+export const delayOver = () => ({ type: DELAY_OVER });
 const failedToFetch = () => ({ type: FAILED_TO_FETCH_CONTENT });
 const gotContent = items => ({ type: GOT_CONTENT, items });
 const changeCategory = (category, items) => ({
@@ -57,6 +59,7 @@ export const getContent = (category, term, offset) => async (
     if (!currentState.explore.fetching) {
       dispatch(fetching());
     }
+
     const url = generateUrl(category, term, offset);
 
     const { data } = await axios.get(url);

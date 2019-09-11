@@ -1,19 +1,18 @@
 import { connect } from 'react-redux';
-import { getContent as _getContent } from '../../actions/explore';
+import {
+  getContent as _getContent,
+  delayOver as _delayOver,
+} from '../../actions/explore';
 import Explore from './ExploreDumb';
 
-const mapStateToProps = ({
-  explore: { items, fetching, failedToFetch, category },
-}) => ({
-  category,
-  items,
-  fetching,
-  failedToFetch,
-});
+const mapStateToProps = ({ explore }) => explore;
 
 const mapDispatchToProps = dispatch => ({
   fetchContent(category, term, offset) {
     dispatch(_getContent(category, term, offset));
+  },
+  delayOver() {
+    dispatch(_delayOver());
   },
 });
 

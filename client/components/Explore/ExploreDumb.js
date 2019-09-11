@@ -12,15 +12,20 @@ import {
   Segment,
   Image,
 } from 'semantic-ui-react';
-import { changeCategory } from '../../actions/explore';
 
 class Explore extends Component {
   state = {
     term: '',
+    showLoading: false,
+  };
+
+  fetchData = (category, term = null, offset = null) => {
+    this.props.fetchContent(category, term, offset);
+    setTimeout(() => this.props.delayOver(), 500);
   };
 
   componentDidMount() {
-    this.props.fetchContent(this.props.category);
+    this.fetchData(this.props.category);
   }
 
   handleChange = e => {
@@ -30,14 +35,12 @@ class Explore extends Component {
 
   handleSelect = e => {
     const { innerText } = e.target;
-    this.props.fetchContent(innerText, this.state.term);
+    this.fetchData(innerText, this.state.term);
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    if (this.state.term.length) {
-      this.props.fetchContent(this.props.category, this.state.term);
-    }
+    this.fetchData(this.props.category, this.state.term);
   };
 
   // need category to be put on state. race condition with data coming down and state changing
@@ -50,8 +53,6 @@ class Explore extends Component {
         description: group.description,
       }));
     } else if (this.props.category === 'Events') {
-      console.log(this.props.items);
-
       return this.props.items.map(({ event, attendeeCount }) => ({
         header: event.name,
         meta: `Attendees: ${attendeeCount}`,
@@ -94,13 +95,15 @@ class Explore extends Component {
           </Grid.Row>
           <Grid.Row centered>
             {this.props.fetching ? (
-              <Segment>
-                <Dimmer active>
-                  <Loader />
-                </Dimmer>
-                <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
-              </Segment>
-            ) : this.props.items.length || this.props.failedToFetch ? (
+              !this.props.defaultDelay ? (
+                <Segment>
+                  <Dimmer active>
+                    <Loader />
+                  </Dimmer>
+                  <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
+                </Segment>
+              ) : null
+            ) : this.props.items.length ? (
               <Card.Group items={this.makeItems()} />
             ) : (
               <Container textAlign="center">

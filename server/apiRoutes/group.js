@@ -12,14 +12,17 @@ router.get('/explore', async (req, res, next) => {
 
     if (term) {
       term = term.trim().toLowerCase();
-      query.where = {
-        [Op.or]: [
-          { subject: { [Op.iLike]: term } },
-          {
-            name: { [Op.substring]: titleCase(term) },
-          },
-        ],
-      };
+      
+      if (term.length) {
+        query.where = {
+          [Op.or]: [
+            { subject: { [Op.iLike]: term } },
+            {
+              name: { [Op.substring]: titleCase(term) },
+            },
+          ],
+        };
+      }
     }
 
     const groups = await Group.findAll(query);
