@@ -12,6 +12,7 @@ import {
   Segment,
   Image,
 } from 'semantic-ui-react';
+import { changeCategory } from '../../actions/explore';
 
 class Explore extends Component {
   state = {
@@ -19,29 +20,27 @@ class Explore extends Component {
   };
 
   componentDidMount() {
-    if (this.props.category === 'Groups') {
-      this.props.fetchGroups();
-    } else if (this.props.category === 'Events') {
-      // this.props.fetchEvents()
-    } else {
-      this.props.changeCategory('Groups');
-    }
+    this.props.fetchContent(this.props.category);
   }
 
-  handelChange = e => {
-    const { value } = e.target;
-    this.setState({ term: value });
+  handleChange = e => {
+    const { value: term } = e.target;
+    this.setState(state => ({ ...state, term }));
+  };
+
+  handleSelect = e => {
+    const { innerText } = e.target;
+    this.props.fetchContent(innerText, this.state.term);
   };
 
   handleSubmit = e => {
     e.preventDefault();
-
     if (this.state.term.length) {
-      if (this.props.category === 'Groups') {
-        this.props.fetchGroups(this.state.term);
-      }
+      this.props.fetchContent(this.props.category, this.state.term);
     }
   };
+
+  // need category to be put on state. race condition with data coming down and state changing
 
   makeItems = () => {
     if (this.props.category === 'Groups') {
@@ -49,6 +48,14 @@ class Explore extends Component {
         header: group.name,
         meta: `Members: ${memberCount}`,
         description: group.description,
+      }));
+    } else if (this.props.category === 'Events') {
+      console.log(this.props.items);
+
+      return this.props.items.map(({ event, attendeeCount }) => ({
+        header: event.name,
+        meta: `Attendees: ${attendeeCount}`,
+        description: event.description,
       }));
     }
   };
@@ -66,8 +73,8 @@ class Explore extends Component {
             <Form onSubmit={this.handleSubmit}>
               <Form.Group>
                 <Select
-                  onChange={e => this.props.changeCategory(e.target.value)}
-                  defaultValue="Groups"
+                  onChange={this.handleSelect}
+                  value={this.props.category}
                   options={['Groups', 'Events'].map(value => ({
                     key: value,
                     value,
@@ -77,7 +84,7 @@ class Explore extends Component {
                 <Form.Input
                   placeholder="Search..."
                   value={this.state.term}
-                  onChange={this.handelChange}
+                  onChange={this.handleChange}
                 />
                 <Button type="submit" color="blue" basic>
                   Submit
@@ -93,7 +100,7 @@ class Explore extends Component {
                 </Dimmer>
                 <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
               </Segment>
-            ) : this.props.items.length ? (
+            ) : this.props.items.length || this.props.failedToFetch ? (
               <Card.Group items={this.makeItems()} />
             ) : (
               <Container textAlign="center">

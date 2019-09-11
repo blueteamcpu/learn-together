@@ -1,8 +1,5 @@
 import { connect } from 'react-redux';
-import {
-  getGroups,
-  changeCategory as _changeCategory,
-} from '../../actions/explore';
+import { getContent as _getContent } from '../../actions/explore';
 import Explore from './ExploreDumb';
 
 const mapStateToProps = ({
@@ -15,11 +12,8 @@ const mapStateToProps = ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeCategory(category) {
-    dispatch(_changeCategory(category));
-  },
-  fetchGroups(term, offset) {
-    dispatch(getGroups(term, offset));
+  fetchContent(category, term, offset) {
+    dispatch(_getContent(category, term, offset));
   },
 });
 

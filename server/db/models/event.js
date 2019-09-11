@@ -9,6 +9,7 @@ const {
   TIME,
 } = require('sequelize');
 const db = require('../connection');
+const { titleCase } = require('../../../utils/index');
 
 class Event extends Model {}
 
@@ -69,5 +70,15 @@ Event.init(
     modelName: 'event',
   }
 );
+
+Event.beforeCreate(instance => {
+  instance.name = titleCase(instance.name);
+});
+
+Event.beforeUpdate(instance => {
+  if (instance.changed('name')) {
+    instance.name = titleCase(instance.name);
+  }
+});
 
 module.exports = Event;

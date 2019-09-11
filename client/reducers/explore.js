@@ -2,7 +2,7 @@ import {
   FETCHING,
   GOT_CONTENT,
   FAILED_TO_FETCH_CONTENT,
-  CHANGE_CATEGORY,
+  CHANGED_CATEGORY,
 } from '../actions/explore';
 
 const initialState = {
@@ -21,8 +21,13 @@ export default (state = initialState, action) => {
       const { items } = action;
       return { ...state, fetching: false, items };
     }
-    case CHANGE_CATEGORY: {
-      return { ...state, category: action.category };
+    case CHANGED_CATEGORY: {
+      return {
+        ...state,
+        category: action.category,
+        items: action.items,
+        fetching: false,
+      };
     }
     case FAILED_TO_FETCH_CONTENT: {
       return { ...state, fetching: false, failedToFetch: true };
