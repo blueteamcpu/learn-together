@@ -8,7 +8,8 @@ const { Event, EventAttendee, User, Group, GroupMember } = require('../db/index'
 router.post('/newevent', async (req, res, next) => {
     try {
         const user = req.user;
-        const newEvent = Event.create({...req.body, hostId: user.id });
+        const newEvent = await Event.create({...req.body, hostId: user.id });
+        console.log('NEWEVENT', newEvent)
         res.send(newEvent);
     } catch(err) {
         next(err);

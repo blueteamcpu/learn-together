@@ -8,7 +8,7 @@ import {
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import Axios from 'axios';
 
 class CreateEventForm extends Component {
     constructor(props) {
@@ -21,7 +21,7 @@ class CreateEventForm extends Component {
                 startTime: '',
                 endTime: '',
                 location: '',
-                zipCode: '',
+                zipcode: '',
                 groupId: '',
               },
             }
@@ -42,7 +42,7 @@ class CreateEventForm extends Component {
     e.preventDefault();
 
     try {
-        const { data } = await Axios.put('/newevent', this.state.values);
+        const { data } = await Axios.post('/event/newevent', this.state.values);
         this.props.createEvent(data);
     } catch (error) {
         console.error(error);
@@ -110,8 +110,8 @@ class CreateEventForm extends Component {
                     <Form.Input
                         fluid
                         placeholder="Zip Code"
-                        name="zipCode"
-                        value={values.zipCode}
+                        name="zipcode"
+                        value={values.zipcode}
                         onChange={this.handleChange}
                     />
 
