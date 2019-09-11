@@ -8,8 +8,11 @@ const { Event, EventAttendee, User, Group, GroupMember } = require('../db/index'
 router.post('/newevent', async (req, res, next) => {
     try {
         const user = req.user;
-        const newEvent = await Event.create({...req.body, hostId: user.id });
-        res.send(newEvent);
+        const newEvent = await Event.createEvent({...req.body, hostId: user.id });
+
+     
+
+        res.json(newEvent);
     } catch(err) {
         next(err);
     }
@@ -117,6 +120,15 @@ router.delete('/deleteattendee', async(req, res, next) => {
         next(err);
     }
 });
+
+router.use((error, req, res, next) => {
+    console.log('ERROR: ', error)
+    if (error.type === 'Event') {
+      res.status(error.status).json({ error: { [error.field]: error.message } });
+    } else {
+      next(error);
+    }
+  });
 
 
 module.exports = router;

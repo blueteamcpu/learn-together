@@ -22,6 +22,7 @@ router.put('/login', async (req, res, next) => {
 });
 
 router.use((error, req, res, next) => {
+  console.log(error)
   if (error.type === 'Authentication') {
     res.status(error.status).json({ error: { [error.field]: error.message } });
   } else {
