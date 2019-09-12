@@ -1,41 +1,10 @@
-// Lets see if we can pull in some information to actually use for our app eh
-
-// Pretty much everything is defined globally so just make new stuff and use it
-// in the `doTheSeeding` function :)
-const childProcess = require('child_process');
-const path = require('path');
-
-const models = require('../server/db/index.js');
-const { db } = models;
-const userList = require('./seedlings/userSeed');
-const groupList = require('./seedlings/groupSeed');
-
-// Path to the course and topic api getters
-// const getResources = path.join(__dirname, 'resources', 'grabs.js');
-
-// This spins everything up, all the functions are below
-doTheSeeding();
-
-async function doTheSeeding() {
-  try {
-    await db.sync({ force: true });
-    await Promise.all(genList(userList, models.User));
-    await Promise.all(genList(groupList, models.Group));
-    db.close();
-  }
-  catch(e) {
-    console.log(e);
-  }
-}
-
-function genList(list, model) {
-  return list.map((i) => model.create({ ...i }));
-}
-
-
 // Eventually this little diddy below would allow us to pull in the
 // api resource grabber script. For the moment I'm not calling it though
 // So run ./resources/grabs.js separately to get the courses/topics
+// Path to the course and topic api getters
+//const getResources = path.join(__dirname, 'resources', 'grabs.js');
+
+
 function runScript(scriptPath, callback) {
 
     // keep track of whether callback has been invoked to prevent multiple invocations
@@ -65,5 +34,3 @@ function runScript(scriptPath, callback) {
 //     if (err) throw err;
 //     console.log(`finished running some-script.js`);
 // });
-
-
