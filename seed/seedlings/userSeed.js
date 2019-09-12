@@ -25,13 +25,12 @@ const user = {
 // };
 // The first user defined is a default site admin, so that we have someone to rely on
 
-const usersList = [
+module.exports = [
   {firstName: 'Mr',
    lastName: 'Immutable',
    username: 'mrimmutable',
    email: 'test@test.test',
    zipcode: '12345',
-   imageURL: '',
    password: 'testingAdmin',
    isSiteAdmin: false,   
   },
@@ -40,7 +39,6 @@ const usersList = [
    username: 'kares',
    email: 'kares12@blah.blah',
    zipcode: '12345',
-   imageURL: '',
    password: '1324kares',
    isSiteAdmin: false,   
   },
@@ -49,15 +47,7 @@ const usersList = [
    username: 'billyBreaks',
    email: 'breaksit@blah.blah',
    zipcode: '67890',
-   imageURL: '',
    password: 'billbreaksbad',
    isSiteAdmin: false,   
   },
 ];
-
-// Returns list of users as promise
-// This little diddy could be generalize for all
-// seed lists
-export default function userGen(list, funcPromise) {
-  return usersList.map((u) => funcPromise({...u}));
-}
