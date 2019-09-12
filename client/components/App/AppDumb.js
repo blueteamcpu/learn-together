@@ -6,7 +6,7 @@ import LoginForm from '../LoginForm/LoginForm';
 import SignUp from '../SignUpForm/SignUp';
 import Nav from '../Nav/Nav';
 import EventList from '../Event/EventList';
-import CreateEventForm from '../CreateEventForm/CreateEventForm';
+import CreateEventForm from '../Event/CreateEventForm/CreateEventForm';
 import EventDetail from '../Event/EventDetail';
 
 class App extends Component {
