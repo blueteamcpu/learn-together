@@ -6,7 +6,16 @@ class AuthenticationError extends Error {
     this.status = 401;
   }
 }
+class EventError extends Error {
+  constructor(field, message) {
+    super(message);
+    this.type = 'Event';
+    this.field = field;
+    this.status = 401;
+  }
+}
 
 module.exports = {
   AuthenticationError,
+  EventError
 };
