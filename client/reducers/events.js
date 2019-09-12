@@ -10,7 +10,8 @@ export default (state = [], action) => {
         return state;
       }     
       case CREATE_EVENT: {
-          return state;
+          const newState = [...state, action.event]
+          return newState;
       }
       case DELETE_EVENT: {
           return state;

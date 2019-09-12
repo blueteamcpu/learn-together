@@ -8,7 +8,7 @@ import {
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import Axios from 'axios';
 
 class CreateEventForm extends Component {
     constructor(props) {
@@ -21,9 +21,10 @@ class CreateEventForm extends Component {
                 startTime: '',
                 endTime: '',
                 location: '',
-                zipCode: '',
+                zipcode: '',
                 groupId: '',
               },
+              errors: {}
             }
     }
 
@@ -39,31 +40,39 @@ class CreateEventForm extends Component {
       };
 
     handleSubmit = async e => {
-    e.preventDefault();
+        e.preventDefault();
 
-    try {
-        const { data } = await Axios.put('/auth/local/login', this.state.values, {
-        validateStatus: function(status) {
-            return status === 200 || status === 401;
-        },
-        });
+        try {
+            const { data } = await Axios.post('/event/newevent', 
+                this.state.values,
+                {
+                    validateStatus: function(status) {
+                      return status === 200 || status === 401;
+                    },
+                });
 
-        if (data.error) {
-        this.setState(state => ({
-            ...state,
-            errors: { ...state.errors, ...data.error },
-        }));
-        } else {
-        this.props.gotUser(data);
+                console.log('DATA', data)
+            if (data.error) {
+                this.setState(state => ({
+                ...state,
+                errors: { ...state.errors, ...data.error },
+                }));
+            } else if (data.errors) {
+                this.setState(state => ({
+                ...state,
+                errors: { ...state.errors, ...data.errors },
+                }));
+            } else {
+                this.props.createEvent(data);
+            }
+        } catch (error) {
+            console.error(error);
         }
-    } catch (error) {
-        console.error(error);
-    }
     };
 
 
     render() { 
-        const { values } = this.state;
+        const { values, errors } = this.state;
         return ( 
             <Fragment>
             <Grid
@@ -83,6 +92,7 @@ class CreateEventForm extends Component {
                         name="name"
                         value={values.name}
                         onChange={this.handleChange}
+                        error={errors.name ? errors.name : null}
                     />
                     <Form.TextArea
                         fluid
@@ -90,6 +100,7 @@ class CreateEventForm extends Component {
                         name="description"
                         value={values.description}
                         onChange={this.handleChange}
+                        error={errors.description ? errors.description : null}
                     />
                     <DateInput
                     name="day"
@@ -97,6 +108,7 @@ class CreateEventForm extends Component {
                     value={values.day}
                     iconPosition="left"
                     onChange={this.handleChange}
+                    error={errors.day ? errors.day : null}
                     />
                     <TimeInput
                     name="startTime"
@@ -104,6 +116,7 @@ class CreateEventForm extends Component {
                     value={values.startTime}
                     iconPosition="left"
                     onChange={this.handleChange}
+                    error={errors.startTime ? errors.startTime : null}
                     />
                     <TimeInput
                     name="endTime"
@@ -111,6 +124,7 @@ class CreateEventForm extends Component {
                     value={values.endTime}
                     iconPosition="left"
                     onChange={this.handleChange}
+                    error={errors.endTime ? errors.endTime : null}
                     />
                     <Form.Input
                         fluid
@@ -118,13 +132,15 @@ class CreateEventForm extends Component {
                         name="location"
                         value={values.location}
                         onChange={this.handleChange}
+                        error={errors.location ? errors.location : null}
                     />
                     <Form.Input
                         fluid
                         placeholder="Zip Code"
-                        name="zipCode"
-                        value={values.zipCode}
+                        name="zipcode"
+                        value={values.zipcode}
                         onChange={this.handleChange}
+                        error={errors.zipcode ? errors.zipcode : null}
                     />
 
                     <Button color="teal" fluid size="large" type="submit">

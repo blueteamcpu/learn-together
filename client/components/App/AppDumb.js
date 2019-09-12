@@ -8,8 +8,8 @@ import Nav from '../Nav/Nav';
 
 // I think eventually we split these routes out into a Dashboard route
 // For now, just keeping the ball rolling
-import CreateEventForm from '../CreateEventForm/CreateEventFormDumb';
 import GroupDetail from '../Group/GroupDetail';
+import CreateEventForm from '../CreateEventForm/CreateEventForm';
 
 class App extends Component {
   componentDidMount() {
