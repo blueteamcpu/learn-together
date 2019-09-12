@@ -7,7 +7,7 @@ import {
 export default (state = [], action) => {
     switch (action.type) {
       case GET_EVENTS: {
-        return state;
+        return action.eventList;
       }     
       case CREATE_EVENT: {
           const newState = [...state, action.event]

@@ -19,3 +19,18 @@ export const createEvent = (event) => async (dispatch, _, axios) => {
       console.error(error);
     }
   };
+
+export const getEvents = () => async (dispatch, _, axios) => {
+    try {
+            const result = await axios.get('/event/events');
+            const eventList = result.data;
+            dispatch({
+                type: GET_EVENTS,
+                eventList
+            });
+            
+        }
+   catch (error) {
+      console.error(error);
+    }
+  };
