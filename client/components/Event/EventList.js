@@ -15,7 +15,6 @@ class EventList extends Component {
       console.log('Event List: ', this.props.events)
     return (
         <Fragment>
-            <h1>Event List</h1>
             <Item.Group>
             {this.props.events.map(ev => <Event key={ev.id} ev={ev} />)}
             </Item.Group>
