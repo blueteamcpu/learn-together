@@ -17,6 +17,14 @@ export const postNewGroup = (group) => (dispatch) => {
   dispatch({ type: SET_DETAIL_GROUP, group});
 };
 
+export const getDetailGroup = (id) => (dispatch) => {
+  axios.get(`/group/detail/${id}`)
+    .then(data => {
+      dispatch({ type: SET_DETAIL_GROUP, group: data });
+    })
+    .catch(e => dispatch({ type: FAILED_GROUPS_GET, groupGetFailed: true }));
+};
+
 // Presumabely we will need some sort of tracking thing which manages the groups
 // that a user is connected to for updates
 // I'm not sure if this is groups plural, or if we only want to connect to one at a time

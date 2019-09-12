@@ -13,6 +13,12 @@ router.post('/newgroup', async (req, res, next) => {
   }
 });
 
+// NICK: TODO Finish this route to facilitate detailed Groups and all the thingies
+router.get('/detail/:groupId', async (req, res, next) => {
+  const group = await Group.findByPk(req.params.groupId);
+  const members = await group.getUsers({ attributes: ['username', 'imageURL']});
+});
+
 router.get('/all/:section?', async (req, res, next) => {
   try {
     let filters = {};

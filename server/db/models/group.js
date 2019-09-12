@@ -26,20 +26,6 @@ Group.init(
         notEmpty: true,
       },
     },
-    subject: {
-      type: STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    // topic: {
-    //   type: STRING,
-    //   allowNull: false,
-    //   validate: {
-    //     notEmpty: true,
-    //   },
-    // },
     zipcode: {
       type: INTEGER,
       allowNull: false,
@@ -51,6 +37,20 @@ Group.init(
       type: TEXT,
       allowNull: true,
     },
+    // subject: {
+    //   type: STRING,
+    //   allowNull: false,
+    //   validate: {
+    //     notEmpty: true,
+    //   },
+    // },
+    // topic: {
+    //   type: STRING,
+    //   allowNull: false,
+    //   validate: {
+    //     notEmpty: true,
+    //   },
+    // },
   },
   {
     sequelize: db,

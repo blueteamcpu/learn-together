@@ -1,5 +1,5 @@
 const axios = require('axios');
-const db = require('../server/db/index.js');
+const db = require('../server/db/index');
 const fs = require('fs');
 const path = require('path');
 
