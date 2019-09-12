@@ -11,7 +11,7 @@ const userList = require('./seedlings/userSeed');
 const groupList = require('./seedlings/groupSeed');
 
 // Path to the course and topic api getters
-const getResources = path.join(__dirname, 'resources', 'grabs.js');
+// const getResources = path.join(__dirname, 'resources', 'grabs.js');
 
 // This spins everything up, all the functions are below
 doTheSeeding();
