@@ -43,6 +43,7 @@ class SignUpForm extends Component {
         }
       );
 
+
       if (data.error) {
         this.setState(state => ({
           ...state,

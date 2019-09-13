@@ -6,5 +6,5 @@ import groups from './groupReducer';
 export default combineReducers({
   authentication,
   events,
-  groups,
+  groups
 });

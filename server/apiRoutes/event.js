@@ -8,8 +8,11 @@ const { Event, EventAttendee, User, Group, GroupMember } = require('../db/index'
 router.post('/newevent', async (req, res, next) => {
     try {
         const user = req.user;
-        const newEvent = Event.create({...req.body.event, hostId: user.id, groupId: req.body.groupId });
-        res.send(newEvent);
+        const newEvent = await Event.createEvent({...req.body, hostId: user.id });
+
+     
+
+        res.json(newEvent);
     } catch(err) {
         next(err);
     }
@@ -64,7 +67,7 @@ router.get('/events', async(req, res, next) => {
 //get all attendees for an event
 router.get('/events/:id', async(req, res, next) => {
     try {
-        const event = Event.findOne({ where: {id: req.params.id} });
+        const event = await Event.findOne({ where: {id: req.params.id} });
         const eventAttendees = await event.getUsers();
         res.send(eventAttendees);
     } catch(err) {
@@ -88,7 +91,7 @@ router.get('/myevents', async(req, res, next) => {
 router.get('/groups/:id/events', async(req, res, next) => {
     try {
         const group = req.params.id;
-        const groupEvents = group.getEvents();
+        const groupEvents = await group.getEvents();
         res.send(groupEvents);
     } catch(err) {
         next(err);
@@ -98,7 +101,7 @@ router.get('/groups/:id/events', async(req, res, next) => {
 //add user to attend event
 router.post('/addattendee', async(req, res, next) => {
     try {
-        let validGroupMember = GroupMember.findOne({ where: { groupId: req.body.groupId, userId: req.user.id }});
+        let validGroupMember = await GroupMember.findOne({ where: { groupId: req.body.groupId, userId: req.user.id }});
         if (validGroupMember) {
             await EventAttendee.create({ userId: req.user.id, eventId: req.body.eventId });
         } else throw new Error('Events', 'You must be a member of this group to attend event');
@@ -117,6 +120,15 @@ router.delete('/deleteattendee', async(req, res, next) => {
         next(err);
     }
 });
+
+router.use((error, req, res, next) => {
+    console.log('ERROR: ', error)
+    if (error.type === 'Event') {
+      res.status(error.status).json({ error: { [error.field]: error.message } });
+    } else {
+      next(error);
+    }
+  });
 
 
 module.exports = router;

@@ -9,6 +9,7 @@ const {
   TIME,
 } = require('sequelize');
 const db = require('../connection');
+const { EventError } = require('../../../utils/backend');
 
 class Event extends Model {}
 
@@ -69,5 +70,15 @@ Event.init(
     modelName: 'event',
   }
 );
+
+Event.createEvent = async function(body) {
+  try {
+    const newEvent = await Event.create(body);
+    return newEvent;
+  } catch (error) {
+    const fieldName = error.errors[0].path;
+    throw new EventError(fieldName, 'Please fill in this field.');
+  }
+};
 
 module.exports = Event;
