@@ -4,7 +4,7 @@ import {updateUser as _updateUser} from '../../actions/user';
 import { getMe as _getMe } from '../../actions/authentication';
 
 const mapStateToProps = (state) => {
-  if (!state.authentication.user){
+  if (!state.authentication.user.id){
     return null;
   } else {
     const {user} = state.authentication;
