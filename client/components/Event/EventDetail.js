@@ -55,13 +55,23 @@ class EventDetail extends Component {
                                 </List.Item>
                                 <List.Item>
                                 <List.Icon name='calendar alternate outline' />
-                                <List.Content>{event.day}</List.Content>
+                                <List.Content>{event.day.slice(0,10)}</List.Content>
                                 </List.Item>
                                 <List.Item>
                                 <List.Icon name='clock outline' />
                                 <List.Content>{event.startTime} - {event.endTime}</List.Content>
                                 </List.Item>
                             </List>
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column width={8}>
+                                <Button>I'm Going!</Button>
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column width={8}>
+                                ___ People Going
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -73,7 +83,7 @@ class EventDetail extends Component {
  
 
 const mapStateToProps = state => ({
-  events: state.events,
+  events: state.events.allEvents,
 });
 
 const mapDispatchToProps = (dispatch) => ({

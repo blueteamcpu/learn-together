@@ -4,13 +4,18 @@ import {
     DELETE_EVENT
   } from '../actions/events';
 
-export default (state = [], action) => {
+const initialState = {
+  allEvents: [],
+  detailedEvent: {}
+}
+
+export default (state = initialState, action) => {
     switch (action.type) {
       case GET_EVENTS: {
-        return action.eventList;
+        return {...state, allEvents: action.eventList};
       }     
       case CREATE_EVENT: {
-          const newState = [...state, action.event]
+          const newState = {...state, allEvents: [...state.allEvents, action.event]}
           return newState;
       }
       case DELETE_EVENT: {
