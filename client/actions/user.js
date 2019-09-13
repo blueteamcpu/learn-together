@@ -1,5 +1,3 @@
-import { log } from "util";
-
 //ACTION TYPES
 export const UPDATEUSER = 'UPDATEUSER';
 export const UPDATEUSERPASS = 'UPDATEUSERPASS';
