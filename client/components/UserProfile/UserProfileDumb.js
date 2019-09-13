@@ -5,8 +5,9 @@ import {
   Grid,
   Header,
   Segment,
-  Or,
+  Message,
 } from 'semantic-ui-react';
+import axios from 'axios';
 
 class UserProfileDumb extends Component {
 
@@ -23,7 +24,8 @@ class UserProfileDumb extends Component {
                 NPass: '',
                 loading: true,
                 changePassword: false,
-                error: {},
+                submitted: false,
+                error: '',
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -52,13 +54,21 @@ class UserProfileDumb extends Component {
         this.setState({[name]: value});
     }
 
-    handleSubmit(ev){
-      ev.preventDefault();
-      const {firstName, lastName, email, username, zipcode, password, NPass, changePassword} = this.state;
-      if (changePassword) {
-        this.props.updateUserPass(firstName, lastName, username, email, zipcode, password, NPass)
+    async handleSubmit(ev){
+      try {
+        ev.preventDefault();
+        const {firstName, lastName, email, username, zipcode, password, NPass, changePassword} = this.state;
+        if (changePassword) {
+          const passwords = {password, NPass}
+          await axios.put('/user/updateUserPass', passwords);
+          this.props.updateUser(firstName, lastName, username, email, zipcode);
+          this.setState({submitted: true})
+        } else {
+          this.props.updateUser(firstName, lastName, username, email, zipcode);
+        }
+      } catch (err){
+        this.setState({error: 'Unable to change information make sure all required inputs are filled in.'});
       }
-      this.props.updateUser(firstName, lastName, username, email, zipcode);
     }
 
     _changePassword(){
@@ -67,7 +77,7 @@ class UserProfileDumb extends Component {
     }
 
     _changeAndClear(){
-      const {changePassword, password, NPass, CNPass} = this.state;
+      const {changePassword} = this.state;
       this.setState({changePassword: !changePassword, password: '', NPass: '', CNPass: ''})
     }
 
@@ -75,9 +85,19 @@ class UserProfileDumb extends Component {
         if (this.state.loading === true){
           return null
         } else {
-        const {firstName, lastName, email, username, zipcode, changePassword, password, CNPass, NPass} = this.state;
+        const {firstName, lastName, email, username, zipcode, changePassword, password, CNPass, NPass, submitted, error} = this.state;
         return (
           <div>
+            { submitted ? <Message floating> Your information has been updated!</Message> :
+              null
+            }
+            {error ? <Message negative>
+                        <Message.Header>There seems to have been an error changing your information.</Message.Header>
+                          <p>Check your current password field to see if it's correct.</p>
+                        </Message> :
+                        null
+
+            }     
             <Grid
               textAlign="center"
               style={{ height: '85vh' }}
@@ -180,11 +200,11 @@ class UserProfileDumb extends Component {
                                 value = {CNPass}
                                 onChange = {this.handleChange}
                       />
-                      <Button secondary fluid size = "large" onClick = {this._changePassword}>Cancel</Button>
+                      <Button secondary fluid size = "large" onClick = {this._changeAndClear}>Cancel</Button>
                       </Segment>
                     }
 
-                    {!changePassword || (changePassword && NPass && NPass.length > 8 && NPass === CNPass) ?
+                    {!changePassword || (changePassword && NPass && NPass.length >= 8 && NPass === CNPass) ?
                     <Button primary color = "teal" fluid size="large" type="submit">
                       Change Details
                     </Button> :
