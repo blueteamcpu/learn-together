@@ -34,7 +34,10 @@ router.put('/events/:id', async(req, res, next) => {
 //get single event
 router.get('/events/:id', async(req, res, next) => {
     try {
-        const event = await Event.findOne({ where: { id: req.params.id }});
+        console.log('here')
+        const event = await Event.findOne({ where: { id: req.params.id },
+            include: [{model: User}]    
+        });
         res.send(event);
     } catch(err) {
         next(err);
@@ -65,7 +68,7 @@ router.get('/events', async(req, res, next) => {
 });
 
 //get all attendees for an event
-router.get('/events/:id', async(req, res, next) => {
+router.get('/events/:id/users', async(req, res, next) => {
     try {
         const event = await Event.findOne({ where: {id: req.params.id} });
         const eventAttendees = await event.getUsers();
@@ -101,9 +104,11 @@ router.get('/groups/:id/events', async(req, res, next) => {
 //add user to attend event
 router.post('/addattendee', async(req, res, next) => {
     try {
+        console.log('trying to add attendee..')
         let validGroupMember = await GroupMember.findOne({ where: { groupId: req.body.groupId, userId: req.user.id }});
+        console.log('validgroupmember: ', validGroupMember)
         if (validGroupMember) {
-            await EventAttendee.create({ userId: req.user.id, eventId: req.body.eventId });
+            await EventAttendee.create({ userId: req.user.id, eventId: req.body.id });
         } else throw new Error('Events', 'You must be a member of this group to attend event');
     } catch(err) {
         next(err);
