@@ -33,21 +33,20 @@ class UserProfileDumb extends Component {
         this._changeAndClear = this._changeAndClear.bind(this);
     }
 
-    async componentDidMount(){
+    componentDidMount(){
+      console.log(this.props.userInfo);
       if (this.props.userInfo){
-        await this.props.getUser();
         const user = this.props.userInfo
         this.setState({firstName: user.firstName, lastName: user.lastName, username: user.username, email: user.email, zipcode: user.zipcode, loading: false});
       }
     }
 
-    async componentDidUpdate(prevProps){
-      if (this.props.userInfo.email !== prevProps.userInfo.email){
-        await this.props.getUser();
-        const user = this.props.userInfo;
-        this.setState({firstName: user.firstName, lastName: user.lastName, username: user.username, email: user.email, zipcode: user.zipcode, loading: false});
-      }
-    }
+    // async componentDidUpdate(prevProps){
+    //   if (this.props.userInfo.email !== prevProps.userInfo.email){
+    //     const user = this.props.userInfo;
+    //     this.setState({firstName: user.firstName, lastName: user.lastName, username: user.username, email: user.email, zipcode: user.zipcode, loading: false});
+    //   }
+    // }
 
     handleChange(ev){
         const {name, value} = ev.target;
@@ -61,10 +60,10 @@ class UserProfileDumb extends Component {
         if (changePassword) {
           const passwords = {password, NPass}
           await axios.put('/user/updateUserPass', passwords);
-          this.props.updateUser(firstName, lastName, username, email, zipcode);
           this.setState({submitted: true})
         } else {
           this.props.updateUser(firstName, lastName, username, email, zipcode);
+          this.setState({submitted: true});
         }
       } catch (err){
         this.setState({error: 'Unable to change information make sure all required inputs are filled in.'});
@@ -94,10 +93,11 @@ class UserProfileDumb extends Component {
             {error ? <Message negative>
                         <Message.Header>There seems to have been an error changing your information.</Message.Header>
                           <p>Check your current password field to see if it's correct.</p>
-                        </Message> :
+                     </Message> :
                         null
 
-            }     
+            }
+            { !changePassword ?
             <Grid
               textAlign="center"
               style={{ height: '85vh' }}
@@ -164,10 +164,25 @@ class UserProfileDumb extends Component {
                         value = {zipcode}
                         onChange = {this.handleChange}
                     />
-
-                    {!changePassword ?
-                      <Button secondary  fluid size="large" type="submit" onClick = {this._changePassword}>Change Password</Button> :
-                      <Segment stacked>
+                    <Button secondary fluid size = "large" onClick = {this._changePassword}> Change Password </Button>
+                    <Button primary color = "teal" fluid size="large" type="submit">
+                      Change Details
+                    </Button>
+                  </Segment>
+                </Form>
+              </Grid.Column>
+            </Grid> :
+            <Grid
+            textAlign="center"
+            style={{ height: '85vh' }}
+            verticalAlign="middle"
+          >
+            <Grid.Column style={{ maxWidth: 450 }}>
+              <Header as="h2" color="teal" textAlign="center">
+                User Details
+              </Header>
+              <Form size="large" onSubmit={this.handleSubmit}>
+              <Segment stacked>
                       <Form.Input
                                 fluid
                                 icon = "user secret"
@@ -201,21 +216,18 @@ class UserProfileDumb extends Component {
                                 onChange = {this.handleChange}
                       />
                       <Button secondary fluid size = "large" onClick = {this._changeAndClear}>Cancel</Button>
-                      </Segment>
-                    }
-
-                    {!changePassword || (changePassword && NPass && NPass.length >= 8 && NPass === CNPass) ?
+                      {NPass && NPass.length >= 8 && NPass === CNPass ?
                     <Button primary color = "teal" fluid size="large" type="submit">
-                      Change Details
+                      Change Password
                     </Button> :
                     <Button disabled>
-                      Change Details
-                    </Button>
-                    }
-                  </Segment>
-                </Form>
-              </Grid.Column>
+                      Change Password
+                    </Button>}
+              </Segment>
+              </Form>
+            </Grid.Column>
             </Grid>
+                    }
           </div>
           );
         }
