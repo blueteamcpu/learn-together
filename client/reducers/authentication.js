@@ -7,7 +7,6 @@ import {
 
 import {
   UPDATEUSER,
-  UPDATEUSERPASS,
 } from '../actions/user';
 
 const initialState = {
@@ -34,11 +33,6 @@ export default (state = initialState, action) => {
     case UPDATEUSER: {
       const user = action.user;
       return {...state, user};
-    }
-    case UPDATEUSERPASS: {
-      const {firstName, lastName, username, email, zipcode, password, NPass} = action.user;
-      const newUser = {firstName, lastName, username, email, zipcode};
-      return {...state, user: newUser};
     }
     default:
       return state;
