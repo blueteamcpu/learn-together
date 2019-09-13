@@ -10,6 +10,7 @@ const {
 } = require('sequelize');
 const db = require('../connection');
 const { titleCase } = require('../../../utils/index');
+const { EventError } = require('../../../utils/backend');
 
 class Event extends Model {}
 
@@ -80,5 +81,14 @@ Event.beforeUpdate(instance => {
     instance.name = titleCase(instance.name);
   }
 });
+
+Event.createEvent = function(body) {
+  try {
+    return Event.create(body);
+  } catch (error) {
+    const fieldName = error.errors[0].path;
+    throw new EventError(fieldName, 'Please fill in this field.');
+  }
+};
 
 module.exports = Event;
