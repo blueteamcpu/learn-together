@@ -34,19 +34,11 @@ class UserProfileDumb extends Component {
     }
 
     componentDidMount(){
-      console.log(this.props.userInfo);
       if (this.props.userInfo){
         const user = this.props.userInfo
         this.setState({firstName: user.firstName, lastName: user.lastName, username: user.username, email: user.email, zipcode: user.zipcode, loading: false});
       }
     }
-
-    // async componentDidUpdate(prevProps){
-    //   if (this.props.userInfo.email !== prevProps.userInfo.email){
-    //     const user = this.props.userInfo;
-    //     this.setState({firstName: user.firstName, lastName: user.lastName, username: user.username, email: user.email, zipcode: user.zipcode, loading: false});
-    //   }
-    // }
 
     handleChange(ev){
         const {name, value} = ev.target;
@@ -179,7 +171,7 @@ class UserProfileDumb extends Component {
           >
             <Grid.Column style={{ maxWidth: 450 }}>
               <Header as="h2" color="teal" textAlign="center">
-                User Details
+                Update Password
               </Header>
               <Form size="large" onSubmit={this.handleSubmit}>
               <Segment stacked>
