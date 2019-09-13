@@ -26,16 +26,16 @@ Group.init(
         notEmpty: true,
       },
     },
+    description: {
+      type: TEXT,
+      allowNull: true,
+    },
     zipcode: {
       type: INTEGER,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
-    },
-    description: {
-      type: TEXT,
-      allowNull: true,
     },
     // subject: {
     //   type: STRING,
@@ -52,6 +52,7 @@ Group.init(
     //   },
     // },
   },
+
   {
     sequelize: db,
     modelName: 'group',
