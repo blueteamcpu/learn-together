@@ -9,6 +9,7 @@ import Nav from '../Nav/Nav';
 // I think eventually we split these routes out into a Dashboard route
 // For now, just keeping the ball rolling
 import GroupDetail from '../Group/GroupDetail';
+import Explore from '../Explore/Explore';
 import CreateEventForm from '../CreateEventForm/CreateEventForm';
 
 class App extends Component {
@@ -24,6 +25,7 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route exact path="/groups/:groupId/events/create" component={CreateEventForm} />
           <Route exact path="/dashboard/:groupId" component={GroupDetail} />
+          <Route exact path="/explore" component={Explore} />
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
         </Switch>

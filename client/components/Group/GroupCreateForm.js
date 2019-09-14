@@ -1,6 +1,14 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, Grid, Header, Message, Segment, TextArea} from 'semantic-ui-react';
+import {
+  Button,
+  Form,
+  Grid,
+  Header,
+  Message,
+  Segment,
+  TextArea,
+} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -9,19 +17,19 @@ import { postNewGroup } from '../../reducers/groupReducer';
 class GroupCreateForm extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       values: {
         name: '',
         subject: '',
         description: '',
         zipCode: '',
-	ownerId: '',
+        ownerId: '',
       },
     };
   }
 
   componentDidMount() {
-    this.setState({ ownerId: this.props.user.id});
+    this.setState({ ownerId: this.props.user.id });
   }
 
   handleChange = e => {
@@ -36,17 +44,20 @@ class GroupCreateForm extends Component {
   handleSubmit = async (e, postNewGroup) => {
     e.preventDefault();
 
-    const { data } = await axios.post('/group/newgroup', this.state.values)
-	  .then(data => postNewGroup(this.state))
-	  .catch(e => {
-	    this.setState(state => ({ ...state,
-				      errors: { ...state.errors, ...data.error }}));
-	  });
-  }
+    const { data } = await axios
+      .post('api/groups/newgroup', this.state.values)
+      .then(data => postNewGroup(this.state))
+      .catch(e => {
+        this.setState(state => ({
+          ...state,
+          errors: { ...state.errors, ...data.error },
+        }));
+      });
+  };
 
-  render() { 
+  render() {
     const { values } = this.state;
-    return ( 
+    return (
       <Fragment>
         <Grid
           textAlign="center"
@@ -57,7 +68,10 @@ class GroupCreateForm extends Component {
             <Header as="h2" color="teal" textAlign="center">
               Create Event
             </Header>
-            <Form size="large" onSubmit={(e) => this.handleSubmit(e, this.props.postNewGroup)}>
+            <Form
+              size="large"
+              onSubmit={e => this.handleSubmit(e, this.props.postNewGroup)}
+            >
               <Segment stacked>
                 <Form.Input
                   fluid
@@ -104,7 +118,10 @@ const mapStateToProps = ({ authentication }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  postNewGroup: (group) => dispatch(postNewGroup(group))
+  postNewGroup: group => dispatch(postNewGroup(group)),
 });
 
-export default connect(mapStateToProps, null)(GroupCreateForm);
+export default connect(
+  mapStateToProps,
+  null
+)(GroupCreateForm);

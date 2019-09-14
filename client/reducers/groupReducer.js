@@ -6,7 +6,7 @@ const FAILED_GROUPS_GET = 'FAILED_GROUPS_GET';
 
 // Eventually we will want to start passing the section here. Just not now
 export const getGroupList = (section = 0) => (dispatch) => {
-  const groupList = axios.get('/group/all')
+  const groupList = axios.get('api/groups/all')
         .then(data => {
 	  dispatch({ type: SET_GROUPS, newGroups: data });
 	})

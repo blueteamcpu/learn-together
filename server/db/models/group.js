@@ -1,12 +1,6 @@
-const {
-  Model,
-  STRING,
-  INTEGER,
-  UUID,
-  UUIDV4,
-  TEXT,
-} = require('sequelize');
+const { Model, STRING, INTEGER, UUID, UUIDV4, TEXT } = require('sequelize');
 const db = require('../connection');
+const { titleCase } = require('../../../utils/index');
 
 class Group extends Model {}
 
@@ -58,5 +52,19 @@ Group.init(
     modelName: 'group',
   }
 );
+
+Group.beforeCreate(instance => {
+  instance.name = titleCase(instance.name.trim());
+  instance.subject = instance.subject.trim().toLowerCase();
+});
+
+Group.beforeUpdate(instance => {
+  if (instance.changed('name')) {
+    instance.name = titleCase(instance.name.trim());
+  }
+  if (instance.changed('subject')) {
+    instance.subject = instance.subject.trim().toLowerCase();
+  }
+});
 
 module.exports = Group;
