@@ -77,7 +77,7 @@ router.post('/newevent', async (req, res, next) => {
 
 //update event info
 //TODO: add restrictions
-router.put('/events/:id', async (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
   try {
     const updatedEvent = await Event.update(
       { ...req.body.event },
@@ -92,7 +92,7 @@ router.put('/events/:id', async (req, res, next) => {
 });
 
 //get single event
-router.get('/events/:id', async(req, res, next) => {
+router.get('/:id', async(req, res, next) => {
     try {
         const event = await Event.findOne({ where: { id: req.params.id },
             include: [{model: User}]    
@@ -106,7 +106,7 @@ router.get('/events/:id', async(req, res, next) => {
 //delete event
 //TODO: add restrictions
 
-router.delete('/events/:id', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
   try {
     const deletedEvent = await Event.destroy({ where: { id: req.params.id } });
     res.send(deletedEvent);
@@ -117,7 +117,7 @@ router.delete('/events/:id', async (req, res, next) => {
 
 //get all events
 //TODO: add whatever we are doing for loading, paginating, filtering, ordering
-router.get('/events', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const events = await Event.findAll();
     res.send(events);
@@ -127,7 +127,7 @@ router.get('/events', async (req, res, next) => {
 });
 
 //get all attendees for an event
-router.get('/events/:id/users', async(req, res, next) => {
+router.get('/:id/users', async(req, res, next) => {
     try {
         const event = await Event.findOne({ where: {id: req.params.id} });
         const eventAttendees = await event.getUsers();
@@ -148,16 +148,7 @@ router.get('/myevents', async (req, res, next) => {
   }
 });
 
-//get all events for a specific group
-router.get('/groups/:id/events', async (req, res, next) => {
-  try {
-    const group = req.params.id;
-    const groupEvents = await group.getEvents();
-    res.send(groupEvents);
-  } catch (err) {
-    next(err);
-  }
-});
+
 
 //add user to attend event
 router.post('/addattendee', async(req, res, next) => {
