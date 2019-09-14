@@ -26,6 +26,12 @@ class App extends Component {
           <Route exact path="/groups/:groupId/events/create" component={CreateEventForm} />
           <Route exact path="/dashboard/:groupId" component={GroupDetail} />
           <Route exact path="/explore" component={Explore} />
+          <Route exact path="/explore" component={Explore} />
+          <Route
+            exact
+            path="/groups/:groupId/events/create"
+            component={CreateEventForm}
+          />
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
         </Switch>
