@@ -31,13 +31,13 @@ Group.init(
         notEmpty: true,
       },
     },
-    // subject: {
-    //   type: STRING,
-    //   allowNull: false,
-    //   validate: {
-    //     notEmpty: true,
-    //   },
-    // },
+    subject: {
+      type: STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     // topic: {
     //   type: STRING,
     //   allowNull: false,

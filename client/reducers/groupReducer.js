@@ -18,7 +18,7 @@ export const postNewGroup = (group) => (dispatch) => {
 };
 
 export const getDetailGroup = (id, context) => (dispatch) => {
-  axios.get(`/group/detail/${id}`, context)
+  axios.get(`/api/groups/detail/${id}`, context)
     .then(response => {
       dispatch({ type: SET_DETAIL_GROUP, group: response.data });
     })
@@ -34,7 +34,6 @@ const initialState = {
   groupDetailed: {
     group: {},
     members: {},
-    
   },
 };
 
