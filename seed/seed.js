@@ -29,13 +29,20 @@ async function doTheSeeding() {
     }));
 
     // Get all the associations taken care of for the events
-    const test = await Promise.all(events.map(e => {
-      const result = [];
-      result.push(events[0].update({ hostId: users[0].id, groupId: groups[0].id }));
-      result.push(models.EventAttendee.create({ eventId: events[0].id, userId: users[0].id }));
-      return result;
-    }).flat());
+    /* Caution, this code bit is commented out because it requires a newer version of Node
+       than what you are most likely using. Node v 12 is required for the Array.flat() method
+    */
+    // const test = await Promise.all(events.map(e => {
+    //   const result = [];
+    //   result.push(events[0].update({ hostId: users[0].id, groupId: groups[0].id }));
+    //   result.push(models.EventAttendee.create({ eventId: events[0].id, userId: users[0].id }));
+    //   return result;
+    // }).flat());
 
+    // So this is a bit of a hack in getting a single event associated with the other
+    // table associations.
+    await events[0].update({ hostId: users[0].id, groupId: groups[0].id });
+    await models.EventAttendee.create({ eventId: events[0].id, userId: users[0].id });
     db.close();
   }
   catch(e) {
