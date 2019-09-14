@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const {compareStrAgainstHash} = require('../../../utils/index');
+const {compareStrAgainstHash} = require('../../utils/index');
 
 router.put('/updateUser', async (req, res, next) => {
     try {

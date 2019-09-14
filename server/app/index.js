@@ -18,10 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(require('./serializeUserMiddleware'));
 
-app.use('/auth', require('../auth/index'));
-app.use('/event', require('../apiRoutes/event'));
-app.use('/group', require('../apiRoutes/group/group'));
-app.use('/user', require('../apiRoutes/user/user'));
+app.use('/api', require('../apiRoutes'));
 
 app.get('/hello', (req, res) => {
   res.send('Hello there!');

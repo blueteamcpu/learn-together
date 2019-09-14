@@ -8,6 +8,7 @@ import Nav from '../Nav/Nav';
 import UserProfile from '../UserProfile/UserProfile';
 import CreateEventForm from '../CreateEventForm/CreateEventForm';
 import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
+import Explore from '../Explore/Explore';
 
 class App extends Component {
   componentDidMount() {
@@ -20,7 +21,12 @@ class App extends Component {
         <Nav />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/groups/:groupId/events/create" component={CreateEventForm} />
+          <Route exact path="/explore" component={Explore} />
+          <Route
+            exact
+            path="/groups/:groupId/events/create"
+            component={CreateEventForm}
+          />
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
           <LoggedInOnly exact={true} path="/profile" component={UserProfile} />
