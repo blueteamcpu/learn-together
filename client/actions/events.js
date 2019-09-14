@@ -11,7 +11,7 @@ export const JOIN_EVENT = 'JOIN_EVENT';
 
 export const joinEvent = (event) => async (dispatch, _, axios) => {
     try {
-            axios.post('/event/addattendee', event)
+            axios.post('/api/events/addattendee', event)
             dispatch({
                 type: JOIN_EVENT,
                 event
@@ -24,7 +24,7 @@ export const joinEvent = (event) => async (dispatch, _, axios) => {
 
 export const getEvents = () => async (dispatch, _, axios) => {
     try {
-            const result = await axios.get('/event/events');
+            const result = await axios.get('/api/events/events');
             const eventList = result.data;
             dispatch({
                 type: GET_EVENTS,
@@ -40,7 +40,7 @@ export const getEvents = () => async (dispatch, _, axios) => {
 export const getEventDetail = (eventId) => async (dispatch, _, axios) => {
     try {   
             console.log('EVENTID: ', eventId)
-            const result = await axios.get(`/event/events/${eventId}`);
+            const result = await axios.get(`/api/events/events/${eventId}`);
             const event = result.data;
             dispatch({
                 type: GET_EVENT_DETAIL,

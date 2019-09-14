@@ -9,7 +9,6 @@ import EventList from '../Event/EventList';
 import CreateEventForm from '../Event/CreateEventForm/CreateEventForm';
 import EventDetail from '../Event/EventDetail';
 import Explore from '../Explore/Explore';
-import CreateEventForm from '../CreateEventForm/CreateEventForm';
 
 class App extends Component {
   componentDidMount() {
