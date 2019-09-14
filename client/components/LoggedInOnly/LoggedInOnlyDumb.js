@@ -1,16 +1,16 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-const LoggedInOnly = ({ exact, path, component: Comp, loggedIn }) => {
+const LoggedInOnly = ({ exact, path, component: Comp, loggedIn, loading }) => {
   return (
     <Route
       exact={exact === undefined ? true : exact}
       path={path}
       render={props => {
-        if (loggedIn) {
-            return <Comp {...props} />;
+        if (loading || loggedIn) {
+          return <Comp key={loggedIn} {...props} />;
         } else {
-            return <Redirect to="/" />;
+          return <Redirect to="/" />;
         }
       }}
     />
