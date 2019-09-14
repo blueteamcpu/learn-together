@@ -11,6 +11,7 @@ import {
   Dimmer,
   Segment,
   Image,
+  Responsive,
 } from 'semantic-ui-react';
 
 class Explore extends Component {
@@ -43,8 +44,6 @@ class Explore extends Component {
     this.fetchData(this.props.category, this.state.term);
   };
 
-  // need category to be put on state. race condition with data coming down and state changing
-
   makeItems = () => {
     if (this.props.category === 'Groups') {
       return this.props.items.map(({ group, memberCount }) => ({
@@ -72,7 +71,7 @@ class Explore extends Component {
           </Grid.Row>
           <Grid.Row centered>
             <Form onSubmit={this.handleSubmit}>
-              <Form.Group>
+              <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
                 <Select
                   onChange={this.handleSelect}
                   value={this.props.category}
@@ -90,7 +89,28 @@ class Explore extends Component {
                 <Button type="submit" color="blue" basic>
                   Submit
                 </Button>
-              </Form.Group>
+              </Responsive>
+              <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+                <Form.Group inline>
+                  <Select
+                    onChange={this.handleSelect}
+                    value={this.props.category}
+                    options={['Groups', 'Events'].map(value => ({
+                      key: value,
+                      value,
+                      text: value,
+                    }))}
+                  />
+                  <Form.Input
+                    placeholder="Search..."
+                    value={this.state.term}
+                    onChange={this.handleChange}
+                  />
+                  <Button type="submit" color="blue" basic>
+                    Submit
+                  </Button>
+                </Form.Group>
+              </Responsive>
             </Form>
           </Grid.Row>
           <Grid.Row centered>
@@ -104,7 +124,7 @@ class Explore extends Component {
                 </Segment>
               ) : null
             ) : this.props.items.length ? (
-              <Card.Group items={this.makeItems()} />
+              <Card.Group centered items={this.makeItems()} />
             ) : (
               <Container textAlign="center">
                 {`There are no ${this.props.category.toLowerCase()} that meet your specifications.`}
