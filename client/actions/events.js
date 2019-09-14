@@ -4,6 +4,7 @@ export const GET_EVENT_DETAIL = 'GET_EVENT_DETAIL';
 export const CREATE_EVENT = 'CREATE_EVENT';
 export const DELETE_EVENT = 'DELETE_EVENT';
 export const JOIN_EVENT = 'JOIN_EVENT';
+export const UNJOIN_EVENT = 'UNJOIN_EVENT';
 
 // ACTIONS
 
@@ -11,10 +12,24 @@ export const JOIN_EVENT = 'JOIN_EVENT';
 
 export const joinEvent = (event) => async (dispatch, _, axios) => {
     try {
-            axios.post('/api/events/addattendee', event)
+            const result = await axios.post('/api/events/addattendee', event);
+            const attendee = result.data;
             dispatch({
                 type: JOIN_EVENT,
-                event
+                attendee
+            });
+        }
+   catch (error) {
+      console.error(error);
+    }
+  };
+export const unjoinEvent = (event) => async (dispatch, _, axios) => {
+    try {
+            const result = await axios.delete('/api/events/deleteattendee', { data: event })
+            const attendee = result.data;
+            dispatch({
+                type: UNJOIN_EVENT,
+                attendee
             });
         }
    catch (error) {

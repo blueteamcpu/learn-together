@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent } from '../../actions/events';
+import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
 import {
     Button,
     Container,
@@ -24,6 +24,7 @@ class EventDetail extends Component {
             going: false,
          }
          this.rsvp = this.rsvp.bind(this);
+         this.unrsvp = this.unrsvp.bind(this);
     }
 
     componentDidMount() {
@@ -46,6 +47,11 @@ class EventDetail extends Component {
     rsvp() {
         this.props.joinEvent(this.props.event)
         this.setState({going: true})
+    }
+    unrsvp() {
+        console.log('EVENT', this.props.event)
+        this.props.unjoinEvent(this.props.event)
+        this.setState({going: false})
     }
 
     render() { 
@@ -92,7 +98,7 @@ class EventDetail extends Component {
                             <Grid.Column width={8}>
                                 { !going ? 
                                 <Button onClick={this.rsvp} >I'm Going!</Button> :
-                                <Button onClick={this.rsvp} >Not Going</Button>
+                                <Button onClick={this.unrsvp} >Not Going</Button>
                                 }
                             </Grid.Column>
                         </Grid.Row>
@@ -124,6 +130,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     joinEvent(event) {
         dispatch(_joinEvent(event));
+    },
+    unjoinEvent(event) {
+        dispatch(_unjoinEvent(event));
     }
 });
 

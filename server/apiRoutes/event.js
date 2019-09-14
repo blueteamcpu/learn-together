@@ -103,17 +103,7 @@ router.get('/:id', async(req, res, next) => {
     }
 });
 
-//delete event
-//TODO: add restrictions
 
-router.delete('/:id', async (req, res, next) => {
-  try {
-    const deletedEvent = await Event.destroy({ where: { id: req.params.id } });
-    res.send(deletedEvent);
-  } catch (err) {
-    next(err);
-  }
-});
 
 //get all events
 //TODO: add whatever we are doing for loading, paginating, filtering, ordering
@@ -157,9 +147,10 @@ router.post('/addattendee', async(req, res, next) => {
             where: { groupId: req.body.groupId, userId: req.user.id }
         });
         if (validGroupMember) {
-            await EventAttendee.create({ 
+            const attendee = await EventAttendee.create({ 
                 userId: req.user.id, eventId: req.body.id 
             });
+            res.send(attendee)
         } else throw new Error(
             'Events', 
             'You must be a member of this group to attend event'
@@ -172,15 +163,31 @@ router.post('/addattendee', async(req, res, next) => {
 //remove user from attending event
 router.delete('/deleteattendee', async (req, res, next) => {
   try {
-    const attendee = await EventAttendee.destroy({
-      where: { userId: req.user.id, eventId: req.body.eventId },
+    const attendee = await EventAttendee.findOne({
+        where: { userId: req.user.id, eventId: req.body.id }
+    })
+    await EventAttendee.destroy({
+      where: { userId: req.user.id, eventId: req.body.id },
+      returning: true
     });
-    if (attendee) res.status(201).send();
-    else throw new Error('Events', 'Unable to delete attendee');
+    console.log('AGTTENDEE: ', attendee)
+    res.json(attendee);
   } catch (err) {
     next(err);
   }
 });
+
+//delete event
+//TODO: add restrictions
+
+router.delete('/:id', async (req, res, next) => {
+    try {
+      const deletedEvent = await Event.destroy({ where: { id: req.params.id } });
+      res.send(deletedEvent);
+    } catch (err) {
+      next(err);
+    }
+  });
 
 router.use((error, req, res, next) => {
   console.log('ERROR: ', error);
