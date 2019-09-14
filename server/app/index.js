@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(require('./serializeUserMiddleware'));
 
+app.use('/auth', require('../auth/index'));
 app.use('/api', require('../apiRoutes'));
 
 app.get('/hello', (req, res) => {
