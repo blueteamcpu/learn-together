@@ -63,7 +63,6 @@ router.post('/newgroup', async (req, res, next) => {
   }
 });
 
-<<<<<<< HEAD
 // NICK: TODO Finish this route to facilitate detailed Groups and all the thingies
 router.get('/detail/:groupId', async (req, res, next) => {
   const context = req.body.context;
@@ -73,8 +72,6 @@ router.get('/detail/:groupId', async (req, res, next) => {
 });
 
 
-=======
->>>>>>> dev
 router.get('/all/:section?', async (req, res, next) => {
   try {
     let filters = {};

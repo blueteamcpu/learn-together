@@ -52,8 +52,19 @@ export default connect(mapStateToProps, null)(GroupContext);
 // For the moment I'm not to worried about it though.
 // I think this makes it easy to add anything as we see fit
 // Lets see though
-function Events() {
-
+function Events({ item }) {
+  return(
+    <List.Item>
+      <List.Content>
+        <List.Header>{item.name}</List.Header>
+        <List.Description>
+          {item.description}
+          {item.location}
+          {item.startTime} to {item.endTime}
+        </List.Description>
+      </List.Content>
+    </List.Item>
+  );
 }
 
 function Members({ item }) {
