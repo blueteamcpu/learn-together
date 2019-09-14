@@ -19,4 +19,9 @@ module.exports = [
     zipcode: '03495',
     description: 'Only the most radical sciences discussed here.',
   },
+  {
+    name: 'Doin History',
+    zipcode: '23987',
+    description: 'Create history with me in these Events we are making!',    
+  },
 ];

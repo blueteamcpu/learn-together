@@ -19,8 +19,8 @@ export const postNewGroup = (group) => (dispatch) => {
 
 export const getDetailGroup = (id) => (dispatch) => {
   axios.get(`/group/detail/${id}`)
-    .then(data => {
-      dispatch({ type: SET_DETAIL_GROUP, group: data });
+    .then(response => {
+      dispatch({ type: SET_DETAIL_GROUP, group: response.data });
     })
     .catch(e => dispatch({ type: FAILED_GROUPS_GET, groupGetFailed: true }));
 };
@@ -31,7 +31,11 @@ export const getDetailGroup = (id) => (dispatch) => {
 const initialState = {
   groupGetFailed: false,
   groupList: [],
-  groupDetailed: {},
+  groupDetailed: {
+    group: {},
+    members: {},
+    
+  },
 };
 
 export default (state = initialState, action) => {
@@ -40,7 +44,7 @@ export default (state = initialState, action) => {
     return { ...state, groupList: [...state.groupList, action.newGroups] };
   }
   case SET_DETAIL_GROUP: {
-    return { ...state, groupDetailed: action.group};
+    return { ...state, groupDetailed: {...action.group}};
   }
   case FAILED_GROUPS_GET: {
     return { ...state, groupGetFailed: action.groupGetFailed };

@@ -10,15 +10,19 @@ const { db } = models;
 const userList = require('./seedlings/userSeed');
 const groupList = require('./seedlings/groupSeed');
 
-
 // This spins everything up, all the functions are below
 doTheSeeding();
 
 async function doTheSeeding() {
   try {
     await db.sync({ force: true });
-    await Promise.all(genList(userList, models.User));
-    await Promise.all(genList(groupList, models.Group));
+    const users = await Promise.all(genList(userList, models.User));
+    const groups = await Promise.all(genList(groupList, models.Group));
+    await Promise.all(users.map(u => {
+      return models.GroupMember.create({userId: u.id,
+					groupId: groups[Math.floor(Math.random() * groups.length)].id,
+				       });
+    }));
     db.close();
   }
   catch(e) {
