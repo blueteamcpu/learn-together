@@ -14,7 +14,10 @@ const titleCase = str => {
   } else if (str.length === 1) {
     return str.toUpperCase();
   } else {
-    return str[0].toUpperCase() + str.slice(1);
+    return str
+      .split(' ')
+      .map(_str => _str[0].toUpperCase() + _str.slice(1))
+      .join(' ');
   }
 };
 

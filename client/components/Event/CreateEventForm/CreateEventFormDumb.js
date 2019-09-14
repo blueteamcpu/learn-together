@@ -12,7 +12,7 @@ import Axios from 'axios';
 class CreateEventForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             values: {
                 name: '',
                 description: '',
@@ -42,7 +42,7 @@ class CreateEventForm extends Component {
         e.preventDefault();
 
         try {
-            const { data } = await Axios.post('/event/newevent', 
+            const { data } = await Axios.post('/api/events/newevent',
                 this.state.values,
                 {
                     validateStatus: function(status) {
@@ -70,9 +70,9 @@ class CreateEventForm extends Component {
     };
 
 
-    render() { 
+    render() {
         const { values, errors } = this.state;
-        return ( 
+        return (
             <Fragment>
             <Grid
                 textAlign="center"
@@ -153,5 +153,5 @@ class CreateEventForm extends Component {
          );
     }
 }
- 
+
 export default CreateEventForm;

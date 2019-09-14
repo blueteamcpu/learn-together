@@ -9,6 +9,7 @@ const {
   TIME,
 } = require('sequelize');
 const db = require('../connection');
+const { titleCase } = require('../../../utils/index');
 const { EventError } = require('../../../utils/backend');
 
 class Event extends Model {}
@@ -71,10 +72,19 @@ Event.init(
   }
 );
 
-Event.createEvent = async function(body) {
+Event.beforeCreate(instance => {
+  instance.name = titleCase(instance.name);
+});
+
+Event.beforeUpdate(instance => {
+  if (instance.changed('name')) {
+    instance.name = titleCase(instance.name);
+  }
+});
+
+Event.createEvent = function(body) {
   try {
-    const newEvent = await Event.create(body);
-    return newEvent;
+    return Event.create(body);
   } catch (error) {
     const fieldName = error.errors[0].path;
     throw new EventError(fieldName, 'Please fill in this field.');
