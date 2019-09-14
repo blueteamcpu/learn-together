@@ -2,17 +2,14 @@ import React, { Component } from 'react';
 import {
   Container,
   Header,
-  Form,
-  Button,
-  Select,
   Grid,
-  Card,
   Loader,
   Dimmer,
   Segment,
   Image,
-  Responsive,
 } from 'semantic-ui-react';
+import ExploreForm from './ExploreForm';
+import ExploreCards from '../ExploreCards/ExploreCards';
 
 class Explore extends Component {
   state = {
@@ -44,22 +41,6 @@ class Explore extends Component {
     this.fetchData(this.props.category, this.state.term);
   };
 
-  makeItems = () => {
-    if (this.props.category === 'Groups') {
-      return this.props.items.map(({ group, memberCount }) => ({
-        header: group.name,
-        meta: `Members: ${memberCount}`,
-        description: group.description,
-      }));
-    } else if (this.props.category === 'Events') {
-      return this.props.items.map(({ event, attendeeCount }) => ({
-        header: event.name,
-        meta: `Attendees: ${attendeeCount}`,
-        description: event.description,
-      }));
-    }
-  };
-
   render() {
     return (
       <main style={{ marginTop: '1em' }}>
@@ -70,48 +51,13 @@ class Explore extends Component {
             </Container>
           </Grid.Row>
           <Grid.Row centered>
-            <Form onSubmit={this.handleSubmit}>
-              <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
-                <Select
-                  onChange={this.handleSelect}
-                  value={this.props.category}
-                  options={['Groups', 'Events'].map(value => ({
-                    key: value,
-                    value,
-                    text: value,
-                  }))}
-                />
-                <Form.Input
-                  placeholder="Search..."
-                  value={this.state.term}
-                  onChange={this.handleChange}
-                />
-                <Button type="submit" color="blue" basic>
-                  Submit
-                </Button>
-              </Responsive>
-              <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-                <Form.Group inline>
-                  <Select
-                    onChange={this.handleSelect}
-                    value={this.props.category}
-                    options={['Groups', 'Events'].map(value => ({
-                      key: value,
-                      value,
-                      text: value,
-                    }))}
-                  />
-                  <Form.Input
-                    placeholder="Search..."
-                    value={this.state.term}
-                    onChange={this.handleChange}
-                  />
-                  <Button type="submit" color="blue" basic>
-                    Submit
-                  </Button>
-                </Form.Group>
-              </Responsive>
-            </Form>
+            <ExploreForm
+              handleSubmit={this.handleSubmit}
+              handleChange={this.handleChange}
+              handleSelect={this.handleSelect}
+              term={this.state.term}
+              category={this.props.category}
+            />
           </Grid.Row>
           <Grid.Row centered>
             {this.props.fetching ? (
@@ -123,12 +69,8 @@ class Explore extends Component {
                   <Image src="https://react.semantic-ui.com/images/wireframe/short-paragraph.png" />
                 </Segment>
               ) : null
-            ) : this.props.items.length ? (
-              <Card.Group centered items={this.makeItems()} />
             ) : (
-              <Container textAlign="center">
-                {`There are no ${this.props.category.toLowerCase()} that meet your specifications.`}
-              </Container>
+              <ExploreCards />
             )}
           </Grid.Row>
         </Grid>
