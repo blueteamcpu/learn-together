@@ -5,7 +5,8 @@ import Home from '../Home/HomeDumb';
 import LoginForm from '../LoginForm/LoginForm';
 import SignUp from '../SignUpForm/SignUp';
 import Nav from '../Nav/Nav';
-import CreateEventForm from '../CreateEventForm/CreateEventForm'
+import Explore from '../Explore/Explore';
+import CreateEventForm from '../CreateEventForm/CreateEventForm';
 
 class App extends Component {
   componentDidMount() {
@@ -18,7 +19,12 @@ class App extends Component {
         <Nav />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/groups/:groupId/events/create" component={CreateEventForm} />
+          <Route exact path="/explore" component={Explore} />
+          <Route
+            exact
+            path="/groups/:groupId/events/create"
+            component={CreateEventForm}
+          />
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
         </Switch>

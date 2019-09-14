@@ -5,17 +5,14 @@ export const DELETE_EVENT = 'DELETE_EVENT';
 
 // ACTIONS
 
-
 // THUNKS
-export const createEvent = (event) => async (dispatch, _, axios) => {
-    try {
-  
-            dispatch({
-                type: CREATE_EVENT,
-                event
-            });
-        }
-   catch (error) {
-      console.error(error);
-    }
-  };
+export const createEvent = event => async (dispatch, _, axios) => {
+  try {
+    dispatch({
+      type: CREATE_EVENT,
+      event,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
