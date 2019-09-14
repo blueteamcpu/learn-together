@@ -1,13 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import {
-  Menu,
-  Button,
-  Sidebar,
-  Responsive,
-  Icon,
-  Dropdown,
-} from 'semantic-ui-react';
+import { Menu, Button, Responsive, Dropdown } from 'semantic-ui-react';
 
 const NavLeft = ({ history, location }) => (
   <Fragment>
