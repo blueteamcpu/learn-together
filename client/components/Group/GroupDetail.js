@@ -10,12 +10,14 @@ class GroupDetail extends Component {
   // context default should become post I think
   // But for now I'm leaving it at members just to
   // Keep things rolling for myself
-  state = { context: 'members'};
+  state = { context: 'members',
+            activeItem: 'members',
+          };
 
   handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
   componentDidMount() {
-    this.props.getDetailGroup(this.props.match.params.groupId);
+    this.props.getDetailGroup(this.props.match.params.groupId, this.state.context);
     this.setState({ groupId: this.props.match.params.groupId});
   }
 
@@ -54,7 +56,7 @@ const mapStateToProps = ({ groups }) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getDetailGroup(id) { dispatch(getDetailGroup(id)); }
+  getDetailGroup(id, context) { dispatch(getDetailGroup(id, context)); }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);

@@ -17,8 +17,8 @@ export const postNewGroup = (group) => (dispatch) => {
   dispatch({ type: SET_DETAIL_GROUP, group});
 };
 
-export const getDetailGroup = (id) => (dispatch) => {
-  axios.get(`/group/detail/${id}`)
+export const getDetailGroup = (id, context) => (dispatch) => {
+  axios.get(`/group/detail/${id}`, context)
     .then(response => {
       dispatch({ type: SET_DETAIL_GROUP, group: response.data });
     })
