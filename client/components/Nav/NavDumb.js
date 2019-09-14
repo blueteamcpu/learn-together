@@ -1,6 +1,6 @@
 import React, { Fragment, Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Menu, Button, Sidebar, Responsive, Icon } from 'semantic-ui-react';
+import { Menu, Button, Responsive, Dropdown } from 'semantic-ui-react';
 
 const NavLeft = ({ history, location }) => (
   <Fragment>
@@ -103,52 +103,66 @@ const DesktopView = ({ loggedIn, logOut }) => {
 };
 
 class MobileView extends Component {
-  state = {};
+  state = {
+    options: ['Learn Together', 'Home', 'Explore', 'Dashboard', 'Profile'],
+  };
 
-  handleSidebarHide = () => this.setState({ sidebarOpened: false });
+  makeOptions = option => ({
+    key: option,
+    text: option,
+    value: option,
+    disabled: option === 'Learn Together',
+  });
 
-  handleToggle = () => this.setState({ sidebarOpened: true });
+  handleChange = ev => {
+    this.props.history.push('/' + ev.target.innerText.toLowerCase());
+  };
+
+  determineDefault = () => {
+    let pathname = this.props.location.pathname;
+
+    if (pathname === '/') {
+      return 'Home';
+    }
+
+    pathname = pathname[1].toUpperCase() + pathname.slice(2);
+
+    if (this.state.options.includes(pathname)) {
+      return pathname;
+    } else {
+      return 'Learn Together';
+    }
+  };
 
   render() {
     const { loggedIn, logOut } = this.props;
-    const { sidebarOpened } = this.state;
 
     return (
       <Responsive
-        as={Sidebar.Pushable}
         maxWidth={Responsive.onlyMobile.maxWidth}
         inverted={location.pathname === '/' ? 'true' : 'false'}
       >
-        <Sidebar
-          as={Menu}
-          animation="push"
-          onHide={this.handleSidebarHide}
-          visible={sidebarOpened}
-          vertical
-        >
-          <ConnectedLeft />
-        </Sidebar>
-
-        <Sidebar.Pusher
-          dimmed={sidebarOpened}
-          style={sidebarOpened ? { minHeight: 160, padding: '1em 0em' } : {}}
-        >
-          <Menu pointing secondary size="large">
-            <Menu.Item onClick={this.handleToggle}>
-              <Icon name="sidebar" />
-            </Menu.Item>
-            <ConnectedRight mobile={true} loggedIn={loggedIn} logOut={logOut} />
-          </Menu>
-        </Sidebar.Pusher>
+        <Menu pointing secondary size="large">
+          <Menu.Item>
+            <Dropdown
+              defaultValue={this.determineDefault()}
+              options={this.state.options.map(this.makeOptions)}
+              onChange={this.handleChange}
+            />
+          </Menu.Item>
+          <ConnectedRight mobile={true} loggedIn={loggedIn} logOut={logOut} />
+        </Menu>
       </Responsive>
     );
   }
 }
 
+const ConnectedMobile = withRouter(MobileView);
+
 const ResponsiveNav = ({ loggedIn, logOut }) => (
   <Fragment>
     <DesktopView loggedIn={loggedIn} logOut={logOut} />
-    <MobileView loggedIn={loggedIn} logOut={logOut} />
+    <ConnectedMobile loggedIn={loggedIn} logOut={logOut} />
   </Fragment>
 );
 
