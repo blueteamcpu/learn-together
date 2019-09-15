@@ -8,6 +8,13 @@ import Nav from '../Nav/Nav';
 import EventList from '../Event/EventList';
 import CreateEventForm from '../Event/CreateEventForm/CreateEventForm';
 import EventDetail from '../Event/EventDetail';
+
+// I think eventually we split these routes out into a Dashboard route
+// For now, just keeping the ball rolling
+import GroupDetail from '../Group/GroupDetail';
+import UserProfile from '../UserProfile/UserProfile';
+import CreateEventForm from '../CreateEventForm/CreateEventForm';
+import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
 import Explore from '../Explore/Explore';
 
 class App extends Component {
@@ -23,6 +30,8 @@ class App extends Component {
           <Route exact path="/" component={Home} />
           <Route exact path="/events" component={EventList} />
           <Route exact path="/events/:eventId" component={EventDetail} />
+          <Route exact path="/groups/:groupId/events/create" component={CreateEventForm} />
+          <Route exact path="/groups/:groupId" component={GroupDetail} />
           <Route exact path="/explore" component={Explore} />
           <Route
             exact
@@ -31,6 +40,7 @@ class App extends Component {
           />
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
+          <LoggedInOnly exact={true} path="/profile" component={UserProfile} />
         </Switch>
       </Fragment>
     );

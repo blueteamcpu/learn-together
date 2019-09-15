@@ -17,13 +17,24 @@ export const postNewGroup = (group) => (dispatch) => {
   dispatch({ type: SET_DETAIL_GROUP, group});
 };
 
+export const getDetailGroup = (id, context) => (dispatch) => {
+  axios.get(`/api/groups/detail/${id}`, context)
+    .then(response => {
+      dispatch({ type: SET_DETAIL_GROUP, group: response.data });
+    })
+    .catch(e => dispatch({ type: FAILED_GROUPS_GET, groupGetFailed: true }));
+};
+
 // Presumabely we will need some sort of tracking thing which manages the groups
 // that a user is connected to for updates
 // I'm not sure if this is groups plural, or if we only want to connect to one at a time
 const initialState = {
   groupGetFailed: false,
   groupList: [],
-  groupDetailed: {},
+  groupDetailed: {
+    group: {},
+    members: {},
+  },
 };
 
 export default (state = initialState, action) => {
@@ -32,7 +43,7 @@ export default (state = initialState, action) => {
     return { ...state, groupList: [...state.groupList, action.newGroups] };
   }
   case SET_DETAIL_GROUP: {
-    return { ...state, groupDetailed: action.group};
+    return { ...state, groupDetailed: {...action.group}};
   }
   case FAILED_GROUPS_GET: {
     return { ...state, groupGetFailed: action.groupGetFailed };
