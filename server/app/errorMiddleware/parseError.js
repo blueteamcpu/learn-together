@@ -23,7 +23,7 @@ const parseValidate = e => {
     msg = sentenceCase(`${path} must be a valid email address.`);
   } else if (key === 'len') {
     if (path === 'password') {
-      msg = 'Password must be at least 5 characters long.';
+      msg = 'Password must be at least 8 characters long.';
     } else {
       msg = sentenceCase(`${path} is to short.`);
     }
