@@ -62,7 +62,7 @@ class EventDetail extends Component {
         const { event, user, group } = this.props;
         const { going, activeItem } = this.state;
         const attendees = event.users;
-        
+
         return ( 
 
             <Fragment>
@@ -81,9 +81,9 @@ class EventDetail extends Component {
                         </Grid.Row>
                         <Grid.Row>
                         { !going ? 
-                                        <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
-                                        <Button onClick={this.unrsvp} color='red'>Not Going</Button>
-                                    }
+                            <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
+                            <Button onClick={this.unrsvp} color='red'>Not Going</Button>
+                        }
                         <Menu tabular attached='top'>
                             <Menu.Item name='info' active={activeItem==='info'} onClick={this.handleMenuClick}/>
                             <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}>Attendees ({attendees.length})</Menu.Item>
