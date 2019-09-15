@@ -3,20 +3,6 @@ import { Container, Grid, Item, List, Image, Segment} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 class GroupContext extends React.Component {
-  // constructor() {
-  //   super();
-  //   this.state = {};
-  // }
-  // componentDidMount() {
-  //   const { context } = this.props;
-  //   this.setState( { context: context});
-  // }
-
-  // componentDidUpdate(prevProps) {
-  //   if (this.props.context === prevProps.context) return;
-  //   this.setState({ context: this.props.context });
-  // }
-
   render() {
     const { context } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
@@ -86,35 +72,6 @@ function Events({ item }) {
     </List.Item>
   );
 }
-
-          // <Container>
-          // <Segment floated='left'>
-
-          // </Segment>
-          //   <Item floated='right'>
-          //     <Item.Header>Location</Item.Header>
-          //     <Item.Content verticalAlign='middle'>
-          //       {item.location}<br/>
-          //       {item.startTime} to {item.endTime}
-          //     </Item.Content>
-          // </Item>
-          // </Container>
-
-
-/* <List.Item> */
-/*   <List.Icon name='map marker alternate' /> */
-  
-/*   <List.Content>{event.location}, {event.zipcode}</List.Content> */
-/* </List.Item> */
-/*   <List.Item> */
-/*   <List.Icon name='calendar alternate outline' /> */
-/*   <List.Content>{event.day.slice(0,10)}</List.Content> */
-/*                                 </List.Item> */
-/*   <List.Item> */
-/*   <List.Icon name='clock outline' /> */
-/*   <List.Content>{event.startTime} - {event.endTime}</List.Content> */
-/*                                 </List.Item> */
-/*   </List> */
 
 function Members({ item }) {
   return(
