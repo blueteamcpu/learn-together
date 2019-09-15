@@ -13,7 +13,6 @@ import EventDetail from '../Event/EventDetail';
 // For now, just keeping the ball rolling
 import GroupDetail from '../Group/GroupDetail';
 import UserProfile from '../UserProfile/UserProfile';
-import CreateEventForm from '../CreateEventForm/CreateEventForm';
 import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
 import Explore from '../Explore/Explore';
 
