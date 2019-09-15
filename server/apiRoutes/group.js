@@ -62,13 +62,26 @@ router.post('/newgroup', async (req, res, next) => {
 });
 
 // NICK: TODO Finish this route to facilitate detailed Groups and all the thingies
-router.get('/detail/:groupId', async (req, res, next) => {
-  const context = req.body.context;
+router.get('/detail/:groupId/:context?', async (req, res, next) => {
+  const context = req.params.context;
+  try {
   const group = await Group.findByPk(req.params.groupId);
-  const members = await group.getUsers({
-    attributes: ['username', 'imageURL', 'id'],
-  });
-  res.send({ group, members: [...members] });
+  switch(context){
+  case 'members': {
+    const members = await group.getUsers({ attributes: ['username', 'imageURL', 'id']});
+    res.send({ group, members: [...members] });
+    break;
+  }
+  case 'events': {
+    const events = await group.getEvents();
+    res.send({ group, events: [...events] });
+    break;
+  }
+  }
+  }
+  catch(e) {
+    next(e);
+  }
 });
 
 router.get('/all/:section?', async (req, res, next) => {

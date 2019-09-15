@@ -14,7 +14,10 @@ class GroupDetail extends Component {
             activeItem: 'members',
           };
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name, context: name });
+    this.props.getDetailGroup(this.props.match.params.groupId, name);
+  };
 
   componentDidMount() {
     this.props.getDetailGroup(this.props.match.params.groupId, this.state.context);
@@ -23,11 +26,10 @@ class GroupDetail extends Component {
 
   compontentDidUpdate() {
     const { context } = this.state;
-    console.log( context );
   }
 
   render() {
-    const { groupDetailed } = this.props;
+    const { groupDetailed, history } = this.props;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
     return (
@@ -44,7 +46,7 @@ class GroupDetail extends Component {
         </Segment>
         <TabMenu activeItem={this.state.activeItem} handleItemClick={this.handleItemClick}/>
         <Segment attached='bottom'>
-          <GroupContext context={this.state.context}/>
+          <GroupContext context={this.state.context} history={history}/>
         </Segment>        
       </Container>
     );
