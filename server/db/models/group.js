@@ -27,6 +27,10 @@ Group.init(
         notEmpty: true,
       },
     },
+    description: {
+      type: TEXT,
+      allowNull: true,
+    },
   },
   {
     sequelize: db,
