@@ -23,9 +23,6 @@ Group.init(
     zipcode: {
       type: INTEGER,
       allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
     },
     description: {
       type: TEXT,

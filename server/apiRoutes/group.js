@@ -44,10 +44,6 @@ router.get('/explore', async (req, res, next) => {
 
 router.post('/newgroup', async (req, res, next) => {
   try {
-    // const newGroup = await req.user.addGroup(
-    //   { ...req.body.group },
-    //   { through: { ownerId: req.user.id } }
-    // );
     const newGroup = await Group.create({
       ...req.body.group,
       ownerId: req.user.id,
@@ -87,7 +83,6 @@ router.get('/detail/:groupId/:context?', async (req, res, next) => {
     next(e);
   }
 });
-
 
 router.get('/all/:section?', async (req, res, next) => {
   try {
