@@ -81,7 +81,7 @@ router.post('/newevent', async (req, res, next) => {
 router.put('/:id', async (req, res, next) => {
   try {
     const updatedEvent = await Event.update(
-      { ...req.body.event },
+      { ...req.body },
       {
         where: { id: req.params.id },
       }

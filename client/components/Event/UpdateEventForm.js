@@ -8,7 +8,7 @@ import {
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import Axios from 'axios';
-import { updateEvent as _updateEvent } from '../../actions/events';
+import { updateEvent as _updateEvent, getEventDetail as _getEventDetail } from '../../actions/events';
 import { connect } from 'react-redux';
 
 class UpdateEventForm extends Component {
@@ -25,13 +25,16 @@ class UpdateEventForm extends Component {
                 zipcode: '',
                 groupId: '',
               },
-              errors: {}
+              errors: {},
+              event: {}
             }
             this.deleteEvent = this.deleteEvent.bind(this);
     }
 
-    componentDidMount() {
-        //this.setState({values: {groupId: this.props.match.params.groupId}});
+    async componentDidMount() {
+        const result = await Axios.get(`/api/events/${this.props.eventId}`);
+        const event = result.data;
+        this.setState({...this.state, event: event, values: event})
     }
 
     handleChange = (e, {name, value}) => {
@@ -45,7 +48,7 @@ class UpdateEventForm extends Component {
         e.preventDefault();
 
         try {
-            const { data } = await Axios.put('/api/events/',
+            const { data } = await Axios.put(`/api/events/${this.state.event.id}`,
                 this.state.values,
                 {
                     validateStatus: function(status) {
@@ -65,7 +68,7 @@ class UpdateEventForm extends Component {
                 errors: { ...state.errors, ...data.errors },
                 }));
             } else {
-                this.props.UpdateEvent(data);
+                this.props.updateEvent(data);
             }
         } catch (error) {
             console.error(error);
@@ -160,10 +163,17 @@ class UpdateEventForm extends Component {
     }
 }
 
+const mapStateToProps = state => ({
+    event: state.events.detailedEvent,
+  });
+
 const mapDispatchToProps = (dispatch) => ({
     updateEvent(event) {
         dispatch(_updateEvent(event));
-    }
+    },
+    getEventDetail(eventId) {
+        dispatch(_getEventDetail(eventId));
+    },
 });
 
 export default connect(

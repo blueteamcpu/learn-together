@@ -124,7 +124,7 @@ class EventDetail extends Component {
                                     </List.Item>) }
                                 </List> 
                                 : 
-                                        <UpdateEventForm />
+                                        <UpdateEventForm eventId={event.id}/>
                                 )
                         }
                        </Fragment>

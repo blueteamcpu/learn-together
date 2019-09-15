@@ -5,6 +5,7 @@ export const CREATE_EVENT = 'CREATE_EVENT';
 export const DELETE_EVENT = 'DELETE_EVENT';
 export const JOIN_EVENT = 'JOIN_EVENT';
 export const UNJOIN_EVENT = 'UNJOIN_EVENT';
+export const UPDATE_EVENT = 'UPDATE_EVENT';
 
 // ACTIONS
 
@@ -71,6 +72,16 @@ export const createEvent = event => async (dispatch, _, axios) => {
   try {
     dispatch({
       type: CREATE_EVENT,
+      event,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const updateEvent = event => async (dispatch, _, axios) => {
+  try {
+    dispatch({
+      type: UPDATE_EVENT,
       event,
     });
   } catch (error) {

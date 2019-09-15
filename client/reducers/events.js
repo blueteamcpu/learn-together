@@ -5,6 +5,7 @@ import {
     DELETE_EVENT,
     JOIN_EVENT,
     UNJOIN_EVENT,
+    UPDATE_EVENT
   } from '../actions/events';
 
 const initialState = {
@@ -28,8 +29,10 @@ export default (state = initialState, action) => {
           return {...state, detailedEvent: {...state.detailedEvent, users: [...state.detailedEvent.users, action.attendee]}};
       }
       case UNJOIN_EVENT: {
-        console.log('ACTION ATTENDEE', action.attendee)
           return {...state, detailedEvent: {...state.detailedEvent, users: state.detailedEvent.users.filter(user => user.id !== action.attendee.id)}};
+      }
+      case UPDATE_EVENT: {
+          return {...state, detailedEvent: action.event}
       }
       default:
         return state;
