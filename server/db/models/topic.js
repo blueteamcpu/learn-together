@@ -16,8 +16,7 @@ Topic.init(
       validate: {
         notEmpty: true,
       },
-    },      
-
+    },
   },
   {
     sequelize: db,

@@ -44,10 +44,6 @@ router.get('/explore', async (req, res, next) => {
 
 router.post('/newgroup', async (req, res, next) => {
   try {
-    // const newGroup = await req.user.addGroup(
-    //   { ...req.body.group },
-    //   { through: { ownerId: req.user.id } }
-    // );
     const newGroup = await Group.create({
       ...req.body.group,
       ownerId: req.user.id,
@@ -69,10 +65,11 @@ router.post('/newgroup', async (req, res, next) => {
 router.get('/detail/:groupId', async (req, res, next) => {
   const context = req.body.context;
   const group = await Group.findByPk(req.params.groupId);
-  const members = await group.getUsers({ attributes: ['username', 'imageURL', 'id']});
+  const members = await group.getUsers({
+    attributes: ['username', 'imageURL', 'id'],
+  });
   res.send({ group, members: [...members] });
 });
-
 
 router.get('/all/:section?', async (req, res, next) => {
   try {
