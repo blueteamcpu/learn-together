@@ -1,5 +1,5 @@
 const axios = require('axios');
-const db = require('../server/db/index.js');
+const db = require('../server/db/index');
 const fs = require('fs');
 const path = require('path');
 
@@ -43,7 +43,7 @@ getAllCourses();
 async function getAllCourses() {
   // Once we have a seed file this can happen there
   // Presumably we wont want to sync if calling this periodically on the server
-  await db.db.sync({ force: true });
+//  await db.db.sync({ force: true });
 
   // First we take all the files missing, get their information, and create the file
   for (let file of listOfGets) {
