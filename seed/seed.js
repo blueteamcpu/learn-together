@@ -41,7 +41,7 @@ async function doTheSeeding() {
 
     // So this is a bit of a hack in getting a single event associated with the other
     // table associations.
-    await events[0].update({ hostId: users[0].id, groupId: groups[0].id });
+    await events[0].update({ hostId: users[0].id, groupId: groups[3].id });
     await models.EventAttendee.create({ eventId: events[0].id, userId: users[0].id });
     db.close();
   }
