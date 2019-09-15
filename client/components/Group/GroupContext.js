@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { List, Image, Segment} from 'semantic-ui-react';
+import { Container, Grid, Item, List, Image, Segment} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 class GroupContext extends React.Component {
@@ -58,20 +58,63 @@ export default connect(mapStateToProps, null)(GroupContext);
 // I think this makes it easy to add anything as we see fit
 // Lets see though
 function Events({ item }) {
-  console.log("Hey! Events got called!!!");
+  const weekday = dateDayAsString(item.day);
+  const month = dateMonthAsString(item.day);
+  const dayNum = new Date(item.day).getDay();
+  const year = new Date(item.day).getYear();
   return(
     <List.Item>
       <List.Content>
-        <List.Header>{item.name}</List.Header>
+        <List.Header as='h3' style={{ fontSize: '2em' }}>{item.name}</List.Header>              
         <List.Description>
-          {item.description}
-          {item.location}
-          {item.startTime} to {item.endTime}
+        <Grid divided='vertically'>
+          <Grid.Row columns={2} divided>
+            <Grid.Column>
+              {item.description}              
+            </Grid.Column>
+            <Grid.Column>
+              <strong>Location and time:</strong><br/>
+              {item.location}<br/>
+              {weekday}, {month} {dayNum}, {year}<br/>
+              {item.startTime} to {item.endTime}
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
         </List.Description>
+
       </List.Content>
     </List.Item>
   );
 }
+
+          // <Container>
+          // <Segment floated='left'>
+
+          // </Segment>
+          //   <Item floated='right'>
+          //     <Item.Header>Location</Item.Header>
+          //     <Item.Content verticalAlign='middle'>
+          //       {item.location}<br/>
+          //       {item.startTime} to {item.endTime}
+          //     </Item.Content>
+          // </Item>
+          // </Container>
+
+
+/* <List.Item> */
+/*   <List.Icon name='map marker alternate' /> */
+  
+/*   <List.Content>{event.location}, {event.zipcode}</List.Content> */
+/* </List.Item> */
+/*   <List.Item> */
+/*   <List.Icon name='calendar alternate outline' /> */
+/*   <List.Content>{event.day.slice(0,10)}</List.Content> */
+/*                                 </List.Item> */
+/*   <List.Item> */
+/*   <List.Icon name='clock outline' /> */
+/*   <List.Content>{event.startTime} - {event.endTime}</List.Content> */
+/*                                 </List.Item> */
+/*   </List> */
 
 function Members({ item }) {
   return(
@@ -86,4 +129,14 @@ function Members({ item }) {
 
 function Chat() {
   
+}
+
+function dateDayAsString(dateString) {
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednessday', 'Thursday', 'Friday', 'Saturday'];
+  return daysOfWeek[new Date(dateString).getDay()];
+}
+
+function dateMonthAsString(dateString) {
+  const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  return monthsOfYear[new Date(dateString).getMonth()];
 }
