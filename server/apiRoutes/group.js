@@ -12,13 +12,15 @@ router.get('/explore', async (req, res, next) => {
 
     if (term) {
       term = term.trim().toLowerCase();
-      
+
       if (term.length) {
         query.where = {
           [Op.or]: [
-            { subject: { [Op.iLike]: term } },
             {
               name: { [Op.substring]: titleCase(term) },
+            },
+            {
+              description: { [Op.substring]: term },
             },
           ],
         };

@@ -115,7 +115,13 @@ class MobileView extends Component {
   });
 
   handleChange = ev => {
-    this.props.history.push('/' + ev.target.innerText.toLowerCase());
+    const text = ev.target.innerText;
+
+    if (text === 'Home') {
+      this.props.history.push('/');
+    } else {
+      this.props.history.push('/' + text.toLowerCase());
+    }
   };
 
   determineDefault = () => {

@@ -20,10 +20,6 @@ Group.init(
         notEmpty: true,
       },
     },
-    description: {
-      type: TEXT,
-      allowNull: true,
-    },
     zipcode: {
       type: INTEGER,
       allowNull: false,
@@ -55,15 +51,11 @@ Group.init(
 
 Group.beforeCreate(instance => {
   instance.name = titleCase(instance.name.trim());
-  instance.subject = instance.subject.trim().toLowerCase();
 });
 
 Group.beforeUpdate(instance => {
   if (instance.changed('name')) {
     instance.name = titleCase(instance.name.trim());
-  }
-  if (instance.changed('subject')) {
-    instance.subject = instance.subject.trim().toLowerCase();
   }
 });
 
