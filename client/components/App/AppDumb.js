@@ -5,8 +5,10 @@ import Home from '../Home/HomeDumb';
 import LoginForm from '../LoginForm/LoginForm';
 import SignUp from '../SignUpForm/SignUp';
 import Nav from '../Nav/Nav';
-import Explore from '../Explore/Explore';
+import UserProfile from '../UserProfile/UserProfile';
 import CreateEventForm from '../CreateEventForm/CreateEventForm';
+import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
+import Explore from '../Explore/Explore';
 
 class App extends Component {
   componentDidMount() {
@@ -27,6 +29,7 @@ class App extends Component {
           />
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
+          <LoggedInOnly exact={true} path="/profile" component={UserProfile} />
         </Switch>
       </Fragment>
     );
