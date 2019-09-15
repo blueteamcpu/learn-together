@@ -61,7 +61,6 @@ router.get('/explore', async (req, res, next) => {
 //TODO: add admin/group owner restrictions to this
 router.post('/newevent', async (req, res, next) => {
   try {
-      console.log('req.body', req.body)
     const newEvent = await Event.create({
       ...req.body,
       hostId: req.user.id,
@@ -171,7 +170,6 @@ router.delete('/deleteattendee', async (req, res, next) => {
       where: { userId: req.user.id, eventId: req.body.id },
       returning: true
     });
-    console.log('AGTTENDEE: ', attendee)
     res.json(attendee);
   } catch (err) {
     next(err);
@@ -191,7 +189,6 @@ router.delete('/:id', async (req, res, next) => {
   });
 
 router.use((error, req, res, next) => {
-  console.log('ERROR: ', error);
   if (error.type === 'Event') {
     res.status(error.status).json({ error: { [error.field]: error.message } });
   } else {

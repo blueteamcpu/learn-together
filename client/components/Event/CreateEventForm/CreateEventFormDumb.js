@@ -43,7 +43,6 @@ class CreateEventForm extends Component {
         e.preventDefault();
 
         try {
-            console.log('VALUES: ', this.state.values)
             const { data } = await Axios.post('/api/events/newevent',
                 this.state.values,
                 {
@@ -52,7 +51,6 @@ class CreateEventForm extends Component {
                     },
                 });
 
-                console.log('DATA', data)
             if (data.error) {
                 this.setState(state => ({
                 ...state,

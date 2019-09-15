@@ -55,7 +55,6 @@ export const getEvents = () => async (dispatch, _, axios) => {
 
 export const getEventDetail = (eventId) => async (dispatch, _, axios) => {
     try {   
-            console.log('EVENTID: ', eventId)
             const result = await axios.get(`/api/events/${eventId}`);
             const event = result.data;
             dispatch({

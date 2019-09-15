@@ -3,7 +3,6 @@ import {
   Button,
   Form,
   Grid,
-  Header,
   Segment,
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
@@ -56,7 +55,6 @@ class UpdateEventForm extends Component {
                     },
                 });
 
-                console.log('DATA', data)
             if (data.error) {
                 this.setState(state => ({
                 ...state,
@@ -162,10 +160,6 @@ class UpdateEventForm extends Component {
          );
     }
 }
-
-const mapStateToProps = state => ({
-    event: state.events.detailedEvent,
-  });
 
 const mapDispatchToProps = (dispatch) => ({
     updateEvent(event) {
