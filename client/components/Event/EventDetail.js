@@ -62,8 +62,7 @@ class EventDetail extends Component {
         const { event, user, group } = this.props;
         const { going, activeItem } = this.state;
         const attendees = event.users;
-        console.log('EVENT', event)
-        console.log('history', this.props.history)
+        
         return ( 
 
             <Fragment>
