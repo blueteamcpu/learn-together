@@ -7,10 +7,11 @@ import {
   Segment,
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
-import { connect } from 'react-redux';
 import Axios from 'axios';
+import { updateEvent as _updateEvent } from '../../actions/events';
+import { connect } from 'react-redux';
 
-class CreateEventForm extends Component {
+class UpdateEventForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -26,10 +27,11 @@ class CreateEventForm extends Component {
               },
               errors: {}
             }
+            this.deleteEvent = this.deleteEvent.bind(this);
     }
 
     componentDidMount() {
-        this.setState({values: {groupId: this.props.match.params.groupId}});
+        //this.setState({values: {groupId: this.props.match.params.groupId}});
     }
 
     handleChange = (e, {name, value}) => {
@@ -43,8 +45,7 @@ class CreateEventForm extends Component {
         e.preventDefault();
 
         try {
-            console.log('VALUES: ', this.state.values)
-            const { data } = await Axios.post('/api/events/newevent',
+            const { data } = await Axios.put('/api/events/',
                 this.state.values,
                 {
                     validateStatus: function(status) {
@@ -64,12 +65,16 @@ class CreateEventForm extends Component {
                 errors: { ...state.errors, ...data.errors },
                 }));
             } else {
-                this.props.createEvent(data);
+                this.props.UpdateEvent(data);
             }
         } catch (error) {
             console.error(error);
         }
     };
+
+    deleteEvent(){
+
+    }
 
 
     render() {
@@ -77,16 +82,13 @@ class CreateEventForm extends Component {
         return (
             <Fragment>
             <Grid
-                textAlign="center"
+                // textAlign="center"
                 style={{ height: '85vh' }}
                 verticalAlign="middle"
             >
                 <Grid.Column style={{ maxWidth: 450 }}>
-                <Header as="h2" color="teal" textAlign="center">
-                    Create Event
-                </Header>
                 <Form size="large" onSubmit={this.handleSubmit}>
-                    <Segment stacked>
+                    <Segment>
                     <Form.Input
                         fluid
                         placeholder="Event Name"
@@ -144,9 +146,11 @@ class CreateEventForm extends Component {
                         error={errors.zipcode ? errors.zipcode : null}
                     />
 
-                    <Button color="teal" fluid size="large" type="submit">
-                        Create
+                    <Button color="teal" fluid size="large" type="submit" style={{marginBottom: '1em'}}>
+                        Update Event
                     </Button>
+                    
+                    <Button size='large' fluid onClick={this.deleteEvent}>Delete Event</Button>
                     </Segment>
                 </Form>
                 </Grid.Column>
@@ -156,4 +160,14 @@ class CreateEventForm extends Component {
     }
 }
 
-export default CreateEventForm;
+const mapDispatchToProps = (dispatch) => ({
+    updateEvent(event) {
+        dispatch(_updateEvent(event));
+    }
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(UpdateEventForm);
+

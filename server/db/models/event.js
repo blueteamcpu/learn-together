@@ -44,7 +44,7 @@ Event.init(
       },
     },
     startTime: {
-      type: TIME,
+      type: STRING,
       allowNull: false,
       validate: {
         notEmpty: true,

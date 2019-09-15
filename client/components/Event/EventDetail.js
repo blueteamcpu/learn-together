@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
+import UpdateEventForm from './UpdateEventForm';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
 import {
     Button,
@@ -26,6 +27,7 @@ class EventDetail extends Component {
          }
          this.rsvp = this.rsvp.bind(this);
          this.unrsvp = this.unrsvp.bind(this);
+         
     }
 
     componentDidMount() {
@@ -54,60 +56,17 @@ class EventDetail extends Component {
         this.setState({going: false})
     }
 
+    
+
     handleMenuClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() { 
-        const { event } = this.props;
+        const { event, user } = this.props;
         const { going, activeItem } = this.state;
         const attendees = event.users;
-        console.log('ATTENDEES: ', attendees)
-       
+       console.log('EVENT', event)
+       console.log('USER', user)
         return ( 
-            // <Container>
-            //     <Segment style={{ padding: '8em 0em' }} vertical>
-            //         { event.day ? 
-            //         <Grid container stackable verticalAlign="middle" textAlign='center'>
-            //             <Grid.Row>
-            //                 <Grid.Column>
-            //                     <Header as="h3" style={{ fontSize: '2em' }}>
-            //                     {event.name}
-            //                     </Header>
-            //                     <p style={{ fontSize: '1.33em' }}>
-            //                     {event.description}
-            //                     </p>
-            //                 </Grid.Column>
-            //             </Grid.Row>
-            //             <Grid.Row>
-            //                 <Grid.Column width={10}>
-            //                 <List>
-            //                     <List.Item>
-            //                     <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
-            //                     </List.Item>
-            //                     <List.Item>
-            //                     <List.Content><Icon name='calendar alternate outline'/>{event.day.slice(0,10)}</List.Content>
-            //                     </List.Item>
-            //                     <List.Item>
-            //                     <List.Content><Icon name='clock outline'/>{event.startTime} - {event.endTime}</List.Content>
-            //                     </List.Item>
-            //                 </List>
-            //                 </Grid.Column>
-            //             </Grid.Row>
-            //             <Grid.Row>
-            //                 <Grid.Column width={10}>
-            //                     { !going ? 
-            //                     <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
-            //                     <Button onClick={this.unrsvp} color='red'>Not Going</Button>
-            //                     }
-            //                 </Grid.Column>
-            //             </Grid.Row>
-            //             <Grid.Row>
-            //                 <Grid.Column width={10}>
-            //                     {attendees.length} People Going
-            //                 </Grid.Column>
-            //             </Grid.Row>
-            //         </Grid> : null }
-            //     </Segment>
-            // </Container>
 
             <Fragment>
                 <Container stretch='true'>
@@ -120,9 +79,7 @@ class EventDetail extends Component {
                                 <Header as="h3" style={{ fontSize: '2em' }}>
                                 {event.name}
                                 </Header>
-                                <p style={{ fontSize: '1.33em' }}>
-                                {event.description}
-                                </p>
+                                
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
@@ -133,10 +90,19 @@ class EventDetail extends Component {
                         <Menu tabular attached='top'>
                             <Menu.Item name='info' active={activeItem==='info'} onClick={this.handleMenuClick}/>
                             <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}>Attendees ({attendees.length})</Menu.Item>
+                            {
+                            event.hostId === user.id ? 
+                            <Menu.Item name='edit' active={activeItem==='edit'} onClick={this.handleMenuClick}>Edit Event</Menu.Item>
+                            : null 
+                            }
                         </Menu>
                         </Grid.Row>
                         </Grid>
                         { activeItem === 'info' ? 
+                                <Fragment>
+                                <Header sub>Description</Header>
+                                {event.description}
+                                
                                 <List>
                                 <List.Item>
                                 <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
@@ -148,13 +114,18 @@ class EventDetail extends Component {
                                 <List.Content><Icon name='clock outline'/>{event.startTime} - {event.endTime}</List.Content>
                                 </List.Item>
                                 </List> 
+                                </Fragment>
                                 : 
+                                (activeItem === 'attendees' ? 
                                 <List>
                                 {attendees.map(person => 
                                     <List.Item key={person.id}>
                                     <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName}</List.Content>
                                     </List.Item>) }
-                                </List>
+                                </List> 
+                                : 
+                                        <UpdateEventForm />
+                                )
                         }
                        </Fragment>
                  : null }

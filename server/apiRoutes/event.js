@@ -61,8 +61,9 @@ router.get('/explore', async (req, res, next) => {
 //TODO: add admin/group owner restrictions to this
 router.post('/newevent', async (req, res, next) => {
   try {
+      console.log('req.body', req.body)
     const newEvent = await Event.create({
-      ...req.body.event,
+      ...req.body,
       hostId: req.user.id,
       groupId: req.body.groupId,
     });
