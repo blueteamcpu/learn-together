@@ -2,22 +2,17 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import UpdateEventForm from './UpdateEventForm';
 import { Link } from 'react-router-dom';
-import { getDetailGroup as _getGroupDetailed } from '../../reducers/groupReducer';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
 import {
     Button,
     Container,
-    Divider,
     Grid,
     Header,
     Icon,
     Image,
     List,
     Menu,
-    Responsive,
     Segment,
-    Sidebar,
-    Visibility,
   } from 'semantic-ui-react';
 
 class EventDetail extends Component {
@@ -146,7 +141,6 @@ const mapStateToProps = state => ({
   events: state.events.allEvents,
   event: state.events.detailedEvent,
   user: state.authentication.user,
-  group: state.groups.groupDetailed.group
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -159,9 +153,6 @@ const mapDispatchToProps = (dispatch) => ({
     unjoinEvent(event) {
         dispatch(_unjoinEvent(event));
     },
-    getGroupDetailed(groupId) {
-        dispatch(_getGroupDetailed(groupId));
-    }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventDetail);
