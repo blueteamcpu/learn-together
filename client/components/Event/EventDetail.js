@@ -49,7 +49,6 @@ class EventDetail extends Component {
         this.setState({going: true})
     }
     unrsvp() {
-        console.log('EVENT', this.props.event)
         this.props.unjoinEvent(this.props.event)
         this.setState({going: false})
     }
@@ -58,8 +57,6 @@ class EventDetail extends Component {
         const { event } = this.props;
         const { going } = this.state;
         const attendees = event.users;
-
-        
        
         return ( 
             <Container>
@@ -97,8 +94,8 @@ class EventDetail extends Component {
                         <Grid.Row>
                             <Grid.Column width={8}>
                                 { !going ? 
-                                <Button onClick={this.rsvp} >I'm Going!</Button> :
-                                <Button onClick={this.unrsvp} >Not Going</Button>
+                                <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
+                                <Button onClick={this.unrsvp} color='red'>Not Going</Button>
                                 }
                             </Grid.Column>
                         </Grid.Row>
