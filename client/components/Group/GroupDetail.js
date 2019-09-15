@@ -14,7 +14,10 @@ class GroupDetail extends Component {
             activeItem: 'members',
           };
 
-  handleItemClick = (e, { name }) => this.setState({ activeItem: name })
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name });
+    this.props.getDetailGroup(this.props.match.params.groupId, name);
+  };
 
   componentDidMount() {
     this.props.getDetailGroup(this.props.match.params.groupId, this.state.context);
