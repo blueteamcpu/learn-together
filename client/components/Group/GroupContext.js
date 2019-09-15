@@ -46,7 +46,7 @@ function Events({ item, history }) {
   const weekday = dateDayAsString(item.day);
   const month = dateMonthAsString(item.day);
   const dayNum = new Date(item.day).getDay();
-  const year = new Date(item.day).getYear();
+  const year = new Date(item.day).getFullYear();
   return(
     <List.Item as='a' onClick={() => history.push(`/events/${item.id}`)}>
       <List.Content>

@@ -10,8 +10,8 @@ class GroupDetail extends Component {
   // context default should become post I think
   // But for now I'm leaving it at members just to
   // Keep things rolling for myself
-  state = { context: 'members',
-            activeItem: 'members',
+  state = { context: 'events',
+            activeItem: 'events',
           };
 
   handleItemClick = (e, { name }) => {
@@ -30,6 +30,7 @@ class GroupDetail extends Component {
 
   render() {
     const { groupDetailed, history } = this.props;
+    const userId = this.props.user ? this.props.user.id : null;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
     return (
@@ -44,7 +45,9 @@ class GroupDetail extends Component {
             </Grid.Column>
           </Grid>
         </Segment>
-        <TabMenu activeItem={this.state.activeItem} handleItemClick={this.handleItemClick}/>
+        <TabMenu activeItem={this.state.activeItem}
+                 handleItemClick={this.handleItemClick}
+                 userId={userId}/>
         <Segment attached='bottom'>
           <GroupContext context={this.state.context} history={history}/>
         </Segment>        
@@ -53,8 +56,10 @@ class GroupDetail extends Component {
   }
 }
 
-const mapStateToProps = ({ groups }) => ({
+const mapStateToProps = ({ groups, authentication }) => ({
   groupDetailed: groups.groupDetailed,
+  user: authentication.user
+  
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -63,7 +68,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
 
-function TabMenu ({ activeItem, handleItemClick}) {
+function TabMenu ({ activeItem, handleItemClick, userId}) {
   return (
     <div>
       <Menu attached='top' tabular>
@@ -76,20 +81,23 @@ function TabMenu ({ activeItem, handleItemClick}) {
         </Menu.Item>
 
         <Menu.Item
-          name='chat'
-          active={activeItem === 'chat'}
-          onClick={handleItemClick}
-        >
-          Chat
-        </Menu.Item>
-        
-        <Menu.Item
           name='members'
           active={activeItem === 'members'}
           onClick={handleItemClick}
         >
           Members
         </Menu.Item>
+        {
+          userId ?
+            <Menu.Item
+              name='chat'
+              active={activeItem === 'chat'}
+              onClick={handleItemClick}
+            >
+              Chat
+            </Menu.Item>
+          : null
+        }
       </Menu>
     </div>
   );
