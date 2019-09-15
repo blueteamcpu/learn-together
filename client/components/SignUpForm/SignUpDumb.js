@@ -43,13 +43,7 @@ class SignUpForm extends Component {
         }
       );
 
-
-      if (data.error) {
-        this.setState(state => ({
-          ...state,
-          errors: { ...state.errors, ...data.error },
-        }));
-      } else if (data.errors) {
+      if (data.errors) {
         this.setState(state => ({
           ...state,
           errors: { ...state.errors, ...data.errors },
