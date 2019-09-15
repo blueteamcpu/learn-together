@@ -95,7 +95,7 @@ router.put('/:id', async (req, res, next) => {
 router.get('/:id', async(req, res, next) => {
     try {
         const event = await Event.findOne({ where: { id: req.params.id },
-            include: [{model: User}, {model: Group}]    
+            include: [{model: User, attributes: ['firstName', 'lastName', 'imageURL']}, {model: Group, attributes: ['name']}]    
         });
         res.send(event);
     } catch(err) {
