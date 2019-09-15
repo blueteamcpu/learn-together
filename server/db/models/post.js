@@ -10,13 +10,6 @@ Post.init(
       unique: true,
       primaryKey: true,
     },
-    // topic: {
-    //   type: sequelize.STRING,
-    //   allowNull: false,
-    //   validate: {
-    //     notEmpty: true,
-    //   },
-    //},
     description: {
       type: sequelize.TEXT,
       allowNull: true,
