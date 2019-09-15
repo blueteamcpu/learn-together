@@ -6,9 +6,9 @@ const CustomCard = ({ header, meta, description, history, link }) => {
   return (
     <Card onClick={() => history.push(link)}>
       <Card.Content>
-        <Card.Header>{header}</Card.Header>
-        <Card.Meta>{meta}</Card.Meta>
-        <Card.Description>{description}</Card.Description>
+        {header && <Card.Header>{header}</Card.Header>}
+        {meta && <Card.Meta>{meta}</Card.Meta>}
+        {description && <Card.Description>{description}</Card.Description>}
       </Card.Content>
     </Card>
   );
@@ -16,4 +16,4 @@ const CustomCard = ({ header, meta, description, history, link }) => {
 
 const ConnectedCard = withRouter(CustomCard);
 
-export default ConnectedCard
+export default ConnectedCard;
