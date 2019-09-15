@@ -67,6 +67,22 @@ export const getEventDetail = (eventId) => async (dispatch, _, axios) => {
       console.error(error);
     }
   };
+
+export const deleteEvent = (eventId) => async (dispatch, _, axios) => {
+    try {   
+            const result = await axios.delete(`/api/events/${eventId}`);
+            const event = result.data;
+            dispatch({
+                type: DELETE_EVENT,
+                event
+            });
+            
+        }
+   catch (error) {
+      console.error(error);
+    }
+  };
+
 export const createEvent = event => async (dispatch, _, axios) => {
   try {
     dispatch({

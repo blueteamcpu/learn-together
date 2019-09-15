@@ -7,7 +7,7 @@ import {
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import Axios from 'axios';
-import { updateEvent as _updateEvent, getEventDetail as _getEventDetail } from '../../actions/events';
+import { updateEvent as _updateEvent, getEventDetail as _getEventDetail, deleteEvent as _deleteEvent } from '../../actions/events';
 import { connect } from 'react-redux';
 
 class UpdateEventForm extends Component {
@@ -74,7 +74,8 @@ class UpdateEventForm extends Component {
     };
 
     deleteEvent(){
-
+        this.props.deleteEvent(this.state.event.id);
+        this.props.history.push('/dashboard');
     }
 
 
@@ -168,6 +169,10 @@ const mapDispatchToProps = (dispatch) => ({
     getEventDetail(eventId) {
         dispatch(_getEventDetail(eventId));
     },
+    deleteEvent(eventId) {
+        dispatch(_deleteEvent(eventId));
+        
+    }
 });
 
 export default connect(

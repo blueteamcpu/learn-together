@@ -181,8 +181,8 @@ router.delete('/deleteattendee', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-      const deletedEvent = await Event.destroy({ where: { id: req.params.id } });
-      res.send(deletedEvent);
+      const deletedEvent = await Event.destroy({ where: { id: req.params.id } }, {returning: true});
+      res.send(deletedEvent[1]);
     } catch (err) {
       next(err);
     }

@@ -124,7 +124,7 @@ class EventDetail extends Component {
                                     </List.Item>) }
                                 </List> 
                                 : 
-                                        <UpdateEventForm eventId={event.id}/>
+                                        <UpdateEventForm eventId={event.id} history={this.props.history}/>
                                 )
                         }
                        </Fragment>

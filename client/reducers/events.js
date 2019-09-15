@@ -34,6 +34,9 @@ export default (state = initialState, action) => {
       case UPDATE_EVENT: {
           return {...state, detailedEvent: action.event}
       }
+      case DELETE_EVENT: {
+        return {...state, allEvents: state.allEvents.filter(ev => ev.id !== action.event.id), detailedEvent: {}}
+      }
       default:
         return state;
     }
