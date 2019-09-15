@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import UpdateEventForm from './UpdateEventForm';
+import { Link } from 'react-router-dom';
+import { getDetailGroup as _getGroupDetailed } from '../../reducers/groupReducer';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
 import {
     Button,
@@ -24,6 +26,7 @@ class EventDetail extends Component {
         this.state = { 
             going: false,
             activeItem: 'info',
+            event: {}
          }
          this.rsvp = this.rsvp.bind(this);
          this.unrsvp = this.unrsvp.bind(this);
@@ -32,12 +35,12 @@ class EventDetail extends Component {
 
     componentDidMount() {
         this.props.getEventDetail(this.props.match.params.eventId);
-        
     }
-
+    
     componentDidUpdate() {
         const { event } = this.props;
         const attendees = event.users;
+        
 
         if (attendees && this.state.going === false) {
             const isGoing = attendees.filter(user => user.id === this.props.user.id)
@@ -61,9 +64,10 @@ class EventDetail extends Component {
     handleMenuClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() { 
-        const { event, user } = this.props;
+        const { event, user, group } = this.props;
         const { going, activeItem } = this.state;
         const attendees = event.users;
+        console.log('EVENT', event)
         return ( 
 
             <Fragment>
@@ -98,9 +102,12 @@ class EventDetail extends Component {
                         </Grid>
                         { activeItem === 'info' ? 
                                 <Fragment>
+                                <Header sub>Group</Header>
+                                <Link to={`/groups/${event.groupId}`}>{event.group.name}</Link>
                                 <Header sub>Description</Header>
                                 {event.description}
-                                
+                                <br/>
+                                <br/>
                                 <List>
                                 <List.Item>
                                 <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
@@ -138,7 +145,8 @@ class EventDetail extends Component {
 const mapStateToProps = state => ({
   events: state.events.allEvents,
   event: state.events.detailedEvent,
-  user: state.authentication.user
+  user: state.authentication.user,
+  group: state.groups.groupDetailed.group
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -150,6 +158,9 @@ const mapDispatchToProps = (dispatch) => ({
     },
     unjoinEvent(event) {
         dispatch(_unjoinEvent(event));
+    },
+    getGroupDetailed(groupId) {
+        dispatch(_getGroupDetailed(groupId));
     }
 });
 
