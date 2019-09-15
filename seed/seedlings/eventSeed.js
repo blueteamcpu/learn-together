@@ -19,4 +19,12 @@ module.exports = [
     location: 'The best place on Earth',
     zipcode: '23498',
   },
+  { name: 'Another event!',
+    description: 'We have not idea what we are doing, but we are doin it!!!',
+    day: date.getDay(),
+    startTime: '07:00',
+    endTime: '11:00',
+    location: 'Down in the darkest place we know',
+    zipcode: '98765',
+  }
 ];

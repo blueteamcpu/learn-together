@@ -43,6 +43,8 @@ async function doTheSeeding() {
     // table associations.
     await events[0].update({ hostId: users[0].id, groupId: groups[0].id });
     await models.EventAttendee.create({ eventId: events[0].id, userId: users[0].id });
+    await events[1].update({ hostId: users[0].id, groupId: groups[0].id });
+    await models.EventAttendee.create({ eventId: events[1].id, userId: users[0].id });
     db.close();
   }
   catch(e) {

@@ -4,18 +4,17 @@ import { connect } from 'react-redux';
 
 class GroupContext extends React.Component {
   render() {
-    const { context } = this.props;
+    const { context, history } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
-    console.log("context");
     return (
-    <List divided relaxed>
+    <List relaxed>
       {this.props.groupDetailed[context].map(i => {
         switch(context) {
         case 'members':
           return <Members key={i.id} item={i}/>;
           break;
         case 'events':
-          return <Events key={i.id} item={i}/>;
+          return <Events key={i.id} item={i} history={history}/>;
           break;
         case 'chat':
           return <Chat item={i}/>;
@@ -43,31 +42,38 @@ export default connect(mapStateToProps, null)(GroupContext);
 // For the moment I'm not to worried about it though.
 // I think this makes it easy to add anything as we see fit
 // Lets see though
-function Events({ item }) {
+function Events({ item, history }) {
   const weekday = dateDayAsString(item.day);
   const month = dateMonthAsString(item.day);
   const dayNum = new Date(item.day).getDay();
   const year = new Date(item.day).getYear();
   return(
-    <List.Item>
+    <List.Item as='a' onClick={() => history.push(`/events/${item.id}`)}>
       <List.Content>
-        <List.Header as='h3' style={{ fontSize: '2em' }}>{item.name}</List.Header>              
-        <List.Description>
-        <Grid divided='vertically'>
-          <Grid.Row columns={2} divided>
-            <Grid.Column>
-              {item.description}              
-            </Grid.Column>
-            <Grid.Column>
-              <strong>Location and time:</strong><br/>
-              {item.location}<br/>
-              {weekday}, {month} {dayNum}, {year}<br/>
-              {item.startTime} to {item.endTime}
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-        </List.Description>
-
+        <Segment>
+          <List.Description>
+            <Grid>
+              <Grid.Row columns={2}>
+                <Grid.Column>
+                  <Container style={{ fontSize: '1.5em', textAlign: 'center'}}>
+                    {item.name}
+                  </Container>
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row columns={2} divided>
+                <Grid.Column>
+                  {item.description}              
+                </Grid.Column>
+                <Grid.Column>
+                  <strong>Location and time:</strong><br/>
+                  {item.location}<br/>
+                  {weekday}, {month} {dayNum}, {year}<br/>
+                  {item.startTime} to {item.endTime}
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </List.Description>
+        </Segment>
       </List.Content>
     </List.Item>
   );

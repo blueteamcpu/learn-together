@@ -26,11 +26,10 @@ class GroupDetail extends Component {
 
   compontentDidUpdate() {
     const { context } = this.state;
-    console.log( context );
   }
 
   render() {
-    const { groupDetailed } = this.props;
+    const { groupDetailed, history } = this.props;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
     return (
@@ -47,7 +46,7 @@ class GroupDetail extends Component {
         </Segment>
         <TabMenu activeItem={this.state.activeItem} handleItemClick={this.handleItemClick}/>
         <Segment attached='bottom'>
-          <GroupContext context={this.state.context}/>
+          <GroupContext context={this.state.context} history={history}/>
         </Segment>        
       </Container>
     );
