@@ -116,16 +116,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-//get all attendees for an event
-router.get('/:id/users', async(req, res, next) => {
-    try {
-        const event = await Event.findOne({ where: {id: req.params.id} });
-        const eventAttendees = await event.getUsers();
-        res.send(eventAttendees);
-    } catch(err) {
-        next(err);
-    }
-});
 
 //get all events for the current user
 router.get('/myevents', async (req, res, next) => {
