@@ -15,7 +15,7 @@ class GroupDetail extends Component {
           };
 
   handleItemClick = (e, { name }) => {
-    this.setState({ activeItem: name });
+    this.setState({ activeItem: name, context: name });
     this.props.getDetailGroup(this.props.match.params.groupId, name);
   };
 
