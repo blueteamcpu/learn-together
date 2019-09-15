@@ -8,15 +8,10 @@ import {
   Segment,
   Image,
 } from 'semantic-ui-react';
-import ExploreForm from './ExploreForm';
-import ExploreCards from '../ExploreCards/ExploreCards';
+import ExploreForm from './ExploreForm/ExploreForm';
+import ExploreCards from './ExploreCards/ExploreCards';
 
 class Explore extends Component {
-  state = {
-    term: '',
-    showLoading: false,
-  };
-
   fetchData = (category, term = null, offset = null) => {
     this.props.fetchContent(category, term, offset);
     setTimeout(() => this.props.delayOver(), 500);
@@ -25,21 +20,6 @@ class Explore extends Component {
   componentDidMount() {
     this.fetchData(this.props.category);
   }
-
-  handleChange = e => {
-    const { value: term } = e.target;
-    this.setState(state => ({ ...state, term }));
-  };
-
-  handleSelect = e => {
-    const { innerText } = e.target;
-    this.fetchData(innerText, this.state.term);
-  };
-
-  handleSubmit = e => {
-    e.preventDefault();
-    this.fetchData(this.props.category, this.state.term);
-  };
 
   render() {
     return (
@@ -51,13 +31,7 @@ class Explore extends Component {
             </Container>
           </Grid.Row>
           <Grid.Row centered>
-            <ExploreForm
-              handleSubmit={this.handleSubmit}
-              handleChange={this.handleChange}
-              handleSelect={this.handleSelect}
-              term={this.state.term}
-              category={this.props.category}
-            />
+            <ExploreForm fetchData={this.fetchData} />
           </Grid.Row>
           <Grid.Row centered>
             {this.props.fetching ? (
