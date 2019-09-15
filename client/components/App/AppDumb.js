@@ -24,7 +24,7 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/groups/:groupId/events/create" component={CreateEventForm} />
-          <Route exact path="/dashboard/:groupId" component={GroupDetail} />
+          <Route exact path="/groups/:groupId" component={GroupDetail} />
           <Route exact path="/explore" component={Explore} />
           <Route exact path="/explore" component={Explore} />
           <Route
