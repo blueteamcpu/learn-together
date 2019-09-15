@@ -22,6 +22,7 @@ class EventDetail extends Component {
         super(props);
         this.state = { 
             going: false,
+            activeItem: 'info',
          }
          this.rsvp = this.rsvp.bind(this);
          this.unrsvp = this.unrsvp.bind(this);
@@ -53,18 +54,67 @@ class EventDetail extends Component {
         this.setState({going: false})
     }
 
+    handleMenuClick = (e, { name }) => this.setState({ activeItem: name })
+
     render() { 
         const { event } = this.props;
-        const { going } = this.state;
+        const { going, activeItem } = this.state;
         const attendees = event.users;
        
         return ( 
-            <Container>
+            // <Container>
+            //     <Segment style={{ padding: '8em 0em' }} vertical>
+            //         { event.day ? 
+            //         <Grid container stackable verticalAlign="middle" textAlign='center'>
+            //             <Grid.Row>
+            //                 <Grid.Column>
+            //                     <Header as="h3" style={{ fontSize: '2em' }}>
+            //                     {event.name}
+            //                     </Header>
+            //                     <p style={{ fontSize: '1.33em' }}>
+            //                     {event.description}
+            //                     </p>
+            //                 </Grid.Column>
+            //             </Grid.Row>
+            //             <Grid.Row>
+            //                 <Grid.Column width={10}>
+            //                 <List>
+            //                     <List.Item>
+            //                     <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
+            //                     </List.Item>
+            //                     <List.Item>
+            //                     <List.Content><Icon name='calendar alternate outline'/>{event.day.slice(0,10)}</List.Content>
+            //                     </List.Item>
+            //                     <List.Item>
+            //                     <List.Content><Icon name='clock outline'/>{event.startTime} - {event.endTime}</List.Content>
+            //                     </List.Item>
+            //                 </List>
+            //                 </Grid.Column>
+            //             </Grid.Row>
+            //             <Grid.Row>
+            //                 <Grid.Column width={10}>
+            //                     { !going ? 
+            //                     <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
+            //                     <Button onClick={this.unrsvp} color='red'>Not Going</Button>
+            //                     }
+            //                 </Grid.Column>
+            //             </Grid.Row>
+            //             <Grid.Row>
+            //                 <Grid.Column width={10}>
+            //                     {attendees.length} People Going
+            //                 </Grid.Column>
+            //             </Grid.Row>
+            //         </Grid> : null }
+            //     </Segment>
+            // </Container>
+
+            <Fragment>
+                <Container stretch='true'>
                 <Segment style={{ padding: '8em 0em' }} vertical>
                     { event.day ? 
-                    <Grid container stackable verticalAlign="middle" >
+                    <Grid container stackable verticalAlign="middle" textAlign='center'>
                         <Grid.Row>
-                            <Grid.Column width={8}>
+                            <Grid.Column>
                                 <Header as="h3" style={{ fontSize: '2em' }}>
                                 {event.name}
                                 </Header>
@@ -74,39 +124,19 @@ class EventDetail extends Component {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            <Grid.Column width={8}>
-                            <List>
-                                <List.Item>
-                                <List.Icon name='map marker alternate' />
-                                <List.Content>{event.location}, {event.zipcode}</List.Content>
-                                </List.Item>
-                                <List.Item>
-                                <List.Icon name='calendar alternate outline' />
-                                <List.Content>{event.day.slice(0,10)}</List.Content>
-                                </List.Item>
-                                <List.Item>
-                                <List.Icon name='clock outline' />
-                                <List.Content>{event.startTime} - {event.endTime}</List.Content>
-                                </List.Item>
-                            </List>
-                            </Grid.Column>
+                        { !going ? 
+                                        <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
+                                        <Button onClick={this.unrsvp} color='red'>Not Going</Button>
+                                    }
+                        <Menu tabular attached='top'>
+                            <Menu.Item name='info' active={activeItem==='info'} onClick={this.handleMenuClick}/>
+                            <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}/>
+                        </Menu>
                         </Grid.Row>
-                        <Grid.Row>
-                            <Grid.Column width={8}>
-                                { !going ? 
-                                <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
-                                <Button onClick={this.unrsvp} color='red'>Not Going</Button>
-                                }
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row>
-                            <Grid.Column width={8}>
-                                {attendees.length} People Going
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid> : null }
+                </Grid> : null }
                 </Segment>
-            </Container>
+                </Container>
+            </Fragment>
          );
     }
 }
