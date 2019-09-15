@@ -60,6 +60,7 @@ class EventDetail extends Component {
         const { event } = this.props;
         const { going, activeItem } = this.state;
         const attendees = event.users;
+        console.log('ATTENDEES: ', attendees)
        
         return ( 
             // <Container>
@@ -112,6 +113,7 @@ class EventDetail extends Component {
                 <Container stretch='true'>
                 <Segment style={{ padding: '8em 0em' }} vertical>
                     { event.day ? 
+                    <Fragment>
                     <Grid container stackable verticalAlign="middle" textAlign='center'>
                         <Grid.Row>
                             <Grid.Column>
@@ -130,10 +132,32 @@ class EventDetail extends Component {
                                     }
                         <Menu tabular attached='top'>
                             <Menu.Item name='info' active={activeItem==='info'} onClick={this.handleMenuClick}/>
-                            <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}/>
+                            <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}>Attendees ({attendees.length})</Menu.Item>
                         </Menu>
                         </Grid.Row>
-                </Grid> : null }
+                        </Grid>
+                        { activeItem === 'info' ? 
+                                <List>
+                                <List.Item>
+                                <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
+                                </List.Item>
+                                <List.Item>
+                                <List.Content><Icon name='calendar alternate outline'/>{event.day.slice(0,10)}</List.Content>
+                                </List.Item>
+                                <List.Item>
+                                <List.Content><Icon name='clock outline'/>{event.startTime} - {event.endTime}</List.Content>
+                                </List.Item>
+                                </List> 
+                                : 
+                                <List>
+                                {attendees.map(person => 
+                                    <List.Item key={person.id}>
+                                    <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName}</List.Content>
+                                    </List.Item>) }
+                                </List>
+                        }
+                       </Fragment>
+                 : null }
                 </Segment>
                 </Container>
             </Fragment>
@@ -149,9 +173,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-    getEvents() {
-        dispatch(_getEvents());
-    },
     getEventDetail(eventId) {
         dispatch(_getEventDetail(eventId));
     },
