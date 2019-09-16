@@ -21,8 +21,14 @@ const titleCase = str => {
   }
 };
 
+const firstSentenceOnly = p => {
+  const idx = p.search(/(\?|\.|!)/);
+  return p.slice(0, idx + 1);
+};
+
 module.exports = {
   makeHash,
   titleCase,
   compareStrAgainstHash,
+  firstSentenceOnly,
 };

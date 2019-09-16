@@ -1,42 +1,37 @@
 import React from 'react';
 import { Container, Header, Grid, Button, Divider } from 'semantic-ui-react';
 import CardGroup from '../CardGroup/CardGroupDumb';
+import { firstSentenceOnly } from '../../../utils/index';
 
 const groups = [
   {
     id: 1,
     name: 'Linear Algebra',
-    zipcode: 93420,
-    description: 'All things Linear Algebra!',
+    description: 'All things Linear Algebra! I love la.',
   },
   {
     id: 2,
     name: 'Calculus',
-    zipcode: 93420,
-    description: 'All things Calculus!',
+    description: 'All things Calculus! I love calc.',
   },
   {
     id: 3,
     name: 'Discrete Math',
-    zipcode: 93420,
     description: 'All things Discrete Math!',
   },
   {
     id: 4,
     name: 'Geometry',
-    zipcode: 93420,
     description: 'All things Geometry!',
   },
   {
     id: 5,
     name: 'Algorithms',
-    zipcode: 93420,
     description: 'All things Algorithms!',
   },
   {
     id: 6,
     name: 'Data Structures',
-    zipcode: 93420,
     description: 'All things Data Structures!',
   },
 ];
@@ -53,7 +48,7 @@ const events = [
   {
     id: 2,
     name: 'Gradient Descent',
-    description: "Let's make sure we understand how to minimize loss!",
+    description: "Let's make sure we understand how to minimize loss! We hate inefficiency!",
     date: new Date(),
     zipcode: 93420,
   },
@@ -110,7 +105,9 @@ const DashBoard = () => {
             items={groups.map(g => ({
               id: g.id,
               header: g.name,
-              description: g.description || 'No description available.',
+              description: g.description
+                ? firstSentenceOnly(g.description)
+                : 'No description available.',
               link: `/groups/${g.id}`,
             }))}
             category="Groups"
@@ -135,7 +132,7 @@ const DashBoard = () => {
               header: e.name,
               meta: `${e.date.getMonth() +
                 1} / ${e.date.getDate()} / ${e.date.getFullYear()}`,
-              description: e.description,
+              description: firstSentenceOnly(e.description),
               link: `/events/${e.id}`,
             }))}
             category="Events"
