@@ -63,8 +63,8 @@ class CreateEventForm extends Component {
                 }));
             } else {
                 this.props.createEvent(data);
+                this.props.history.push(`/events/${data.id}`)
             }
-            this.props.history.push(`/events/${data.id}`)
 
         } catch (error) {
             console.error(error);
