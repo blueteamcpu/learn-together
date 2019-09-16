@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Grid, Item, List, Image, Segment} from 'semantic-ui-react';
+import { Container, Grid, Item, List, Image, Segment, Button} from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 class GroupContext extends React.Component {
   render() {
-    const { context, history } = this.props;
+    const { context, history, groupId } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
+    <Fragment>
+      {context === 'events' ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
     <List relaxed>
       {this.props.groupDetailed[context].map(i => {
         switch(context) {
@@ -24,6 +27,7 @@ class GroupContext extends React.Component {
         }
       })}
     </List>
+    </Fragment>
     );
   }
 }
