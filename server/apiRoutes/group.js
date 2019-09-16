@@ -228,7 +228,7 @@ router.delete('/removeself', async (req, res, next) => {
 //get all events for a specific group
 router.get('/:id/events', async (req, res, next) => {
   try {
-    const group = req.params.id;
+    const group = await Group.findByPk({ where: { id: req.params.id }});
     const groupEvents = await group.getEvents();
     res.send(groupEvents);
   } catch (err) {
