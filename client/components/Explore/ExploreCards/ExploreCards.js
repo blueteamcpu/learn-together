@@ -12,7 +12,7 @@ const mapStateToProps = ({ explore }) => {
       meta: `Members: ${memberCount}`,
       description: group.description,
     }));
-  } else if (explore.category) {
+  } else if (explore.category === 'Events') {
     items = explore.items.map(({ event, attendeeCount }) => ({
       id: event.id,
       link: `/events/${event.id}`,
