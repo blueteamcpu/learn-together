@@ -1,30 +1,20 @@
 import React, { Component, Fragment } from 'react';
-import { List, Image, Segment} from 'semantic-ui-react';
+import { Container, Grid, Item, List, Image, Segment} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 class GroupContext extends React.Component {
-  constructor() {
-    super();
-    this.state = {};
-  }
-  componentDidMount() {
-    const { context } = this.props;
-    this.setState( { context: context});
-  }
-
-
   render() {
-    const { context } = this.state;
+    const { context, history } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
-    <List divided relaxed>
+    <List relaxed>
       {this.props.groupDetailed[context].map(i => {
-        switch(this.state.context) {
+        switch(context) {
         case 'members':
           return <Members key={i.id} item={i}/>;
           break;
         case 'events':
-          return <Events item={i}/>;
+          return <Events key={i.id} item={i} history={history}/>;
           break;
         case 'chat':
           return <Chat item={i}/>;
@@ -52,16 +42,38 @@ export default connect(mapStateToProps, null)(GroupContext);
 // For the moment I'm not to worried about it though.
 // I think this makes it easy to add anything as we see fit
 // Lets see though
-function Events({ item }) {
+function Events({ item, history }) {
+  const weekday = dateDayAsString(item.day);
+  const month = dateMonthAsString(item.day);
+  const dayNum = new Date(item.day).getDay();
+  const year = new Date(item.day).getYear();
   return(
-    <List.Item>
+    <List.Item as='a' onClick={() => history.push(`/events/${item.id}`)}>
       <List.Content>
-        <List.Header>{item.name}</List.Header>
-        <List.Description>
-          {item.description}
-          {item.location}
-          {item.startTime} to {item.endTime}
-        </List.Description>
+        <Segment>
+          <List.Description>
+            <Grid>
+              <Grid.Row columns={2}>
+                <Grid.Column>
+                  <Container style={{ fontSize: '1.5em', textAlign: 'center'}}>
+                    {item.name}
+                  </Container>
+                </Grid.Column>
+              </Grid.Row>
+              <Grid.Row columns={2} divided>
+                <Grid.Column>
+                  {item.description}              
+                </Grid.Column>
+                <Grid.Column>
+                  <strong>Location and time:</strong><br/>
+                  {item.location}<br/>
+                  {weekday}, {month} {dayNum}, {year}<br/>
+                  {item.startTime} to {item.endTime}
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </List.Description>
+        </Segment>
       </List.Content>
     </List.Item>
   );
@@ -80,4 +92,14 @@ function Members({ item }) {
 
 function Chat() {
   
+}
+
+function dateDayAsString(dateString) {
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednessday', 'Thursday', 'Friday', 'Saturday'];
+  return daysOfWeek[new Date(dateString).getDay()];
+}
+
+function dateMonthAsString(dateString) {
+  const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  return monthsOfYear[new Date(dateString).getMonth()];
 }
