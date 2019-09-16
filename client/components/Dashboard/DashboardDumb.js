@@ -48,7 +48,8 @@ const events = [
   {
     id: 2,
     name: 'Gradient Descent',
-    description: "Let's make sure we understand how to minimize loss! We hate inefficiency!",
+    description:
+      "Let's make sure we understand how to minimize loss! We hate inefficiency!",
     date: new Date(),
     zipcode: 93420,
   },
@@ -114,7 +115,7 @@ const DashBoard = () => {
           />
         </Grid.Row>
         <Grid.Row centered>
-          {groups.length === 10 && (
+          {groups.length !== 0 && groups.length % 10 === 0 && (
             <Button type="submit">See more groups</Button>
           )}
         </Grid.Row>
@@ -139,7 +140,7 @@ const DashBoard = () => {
           />
         </Grid.Row>
         <Grid.Row centered>
-          {events.length === 10 && (
+          {events.length !== 0 && events.length % 10 === 0 && (
             <Button type="submit">See more events</Button>
           )}
         </Grid.Row>
