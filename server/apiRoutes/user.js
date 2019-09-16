@@ -3,8 +3,6 @@ const { compareStrAgainstHash } = require('../../utils/index');
 
 router.put('/updateUser', async (req, res, next) => {
   try {
-    console.log(req.user);
-
     const newUser = await req.user.update({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
