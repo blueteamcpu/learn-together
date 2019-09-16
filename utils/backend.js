@@ -15,7 +15,22 @@ class EventError extends Error {
   }
 }
 
+const queryForUser = User => async (req, _, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id } });
+
+    if (user) {
+      req.user = user;
+    }
+    
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   AuthenticationError,
-  EventError
+  EventError,
+  queryForUser,
 };

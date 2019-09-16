@@ -3,7 +3,6 @@ const express = require('express');
 const morgan = require('morgan');
 const compression = require('compression');
 const helmet = require('helmet');
-const { middleware: serializeUser } = require('./serializeUserMiddleware');
 
 const app = express();
 
@@ -17,7 +16,7 @@ app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(serializeUser);
+app.use(require('./serializeUserMiddleware'));
 
 app.use('/auth', require('../auth/index'));
 app.use('/api', require('../apiRoutes/index'));

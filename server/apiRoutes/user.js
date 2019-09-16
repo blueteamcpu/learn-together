@@ -1,8 +1,10 @@
 const router = require('express').Router();
+const { User } = require('../db/index');
 const { compareStrAgainstHash } = require('../../utils/index');
-const { cache } = require('../app/serializeUserMiddleware');
+const { queryForUser } = require('../../utils/backend');
+const { client, cacheDuration } = require('../redis');
 
-router.put('/updateUser', async (req, res, next) => {
+router.put('/updateUser', queryForUser(User), async (req, res, next) => {
   try {
     const newUser = await req.user.update({
       firstName: req.body.firstName,
@@ -12,16 +14,24 @@ router.put('/updateUser', async (req, res, next) => {
       username: req.body.username,
     });
 
-    cache.clear(req.session.userId);
-    cache.set(req.session.userId, newUser);
-
-    res.send(newUser);
+    client.setex(
+      req.session.userId,
+      cacheDuration,
+      JSON.stringify(newUser),
+      err => {
+        if (err) {
+          next(err);
+        } else {
+          res.send(newUser);
+        }
+      }
+    );
   } catch (err) {
     next(err);
   }
 });
 
-router.put('/updateUserPass', async (req, res, next) => {
+router.put('/updateUserPass', queryForUser(User), async (req, res, next) => {
   try {
     const validation = await compareStrAgainstHash(
       req.body.password,
@@ -33,8 +43,18 @@ router.put('/updateUserPass', async (req, res, next) => {
         password: req.body.NPass,
       });
 
-      cache.clear(req.session.userId);
-      cache.set(req.session.userId, user);
+      client.setex(
+        req.session.userId,
+        cacheDuration,
+        JSON.stringify(user),
+        err => {
+          if (err) {
+            next(err);
+          } else {
+            res.send(user);
+          }
+        }
+      );
 
       res.sendStatus(204);
     } else {
