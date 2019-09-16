@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { Op } = require('sequelize');
+const { queryForUser } = require('../../utils/backend');
 const {
   Event,
   EventAttendee,
@@ -95,7 +96,7 @@ router.put('/:id', async (req, res, next) => {
 router.get('/:id', async(req, res, next) => {
     try {
         const event = await Event.findOne({ where: { id: req.params.id },
-            include: [{model: User, attributes: ['firstName', 'lastName', 'imageURL']}, {model: Group, attributes: ['name']}]    
+            include: [{model: User, attributes: ['firstName', 'lastName', 'imageURL']}, {model: Group, attributes: ['name']}]
         });
         res.send(event);
     } catch(err) {
@@ -118,7 +119,7 @@ router.get('/', async (req, res, next) => {
 
 
 //get all events for the current user
-router.get('/myevents', async (req, res, next) => {
+router.get('/myevents', queryForUser(User), async (req, res, next) => {
   try {
     const user = req.user;
     const userEvents = await user.getEvents();
@@ -133,16 +134,16 @@ router.get('/myevents', async (req, res, next) => {
 //add user to attend event
 router.post('/addattendee', async(req, res, next) => {
     try {
-        let validGroupMember = await GroupMember.findOne({ 
+        let validGroupMember = await GroupMember.findOne({
             where: { groupId: req.body.groupId, userId: req.user.id }
         });
         if (validGroupMember) {
-            const attendee = await EventAttendee.create({ 
-                userId: req.user.id, eventId: req.body.id 
+            const attendee = await EventAttendee.create({
+                userId: req.user.id, eventId: req.body.id
             });
             res.send(attendee)
         } else throw new Error(
-            'Events', 
+            'Events',
             'You must be a member of this group to attend event'
         );
     } catch(err) {
