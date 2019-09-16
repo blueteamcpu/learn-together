@@ -41,9 +41,6 @@ class LoginForm extends Component {
         },
       });
 
-      console.log(data);
-
-
       if (data.errors) {
         this.setState(state => ({
           ...state,
