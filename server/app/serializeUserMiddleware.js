@@ -1,9 +1,5 @@
-const redis = require('redis');
 const { User } = require('../db/index');
-
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const client = redis.createClient(REDIS_PORT);
-const cacheDuration = 1000 * 60 * 2;
+const { client, cacheDuration } = require('../redis');
 
 const middleware = (req, _, next) => {
   if (req.session && req.session.userId) {

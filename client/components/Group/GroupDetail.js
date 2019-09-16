@@ -49,7 +49,7 @@ class GroupDetail extends Component {
                  handleItemClick={this.handleItemClick}
                  userId={userId}/>
         <Segment attached='bottom'>
-          <GroupContext context={this.state.context} history={history}/>
+          <GroupContext context={this.state.context} history={history} groupId={group.id}/>
         </Segment>        
       </Container>
     );

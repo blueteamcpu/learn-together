@@ -44,7 +44,7 @@ Event.init(
       },
     },
     startTime: {
-      type: TIME,
+      type: STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -74,6 +74,7 @@ Event.init(
 
 Event.beforeCreate(instance => {
   instance.name = titleCase(instance.name);
+  instance.day = new Date(instance.day);
 });
 
 Event.beforeUpdate(instance => {

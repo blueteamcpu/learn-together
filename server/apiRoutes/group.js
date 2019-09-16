@@ -225,6 +225,17 @@ router.delete('/removeself', async (req, res, next) => {
   }
 });
 
+//get all events for a specific group
+router.get('/:id/events', async (req, res, next) => {
+  try {
+    const group = await Group.findByPk({ where: { id: req.params.id }});
+    const groupEvents = await group.getEvents();
+    res.send(groupEvents);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.use((error, req, res, next) => {
   if (error.type === 'Groups') {
     res.status(error.status).json({ error: { [error.field]: error.message } });
