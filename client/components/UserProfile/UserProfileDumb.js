@@ -87,7 +87,6 @@ class UserProfileDumb extends Component {
 
   async handleSubmit(ev) {
     ev.preventDefault();
-    console.log('submitting');
 
     try {
       const {

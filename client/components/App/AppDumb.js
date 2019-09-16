@@ -5,12 +5,13 @@ import Home from '../Home/HomeDumb';
 import LoginForm from '../LoginForm/LoginForm';
 import SignUp from '../SignUpForm/SignUp';
 import Nav from '../Nav/Nav';
+import CreateEventForm from '../Event/CreateEventForm/CreateEventForm';
+import EventDetail from '../Event/EventDetail';
 
 // I think eventually we split these routes out into a Dashboard route
 // For now, just keeping the ball rolling
 import GroupDetail from '../Group/GroupDetail';
 import UserProfile from '../UserProfile/UserProfile';
-import CreateEventForm from '../CreateEventForm/CreateEventForm';
 import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
 import Explore from '../Explore/Explore';
 import Dashboard from '../Dashboard/DashboardDumb';
@@ -26,6 +27,7 @@ class App extends Component {
         <Nav />
         <Switch>
           <Route exact path="/" component={Home} />
+          <Route exact path="/events/:eventId" component={EventDetail} />
           <Route
             exact
             path="/groups/:groupId/events/create"

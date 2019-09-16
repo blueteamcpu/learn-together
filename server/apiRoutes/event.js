@@ -62,7 +62,7 @@ router.get('/explore', async (req, res, next) => {
 router.post('/newevent', async (req, res, next) => {
   try {
     const newEvent = await Event.create({
-      ...req.body.event,
+      ...req.body,
       hostId: req.user.id,
       groupId: req.body.groupId,
     });
@@ -77,10 +77,10 @@ router.post('/newevent', async (req, res, next) => {
 
 //update event info
 //TODO: add restrictions
-router.put('/events/:id', async (req, res, next) => {
+router.put('/:id', async (req, res, next) => {
   try {
     const updatedEvent = await Event.update(
-      { ...req.body.event },
+      { ...req.body },
       {
         where: { id: req.params.id },
       }
@@ -92,30 +92,22 @@ router.put('/events/:id', async (req, res, next) => {
 });
 
 //get single event
-router.get('/events/:id', async (req, res, next) => {
-  try {
-    const event = await Event.findOne({ where: { id: req.params.id } });
-    res.send(event);
-  } catch (err) {
-    next(err);
-  }
+router.get('/:id', async(req, res, next) => {
+    try {
+        const event = await Event.findOne({ where: { id: req.params.id },
+            include: [{model: User, attributes: ['firstName', 'lastName', 'imageURL']}, {model: Group, attributes: ['name']}]    
+        });
+        res.send(event);
+    } catch(err) {
+        next(err);
+    }
 });
 
-//delete event
-//TODO: add restrictions
 
-router.delete('/events/:id', async (req, res, next) => {
-  try {
-    const deletedEvent = await Event.destroy({ where: { id: req.params.id } });
-    res.send(deletedEvent);
-  } catch (err) {
-    next(err);
-  }
-});
 
 //get all events
 //TODO: add whatever we are doing for loading, paginating, filtering, ordering
-router.get('/events', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const events = await Event.findAll();
     res.send(events);
@@ -124,16 +116,6 @@ router.get('/events', async (req, res, next) => {
   }
 });
 
-//get all attendees for an event
-router.get('/events/:id', async (req, res, next) => {
-  try {
-    const event = await Event.findOne({ where: { id: req.params.id } });
-    const eventAttendees = await event.getUsers();
-    res.send(eventAttendees);
-  } catch (err) {
-    next(err);
-  }
-});
 
 //get all events for the current user
 router.get('/myevents', async (req, res, next) => {
@@ -146,53 +128,57 @@ router.get('/myevents', async (req, res, next) => {
   }
 });
 
-//get all events for a specific group
-router.get('/groups/:id/events', async (req, res, next) => {
-  try {
-    const group = req.params.id;
-    const groupEvents = await group.getEvents();
-    res.send(groupEvents);
-  } catch (err) {
-    next(err);
-  }
-});
+
 
 //add user to attend event
-router.post('/addattendee', async (req, res, next) => {
-  try {
-    let validGroupMember = await GroupMember.findOne({
-      where: { groupId: req.body.groupId, userId: req.user.id },
-    });
-    if (validGroupMember) {
-      await EventAttendee.create({
-        userId: req.user.id,
-        eventId: req.body.eventId,
-      });
-    } else
-      throw new Error(
-        'Events',
-        'You must be a member of this group to attend event'
-      );
-  } catch (err) {
-    next(err);
-  }
+router.post('/addattendee', async(req, res, next) => {
+    try {
+        let validGroupMember = await GroupMember.findOne({ 
+            where: { groupId: req.body.groupId, userId: req.user.id }
+        });
+        if (validGroupMember) {
+            const attendee = await EventAttendee.create({ 
+                userId: req.user.id, eventId: req.body.id 
+            });
+            res.send(attendee)
+        } else throw new Error(
+            'Events', 
+            'You must be a member of this group to attend event'
+        );
+    } catch(err) {
+        next(err);
+    }
 });
 
 //remove user from attending event
 router.delete('/deleteattendee', async (req, res, next) => {
   try {
-    const attendee = await EventAttendee.destroy({
-      where: { userId: req.user.id, eventId: req.body.eventId },
+    const attendee = await EventAttendee.findOne({
+        where: { userId: req.user.id, eventId: req.body.id }
+    })
+    await EventAttendee.destroy({
+      where: { userId: req.user.id, eventId: req.body.id },
+      returning: true
     });
-    if (attendee) res.status(201).send();
-    else throw new Error('Events', 'Unable to delete attendee');
+    res.json(attendee);
   } catch (err) {
     next(err);
   }
 });
 
+//delete event
+//TODO: add restrictions
+
+router.delete('/:id', async (req, res, next) => {
+    try {
+      const deletedEvent = await Event.destroy({ where: { id: req.params.id } }, {returning: true});
+      res.send(deletedEvent[1]);
+    } catch (err) {
+      next(err);
+    }
+  });
+
 router.use((error, req, res, next) => {
-  console.log('ERROR: ', error);
   if (error.type === 'Event') {
     res.status(error.status).json({ error: { [error.field]: error.message } });
   } else {

@@ -46,7 +46,7 @@ class GroupDetail extends Component {
         </Segment>
         <TabMenu activeItem={this.state.activeItem} handleItemClick={this.handleItemClick}/>
         <Segment attached='bottom'>
-          <GroupContext context={this.state.context} history={history}/>
+          <GroupContext context={this.state.context} history={history} groupId={group.id}/>
         </Segment>        
       </Container>
     );
