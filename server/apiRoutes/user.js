@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { compareStrAgainstHash } = require('../../utils/index');
+const { cache } = require('../app/serializeUserMiddleware');
 
 router.put('/updateUser', async (req, res, next) => {
   try {
@@ -10,6 +11,9 @@ router.put('/updateUser', async (req, res, next) => {
       zipcode: req.body.zipcode,
       username: req.body.username,
     });
+
+    cache.clear(req.session.userId);
+    cache.set(req.session.userId, newUser);
 
     res.send(newUser);
   } catch (err) {
@@ -25,9 +29,13 @@ router.put('/updateUserPass', async (req, res, next) => {
     );
 
     if (validation) {
-      await req.user.update({
+      const user = await req.user.update({
         password: req.body.NPass,
       });
+
+      cache.clear(req.session.userId);
+      cache.set(req.session.userId, user);
+
       res.sendStatus(204);
     } else {
       res.sendStatus(401);

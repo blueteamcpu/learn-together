@@ -44,12 +44,13 @@ const cache = new Cache();
 const middleware = async (req, _, next) => {
   try {
     if (req.session && req.session.userId) {
+
       if (cache.hasKey(req.session.userId)) {
-        req.user = cache.get(req.session.userId).value;
+        req.user = cache.get(req.session.userId);
       } else {
         const user = await User.findOne({ where: { id: req.session.userId } });
         req.user = user;
-        cache.set(req.session.userId, { value: user }, cacheDuration);
+        cache.set(req.session.userId, user, cacheDuration);
       }
     }
 
@@ -59,4 +60,4 @@ const middleware = async (req, _, next) => {
   }
 };
 
-module.exports = middleware;
+module.exports = { middleware, cache };
