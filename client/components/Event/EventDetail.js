@@ -38,8 +38,8 @@ class EventDetail extends Component {
         
 
         if (attendees && this.state.going === false) {
-            const isGoing = attendees.filter(user => user.id === this.props.user.id)
-            if (isGoing.length) {
+            const isGoing = attendees.find(user => user.id === this.props.user.id)
+            if (isGoing) {
                 this.setState({going: true})
             }
             }
