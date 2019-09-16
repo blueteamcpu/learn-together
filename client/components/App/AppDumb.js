@@ -13,6 +13,7 @@ import UserProfile from '../UserProfile/UserProfile';
 import CreateEventForm from '../CreateEventForm/CreateEventForm';
 import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
 import Explore from '../Explore/Explore';
+import Dashboard from '../Dashboard/DashboardDumb';
 
 class App extends Component {
   componentDidMount() {
@@ -25,9 +26,14 @@ class App extends Component {
         <Nav />
         <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path="/groups/:groupId/events/create" component={CreateEventForm} />
+          <Route
+            exact
+            path="/groups/:groupId/events/create"
+            component={CreateEventForm}
+          />
           <Route exact path="/groups/:groupId" component={GroupDetail} />
           <Route exact path="/explore" component={Explore} />
+          <LoggedInOnly exact path="/dashboard" component={Dashboard} />
           <Route
             exact
             path="/groups/:groupId/events/create"
