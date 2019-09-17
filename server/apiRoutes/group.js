@@ -2,11 +2,12 @@ const router = require('express').Router();
 const { Op } = require('sequelize');
 const { Group, GroupMember, User } = require('../db/index.js');
 const { titleCase } = require('../../utils/index');
+const { queryForUser, isLoggedIn } = require('../../utils/backend');
 
 router.get('/explore', async (req, res, next) => {
   try {
     let { term, section } = req.query;
-    const query = { limit: 20 };
+    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
 
     query.offset = section ? parseInt(section, 10) * 20 : 0;
 
@@ -65,21 +66,22 @@ router.post('/newgroup', async (req, res, next) => {
 router.get('/detail/:groupId/:context?', async (req, res, next) => {
   const context = req.params.context;
   try {
-  const group = await Group.findByPk(req.params.groupId);
-  switch(context){
-  case 'members': {
-    const members = await group.getUsers({ attributes: ['username', 'imageURL', 'id']});
-    res.send({ group, members: [...members] });
-    break;
-  }
-  case 'events': {
-    const events = await group.getEvents();
-    res.send({ group, events: [...events] });
-    break;
-  }
-  }
-  }
-  catch(e) {
+    const group = await Group.findByPk(req.params.groupId);
+    switch (context) {
+      case 'members': {
+        const members = await group.getUsers({
+          attributes: ['username', 'imageURL', 'id'],
+        });
+        res.send({ group, members: [...members] });
+        break;
+      }
+      case 'events': {
+        const events = await group.getEvents();
+        res.send({ group, events: [...events] });
+        break;
+      }
+    }
+  } catch (e) {
     next(e);
   }
 });
@@ -129,16 +131,22 @@ router.get('/groupusers', async (req, res, next) => {
 });
 
 // Gets all groups for a specific user
-router.get('/mygroups', async (req, res, next) => {
-  try {
-    // I think this is right, I'm going to have to test it.
-    const user = await User.findByPk(req.session.userId);
-    const userGroups = await user.getGroups();
-    res.send(userGroups);
-  } catch (error) {
-    next(error);
+router.get(
+  '/mygroups',
+  isLoggedIn,
+  queryForUser(User),
+  async (req, res, next) => {
+    try {
+      // I think this is right, I'm going to have to test it.
+      const userGroups = await req.user.getGroups({
+        attributes: ['id', 'name', 'description'],
+      });
+      res.send(userGroups);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.post('/create', async (req, res, next) => {
   try {
@@ -228,7 +236,7 @@ router.delete('/removeself', async (req, res, next) => {
 //get all events for a specific group
 router.get('/:id/events', async (req, res, next) => {
   try {
-    const group = await Group.findByPk({ where: { id: req.params.id }});
+    const group = await Group.findByPk({ where: { id: req.params.id } });
     const groupEvents = await group.getEvents();
     res.send(groupEvents);
   } catch (err) {
