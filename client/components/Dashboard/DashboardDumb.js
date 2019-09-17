@@ -119,7 +119,7 @@ class DashBoard extends Component {
                   : 'No description available.',
                 link: `/groups/${g.id}`,
               }))}
-              category="Groups"
+              noContentMessage="You do not belong to any groups."
             />
           </Grid.Row>
           <Grid.Row centered>
@@ -144,7 +144,7 @@ class DashBoard extends Component {
                 description: firstSentenceOnly(e.description),
                 link: `/events/${e.id}`,
               }))}
-              category="Events"
+              noContentMessage="You are not rsvp'd to any events."
             />
           </Grid.Row>
           <Grid.Row centered>
