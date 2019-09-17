@@ -11,6 +11,18 @@ router.put('/createPost', async (req, res, next) => {
     }
 });
 
+router.get('/:postId', async (req, res, next) => {
+    try {
+        res.json(await Post.findOne({
+            where: {
+                id: req.params.postId
+            }
+        }));
+    } catch (err) {
+        next(err)
+    }
+})
+
 router.get('/userPosts', async (req, res, next) => {
     try {
         res.json(await Post.findAll({
@@ -21,7 +33,7 @@ router.get('/userPosts', async (req, res, next) => {
     } catch (err) {
         next(err);
     }
-})
+});
 
 router.get('/groupPosts', async (req, res, next) => {
     try {
