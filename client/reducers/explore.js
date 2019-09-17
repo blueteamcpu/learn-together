@@ -4,6 +4,8 @@ import {
   FAILED_TO_FETCH_CONTENT,
   CHANGED_CATEGORY,
   DELAY_OVER,
+  GET_MORE_CONTENT,
+  NO_MORE_CONTENT,
 } from '../actions/explore';
 
 const initialState = {
@@ -12,6 +14,8 @@ const initialState = {
   failedToFetch: false,
   items: [],
   category: 'Groups',
+  offset: 0,
+  noMoreContent: false,
 };
 
 export default (state = initialState, action) => {
@@ -26,13 +30,26 @@ export default (state = initialState, action) => {
       const { items } = action;
       return { ...state, fetching: false, items };
     }
+    case GET_MORE_CONTENT: {
+      const { items } = action;
+      return {
+        ...state,
+        fetching: false,
+        items: [...state.items, ...items],
+        offset: state.offset + 1,
+      };
+    }
     case CHANGED_CATEGORY: {
       return {
         ...state,
         category: action.category,
         items: action.items,
         fetching: false,
+        offset: 0,
       };
+    }
+    case NO_MORE_CONTENT: {
+      return { ...state, noMoreContent: true, fetching: false };
     }
     case FAILED_TO_FETCH_CONTENT: {
       return { ...state, fetching: false, failedToFetch: true };

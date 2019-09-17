@@ -12,10 +12,10 @@ const { titleCase } = require('../../utils/index');
 
 router.get('/explore', async (req, res, next) => {
   try {
-    let { term, section } = req.query;
+    let { term, offset } = req.query;
     const query = { limit: 20, attributes: ['id', 'name', 'description'] };
 
-    query.offset = section ? parseInt(section, 10) * 20 : 0;
+    query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
     if (term) {
       term = term.trim().toLowerCase();

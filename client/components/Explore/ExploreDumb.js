@@ -7,11 +7,21 @@ import {
   Dimmer,
   Segment,
   Image,
+  Button,
 } from 'semantic-ui-react';
 import ExploreForm from './ExploreForm/ExploreForm';
 import ExploreCards from './ExploreCards/ExploreCards';
 
 class Explore extends Component {
+  state = {
+    term: '',
+  };
+
+  handleChange = e => {
+    const { value: term } = e.target;
+    this.setState(state => ({ ...state, term }));
+  };
+
   fetchData = (category, term = null, offset = null) => {
     this.props.fetchContent(category, term, offset);
     setTimeout(() => this.props.delayOver(), 500);
@@ -22,6 +32,8 @@ class Explore extends Component {
   }
 
   render() {
+    const term = this.state.term;
+
     return (
       <main style={{ marginTop: '1em' }}>
         <Grid>
@@ -31,8 +43,13 @@ class Explore extends Component {
             </Container>
           </Grid.Row>
           <Grid.Row centered>
-            <ExploreForm fetchData={this.fetchData} />
+            <ExploreForm
+              term={term}
+              fetchData={this.fetchData}
+              handleChange={this.handleChange}
+            />
           </Grid.Row>
+
           <Grid.Row centered>
             {this.props.fetching ? (
               !this.props.defaultDelay ? (
@@ -47,6 +64,22 @@ class Explore extends Component {
               <ExploreCards />
             )}
           </Grid.Row>
+          {this.props.items.length !== 0 && this.props.items.length && (
+            <Grid.Row centered>
+              <Button
+                disabled={this.props.noMoreContent}
+                onClick={() =>
+                  this.fetchData(
+                    this.props.category,
+                    this.state.term,
+                    this.props.offset + 1
+                  )
+                }
+              >
+                See more {this.props.category.toLowerCase()}
+              </Button>
+            </Grid.Row>
+          )}
         </Grid>
       </main>
     );

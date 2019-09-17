@@ -6,17 +6,27 @@ export const DELAY_OVER = 'DELAY_OVER';
 export const FAILED_TO_FETCH_CONTENT = 'FAILED_TO_FETCH_CONTENT';
 export const GOT_CONTENT = 'GOT_CONTENT';
 export const CHANGED_CATEGORY = 'CHANGED_CATEGORY';
+export const GET_MORE_CONTENT = 'GET_MORE_CONTENT';
+export const NO_MORE_CONTENT = 'NO_MORE_CONTENT';
 
 // ACTION CREATORS
 const fetching = () => ({ type: FETCHING });
+
 export const delayOver = () => ({ type: DELAY_OVER });
+
 const failedToFetch = () => ({ type: FAILED_TO_FETCH_CONTENT });
+
 const gotContent = items => ({ type: GOT_CONTENT, items });
+
+const gotMoreContent = items => ({ type: GET_MORE_CONTENT, items });
+
 const changeCategory = (category, items) => ({
   type: CHANGED_CATEGORY,
   category,
   items,
 });
+
+const noMoreContent = () => ({ type: NO_MORE_CONTENT });
 
 // HELPER
 const generateUrl = (category, term, offset) => {
@@ -65,7 +75,13 @@ export const getContent = (category, term, offset) => async (
     const { data } = await axios.get(url);
 
     if (data) {
-      if (currentState.explore.category === category) {
+      if (offset) {
+        if (data.length) {
+          dispatch(gotMoreContent(data));
+        } else {
+          dispatch(noMoreContent());
+        }
+      } else if (currentState.explore.category === category) {
         dispatch(gotContent(data));
       } else {
         dispatch(changeCategory(category, data));
