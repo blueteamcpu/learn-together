@@ -15,7 +15,7 @@ import ExploreCards from './ExploreCards/ExploreCards';
 class Explore extends Component {
   fetchData = (category, term = null, offset = null) => {
     this.props.fetchContent(category, term, offset);
-    setTimeout(() => this.props.delayOver(), 2000);
+    setTimeout(() => this.props.delayOver(), 1000);
   };
 
   componentDidMount() {
