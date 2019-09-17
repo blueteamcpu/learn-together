@@ -16,4 +16,17 @@ router.get('/groupPosts', async (req, res, next) => {
     }
 });
 
+router.get('/eventPosts', async (req, res, next) => {
+    try {
+        const posts = await Post.findAll({
+            where: {
+                eventId: req.params.eventId
+            }
+        })
+        res.json(posts);
+    } catch (err) {
+        next(err);
+    }
+});
+
 module.exports = router;
