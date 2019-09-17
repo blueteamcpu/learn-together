@@ -7,6 +7,7 @@ import {
   Dimmer,
   Segment,
   Image,
+  Button,
 } from 'semantic-ui-react';
 import ExploreForm from './ExploreForm/ExploreForm';
 import ExploreCards from './ExploreCards/ExploreCards';
@@ -14,14 +15,26 @@ import ExploreCards from './ExploreCards/ExploreCards';
 class Explore extends Component {
   fetchData = (category, term = null, offset = null) => {
     this.props.fetchContent(category, term, offset);
-    setTimeout(() => this.props.delayOver(), 500);
+    setTimeout(() => this.props.delayOver(), 1000);
   };
 
   componentDidMount() {
-    this.fetchData(this.props.category);
+    if (!this.props.items.length) {
+      this.fetchData(this.props.category, null, 0);
+    }
   }
 
   render() {
+    const {
+      term,
+      offset,
+      items,
+      fetching,
+      defaultDelay,
+      category,
+      noMoreContent,
+    } = this.props;
+
     return (
       <main style={{ marginTop: '1em' }}>
         <Grid>
@@ -33,9 +46,12 @@ class Explore extends Component {
           <Grid.Row centered>
             <ExploreForm fetchData={this.fetchData} />
           </Grid.Row>
+
           <Grid.Row centered>
-            {this.props.fetching ? (
-              !this.props.defaultDelay ? (
+            {fetching ? (
+              items.length ? (
+                <ExploreCards />
+              ) : !defaultDelay ? (
                 <Segment>
                   <Dimmer active>
                     <Loader />
@@ -47,6 +63,16 @@ class Explore extends Component {
               <ExploreCards />
             )}
           </Grid.Row>
+          {items.length !== 0 && items.length % 20 === 0 && (
+            <Grid.Row centered>
+              <Button
+                disabled={noMoreContent}
+                onClick={() => this.fetchData(category, term, offset + 1)}
+              >
+                See more {category.toLowerCase()}
+              </Button>
+            </Grid.Row>
+          )}
         </Grid>
       </main>
     );
