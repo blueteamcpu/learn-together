@@ -7,7 +7,7 @@ const { queryForUser, isLoggedIn } = require('../../utils/backend');
 router.get('/explore', async (req, res, next) => {
   try {
     let { term, section } = req.query;
-    const query = { limit: 20 };
+    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
 
     query.offset = section ? parseInt(section, 10) * 20 : 0;
 
@@ -138,7 +138,9 @@ router.get(
   async (req, res, next) => {
     try {
       // I think this is right, I'm going to have to test it.
-      const userGroups = await req.user.getGroups();
+      const userGroups = await req.user.getGroups({
+        attributes: ['id', 'name', 'description'],
+      });
       res.send(userGroups);
     } catch (error) {
       next(error);

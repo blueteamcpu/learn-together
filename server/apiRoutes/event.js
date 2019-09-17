@@ -13,7 +13,7 @@ const { titleCase } = require('../../utils/index');
 router.get('/explore', async (req, res, next) => {
   try {
     let { term, section } = req.query;
-    const query = { limit: 20 };
+    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
 
     query.offset = section ? parseInt(section, 10) * 20 : 0;
 
@@ -64,7 +64,9 @@ router.get(
   async (req, res, next) => {
     try {
       const user = req.user;
-      const userEvents = await user.getEvents();
+      const userEvents = await user.getEvents({
+        attributes: ['id', 'name', 'description', 'day'],
+      });
       res.send(userEvents);
     } catch (err) {
       next(err);
