@@ -15,6 +15,14 @@ class EventError extends Error {
   }
 }
 
+const isLoggedIn = (req, res, next) => {
+  if (req.user && req.user.id) {
+    next();
+  } else {
+    res.sendStatus(401);
+  }
+};
+
 const queryForUser = User => async (req, _, next) => {
   try {
     const user = await User.findOne({ where: { id: req.user.id } });
@@ -22,7 +30,7 @@ const queryForUser = User => async (req, _, next) => {
     if (user) {
       req.user = user;
     }
-    
+
     next();
   } catch (error) {
     next(error);
@@ -32,5 +40,6 @@ const queryForUser = User => async (req, _, next) => {
 module.exports = {
   AuthenticationError,
   EventError,
+  isLoggedIn,
   queryForUser,
 };

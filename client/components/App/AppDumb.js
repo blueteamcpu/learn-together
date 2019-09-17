@@ -14,7 +14,7 @@ import GroupDetail from '../Group/GroupDetail';
 import UserProfile from '../UserProfile/UserProfile';
 import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
 import Explore from '../Explore/Explore';
-import Dashboard from '../Dashboard/DashboardDumb';
+import Dashboard from '../Dashboard/Dashboard';
 
 class App extends Component {
   componentDidMount() {
