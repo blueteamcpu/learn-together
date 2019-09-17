@@ -103,7 +103,7 @@ class DashBoard extends Component {
     return (
       <main style={{ marginTop: '2em' }}>
         <Grid>
-          <Grid.Row>
+          <Grid.Row centered>
             <Container textAlign="center">
               <Header as="h1">Your Groups</Header>
               <Divider />
@@ -128,7 +128,7 @@ class DashBoard extends Component {
             )}
           </Grid.Row>
 
-          <Grid.Row>
+          <Grid.Row centered>
             <Container textAlign="center">
               <Header as="h1">Your Events</Header>
               <Divider />
