@@ -136,14 +136,18 @@ class DashBoard extends Component {
           </Grid.Row>
           <Grid.Row centered>
             <CardGroup
-              items={events.map(e => ({
-                id: e.id,
-                header: e.name,
-                meta: `${e.date.getMonth() +
-                  1} / ${e.date.getDate()} / ${e.date.getFullYear()}`,
-                description: firstSentenceOnly(e.description),
-                link: `/events/${e.id}`,
-              }))}
+              items={events.map(e => {
+                const day = new Date(e.day);
+
+                return {
+                  id: e.id,
+                  header: e.name,
+                  meta: `${day.getMonth() +
+                    1} / ${day.getDate()} / ${day.getFullYear()}`,
+                  description: firstSentenceOnly(e.description),
+                  link: `/events/${e.id}`,
+                };
+              })}
               noContentMessage="You are not rsvp'd to any events."
             />
           </Grid.Row>
