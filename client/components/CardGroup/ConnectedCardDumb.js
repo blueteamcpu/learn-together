@@ -9,7 +9,7 @@ const CustomCard = ({ header, meta, description, history, link }) => {
         {header && <Card.Header>{header}</Card.Header>}
         {meta && <Card.Meta>{meta}</Card.Meta>}
         <Card.Description>
-          {description ? description : 'No description availabe.'}
+          {description ? description : 'No description available.'}
         </Card.Description>
       </Card.Content>
     </Card>

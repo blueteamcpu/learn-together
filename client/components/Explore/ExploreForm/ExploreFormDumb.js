@@ -24,29 +24,19 @@ const ExploreButton = () => (
 );
 
 class ExploreForm extends Component {
-  state = {
-    term: '',
-  };
-
-  handleChange = e => {
-    const { value: term } = e.target;
-    this.setState(state => ({ ...state, term }));
-  };
-
   handleSelect = e => {
     const { innerText } = e.target;
-    this.props.fetchData(innerText, this.state.term);
+    this.props.fetchData(innerText, this.props.term);
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.fetchData(this.props.category, this.state.term);
+    this.props.fetchData(this.props.category, this.props.term);
   };
 
   render() {
-    const { handleSubmit, handleSelect, handleChange } = this;
-    const { term } = this.state;
-    const { category } = this.props;
+    const { handleSubmit, handleSelect } = this;
+    const { category, term, handleChange } = this.props;
 
     return (
       <Form onSubmit={handleSubmit}>
