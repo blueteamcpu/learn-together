@@ -31,7 +31,7 @@ class ExploreForm extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.fetchData(this.props.category, this.state.term);
+    this.props.fetchData(this.props.category, this.props.term);
   };
 
   render() {

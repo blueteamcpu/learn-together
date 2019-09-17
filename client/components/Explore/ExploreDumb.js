@@ -13,26 +13,27 @@ import ExploreForm from './ExploreForm/ExploreForm';
 import ExploreCards from './ExploreCards/ExploreCards';
 
 class Explore extends Component {
-  state = {
-    term: '',
-  };
-
-  handleChange = e => {
-    const { value: term } = e.target;
-    this.setState(state => ({ ...state, term }));
-  };
-
   fetchData = (category, term = null, offset = null) => {
     this.props.fetchContent(category, term, offset);
-    setTimeout(() => this.props.delayOver(), 500);
+    setTimeout(() => this.props.delayOver(), 2000);
   };
 
   componentDidMount() {
-    this.fetchData(this.props.category);
+    if (!this.props.items.length) {
+      this.fetchData(this.props.category);
+    }
   }
 
   render() {
-    const term = this.state.term;
+    const {
+      term,
+      offset,
+      items,
+      fetching,
+      defaultDelay,
+      category,
+      noMoreContent,
+    } = this.props;
 
     return (
       <main style={{ marginTop: '1em' }}>
@@ -43,16 +44,14 @@ class Explore extends Component {
             </Container>
           </Grid.Row>
           <Grid.Row centered>
-            <ExploreForm
-              term={term}
-              fetchData={this.fetchData}
-              handleChange={this.handleChange}
-            />
+            <ExploreForm fetchData={this.fetchData} />
           </Grid.Row>
 
           <Grid.Row centered>
-            {this.props.fetching ? (
-              !this.props.defaultDelay ? (
+            {fetching ? (
+              items.length ? (
+                <ExploreCards />
+              ) : !defaultDelay ? (
                 <Segment>
                   <Dimmer active>
                     <Loader />
@@ -64,19 +63,13 @@ class Explore extends Component {
               <ExploreCards />
             )}
           </Grid.Row>
-          {this.props.items.length !== 0 && this.props.items.length && (
+          {items.length !== 0 && items.length % 20 === 0 && (
             <Grid.Row centered>
               <Button
-                disabled={this.props.noMoreContent}
-                onClick={() =>
-                  this.fetchData(
-                    this.props.category,
-                    this.state.term,
-                    this.props.offset + 1
-                  )
-                }
+                disabled={noMoreContent}
+                onClick={() => this.fetchData(category, term, offset + 1)}
               >
-                See more {this.props.category.toLowerCase()}
+                See more {category.toLowerCase()}
               </Button>
             </Grid.Row>
           )}

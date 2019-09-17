@@ -8,6 +8,7 @@ export const GOT_CONTENT = 'GOT_CONTENT';
 export const CHANGED_CATEGORY = 'CHANGED_CATEGORY';
 export const GET_MORE_CONTENT = 'GET_MORE_CONTENT';
 export const NO_MORE_CONTENT = 'NO_MORE_CONTENT';
+export const CHANGE_TERM = 'CHANGE_TERM';
 
 // ACTION CREATORS
 const fetching = () => ({ type: FETCHING });
@@ -25,6 +26,8 @@ const changeCategory = (category, items) => ({
   category,
   items,
 });
+
+export const changeTerm = term => ({ type: CHANGE_TERM, term });
 
 const noMoreContent = () => ({ type: NO_MORE_CONTENT });
 
