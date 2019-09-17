@@ -3,6 +3,26 @@ const router = require('express').Router();
 // const { client, cacheDuration } = require('../redis');
 const { Post } = require('../db/index');
 
+router.put('/createPost', async (req, res, next) => {
+    try {
+        res.json(await Post.create(req.body));
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/userPosts', async (req, res, next) => {
+    try {
+        res.json(await Post.findAll({
+            where: {
+                userId: req.user.id
+            }
+        }));
+    } catch (err) {
+        next(err);
+    }
+})
+
 router.get('/groupPosts', async (req, res, next) => {
     try {
         const posts = await Post.findAll({
@@ -28,5 +48,6 @@ router.get('/eventPosts', async (req, res, next) => {
         next(err);
     }
 });
+
 
 module.exports = router;
