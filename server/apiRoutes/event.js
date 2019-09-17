@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Op } = require('sequelize');
-const { queryForUser } = require('../../utils/backend');
+const { queryForUser, isLoggedIn } = require('../../utils/backend');
 const {
   Event,
   EventAttendee,
@@ -57,15 +57,20 @@ router.get('/explore', async (req, res, next) => {
 });
 
 //get all events for the current user
-router.get('/myevents', queryForUser(User), async (req, res, next) => {
-  try {
-    const user = req.user;
-    const userEvents = await user.getEvents();
-    res.send(userEvents);
-  } catch (err) {
-    next(err);
+router.get(
+  '/myevents',
+  isLoggedIn,
+  queryForUser(User),
+  async (req, res, next) => {
+    try {
+      const user = req.user;
+      const userEvents = await user.getEvents();
+      res.send(userEvents);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 //TODO: put routes in a more logical order
 
