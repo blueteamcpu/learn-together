@@ -118,10 +118,11 @@ class EventDetail extends Component {
                                 : 
                                 (activeItem === 'attendees' ? 
                                 <List>
-                                {attendees.map(person => 
-                                    <List.Item key={person.id}>
-                                    <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName}</List.Content>
-                                    </List.Item>) }
+                                    {attendees.map(person => 
+                                        <List.Item key={person.event_attendee.id}>
+                                            <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName}</List.Content>
+                                        </List.Item>) 
+                                    }
                                 </List> 
                                 : 
                                         <UpdateEventForm eventId={event.id} history={this.props.history}/>
