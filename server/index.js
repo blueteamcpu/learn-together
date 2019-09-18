@@ -1,10 +1,30 @@
-const app = require('./app/index');
+const { server, io } = require('./app/index');
 const { db } = require('./db/index');
+
+io.on('connection', socket => {
+  socket.on('login', userId => {
+    socket.userId = userId;
+  });
+
+  // type: event / post / comment
+  socket.on('join-room', (type, id) => {
+    if (socket.userId) {
+      socket.join(`${type}-${id}`);
+    } else {
+      socket.emit('Auth', 'You must be signed in to chat.');
+    }
+  });
+
+  // type: event / post / comment
+  socket.on('leave-room', (type, id) => {
+    socket.leave(`${type}-${id}`);
+  });
+});
 
 const PORT = process.env.PORT || 3000;
 
 db.sync({ force: false })
   .then(() => {
-    app.listen(PORT, () => console.log(`App listening on port ${PORT}`));
+    server.listen(PORT, () => console.log(`App listening on port ${PORT}`));
   })
   .catch(console.error);

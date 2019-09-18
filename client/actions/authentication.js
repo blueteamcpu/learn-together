@@ -1,3 +1,5 @@
+import socket from '../socket';
+
 // ACTION TYPES
 export const GOT_USER = 'GOT_USER';
 export const REMOVED_USER = 'REMOVED_USER';
@@ -9,10 +11,14 @@ const failedToLoadUser = () => ({ type: FAILEDTOLOADUSER });
 
 const failedToLogOut = () => ({ type: FAILEDTOLOGOUT });
 
-export const gotUser = user => ({
-  type: GOT_USER,
-  user,
-});
+export const gotUser = user => {
+  socket.emit('login', user.id);
+  
+  return {
+    type: GOT_USER,
+    user,
+  };
+};
 
 const loggedOut = () => ({ type: REMOVED_USER });
 
