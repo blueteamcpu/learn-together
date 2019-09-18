@@ -64,7 +64,7 @@ router.post(
         res.end();
       } else {
         const error = new Error('thread-depth > 1');
-        res.status(400).json(error);
+        res.status(400).json({ error });
       }
     } catch (error) {
       next(error);
