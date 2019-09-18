@@ -1,7 +1,7 @@
-// import {
-//     GETPOST,
-//     FAILEDTOLOADPOST,
-// } from '../actions/post';
+import {
+    GETPOST,
+    FAILEDTOLOADPOST,
+} from '../actions/post';
 
 const initialState = {
     currentPost: {},
