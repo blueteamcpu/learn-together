@@ -33,7 +33,7 @@ export const loadPost = (postId) => async (dispatch, _, axios) => {
 
 export const removePost = (postId) => async (dispatch, _, axios) => {
     try {
-        const deleted = await axios.delete(`/api/post/deletePost/${postId}`);
+        const {data: deleted} = await axios.delete(`/api/post/deletePost/${postId}`);
         if (deleted) {
             dispatch(_removePost());
         } else {
