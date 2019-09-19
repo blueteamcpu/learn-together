@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Menu, Button, Responsive, Dropdown } from 'semantic-ui-react';
 
-const NavLeft = ({ history, location }) => (
+const NavLeft = ({ history, location, loggedIn }) => (
   <Fragment>
     <Menu.Item header>Learn Together</Menu.Item>
     <Menu.Item
@@ -19,13 +19,15 @@ const NavLeft = ({ history, location }) => (
     >
       Explore
     </Menu.Item>
-    <Menu.Item
-      as="a"
-      active={location.pathname === '/dashboard'}
-      onClick={() => history.push('/dashboard')}
-    >
-      Dashboard
-    </Menu.Item>
+    {loggedIn && (
+      <Menu.Item
+        as="a"
+        active={location.pathname === '/dashboard'}
+        onClick={() => history.push('/dashboard')}
+      >
+        Dashboard
+      </Menu.Item>
+    )}
   </Fragment>
 );
 
@@ -88,7 +90,7 @@ const ConnectedRight = withRouter(NavRight);
 const Nav = ({ loggedIn, logOut }) => {
   return (
     <Menu borderless size="large">
-      <ConnectedLeft />
+      <ConnectedLeft loggedIn={loggedIn} />
       <ConnectedRight loggedIn={loggedIn} logOut={logOut} />
     </Menu>
   );
@@ -152,7 +154,9 @@ class MobileView extends Component {
           <Menu.Item>
             <Dropdown
               defaultValue={this.determineDefault()}
-              options={this.state.options.map(this.makeOptions)}
+              options={this.state.options
+                .filter(option => (loggedIn ? true : option !== 'Dashboard'))
+                .map(this.makeOptions)}
               onChange={this.handleChange}
             />
           </Menu.Item>

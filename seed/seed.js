@@ -22,11 +22,14 @@ async function doTheSeeding() {
     const events = await Promise.all(genList(eventList, models.Event));
 
     // Associate groups to a user
-    await Promise.all(users.map(u => {
-      return models.GroupMember.create({userId: u.id,
-					groupId: groups[Math.floor(Math.random() * groups.length)].id,
-				       });
-    }));
+    await Promise.all(
+      users.map(u => {
+        return models.GroupMember.create({
+          userId: u.id,
+          groupId: groups[Math.floor(Math.random() * groups.length)].id,
+        });
+      })
+    );
 
     // Get all the associations taken care of for the events
     /* Caution, this code bit is commented out because it requires a newer version of Node
@@ -42,16 +45,21 @@ async function doTheSeeding() {
     // So this is a bit of a hack in getting a single event associated with the other
     // table associations.
     await events[0].update({ hostId: users[0].id, groupId: groups[3].id });
-    await models.EventAttendee.create({ eventId: events[0].id, userId: users[0].id });
+    await models.EventAttendee.create({
+      eventId: events[0].id,
+      userId: users[0].id,
+    });
     await events[1].update({ hostId: users[0].id, groupId: groups[0].id });
-    await models.EventAttendee.create({ eventId: events[1].id, userId: users[0].id });
+    await models.EventAttendee.create({
+      eventId: events[1].id,
+      userId: users[0].id,
+    });
     db.close();
-  }
-  catch(e) {
+  } catch (e) {
     console.log(e);
   }
 }
 
 function genList(list, model) {
-  return list.map((i) => model.create({ ...i }));
+  return list.map(i => model.create({ ...i }));
 }

@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Op } = require('sequelize');
-const { queryForUser } = require('../../utils/backend');
+const { queryForUser, isLoggedIn } = require('../../utils/backend');
 const {
   Event,
   EventAttendee,
@@ -12,10 +12,10 @@ const { titleCase } = require('../../utils/index');
 
 router.get('/explore', async (req, res, next) => {
   try {
-    let { term, section } = req.query;
-    const query = { limit: 20 };
+    let { term, offset } = req.query;
+    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
 
-    query.offset = section ? parseInt(section, 10) * 20 : 0;
+    query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
     if (term) {
       term = term.trim().toLowerCase();
@@ -56,6 +56,24 @@ router.get('/explore', async (req, res, next) => {
   }
 });
 
+//get all events for the current user
+router.get(
+  '/myevents',
+  isLoggedIn,
+  queryForUser(User),
+  async (req, res, next) => {
+    try {
+      const user = req.user;
+      const userEvents = await user.getEvents({
+        attributes: ['id', 'name', 'description', 'day'],
+      });
+      res.send(userEvents);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 //TODO: put routes in a more logical order
 
 //create new event
@@ -93,18 +111,20 @@ router.put('/:id', async (req, res, next) => {
 });
 
 //get single event
-router.get('/:id', async(req, res, next) => {
-    try {
-        const event = await Event.findOne({ where: { id: req.params.id },
-            include: [{model: User, attributes: ['firstName', 'lastName', 'imageURL']}, {model: Group, attributes: ['name']}]
-        });
-        res.send(event);
-    } catch(err) {
-        next(err);
-    }
+router.get('/:id', async (req, res, next) => {
+  try {
+    const event = await Event.findOne({
+      where: { id: req.params.id },
+      include: [
+        { model: User, attributes: ['firstName', 'lastName', 'imageURL'] },
+        { model: Group, attributes: ['name'] },
+      ],
+    });
+    res.send(event);
+  } catch (err) {
+    next(err);
+  }
 });
-
-
 
 //get all events
 //TODO: add whatever we are doing for loading, paginating, filtering, ordering
@@ -117,49 +137,37 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-
-//get all events for the current user
-router.get('/myevents', queryForUser(User), async (req, res, next) => {
+//add user to attend event
+router.post('/addattendee', async (req, res, next) => {
   try {
-    const user = req.user;
-    const userEvents = await user.getEvents();
-    res.send(userEvents);
+    let validGroupMember = await GroupMember.findOne({
+      where: { groupId: req.body.groupId, userId: req.user.id },
+    });
+    if (validGroupMember) {
+      const attendee = await EventAttendee.create({
+        userId: req.user.id,
+        eventId: req.body.id,
+      });
+      res.send(attendee);
+    } else
+      throw new Error(
+        'Events',
+        'You must be a member of this group to attend event'
+      );
   } catch (err) {
     next(err);
   }
-});
-
-
-
-//add user to attend event
-router.post('/addattendee', async(req, res, next) => {
-    try {
-        let validGroupMember = await GroupMember.findOne({
-            where: { groupId: req.body.groupId, userId: req.user.id }
-        });
-        if (validGroupMember) {
-            const attendee = await EventAttendee.create({
-                userId: req.user.id, eventId: req.body.id
-            });
-            res.send(attendee)
-        } else throw new Error(
-            'Events',
-            'You must be a member of this group to attend event'
-        );
-    } catch(err) {
-        next(err);
-    }
 });
 
 //remove user from attending event
 router.delete('/deleteattendee', async (req, res, next) => {
   try {
     const attendee = await EventAttendee.findOne({
-        where: { userId: req.user.id, eventId: req.body.id }
-    })
+      where: { userId: req.user.id, eventId: req.body.id },
+    });
     await EventAttendee.destroy({
       where: { userId: req.user.id, eventId: req.body.id },
-      returning: true
+      returning: true,
     });
     res.json(attendee);
   } catch (err) {
@@ -171,13 +179,16 @@ router.delete('/deleteattendee', async (req, res, next) => {
 //TODO: add restrictions
 
 router.delete('/:id', async (req, res, next) => {
-    try {
-      const deletedEvent = await Event.destroy({ where: { id: req.params.id } }, {returning: true});
-      res.send(deletedEvent[1]);
-    } catch (err) {
-      next(err);
-    }
-  });
+  try {
+    const deletedEvent = await Event.destroy(
+      { where: { id: req.params.id } },
+      { returning: true }
+    );
+    res.send(deletedEvent[1]);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.use((error, req, res, next) => {
   if (error.type === 'Event') {
