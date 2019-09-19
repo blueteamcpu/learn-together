@@ -8,6 +8,7 @@ const client = redis.createClient(REDIS_PORT);
 
 const onAsync = promisify(client.on).bind(client);
 const getAsync = promisify(client.get).bind(client);
+const setAsync = promisify(client.set).bind(client);
 const setExAsync = promisify(client.setex).bind(client);
 const existsAsync = promisify(client.exists).bind(client);
 
@@ -24,6 +25,7 @@ module.exports = {
   syncRedisClient,
   existsAsync,
   getAsync,
+  setAsync,
   setExAsync,
   cacheDuration,
 };
