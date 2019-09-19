@@ -27,9 +27,11 @@ const getZipsNearMe = async (myZip, radius) => {
 
       return JSON.parse(zips);
     } else {
-      const { data: zips } = await queryForZips(
+      let { data: zips } = await queryForZips(
         generateRequestUrl(myZip, radius)
       );
+
+      zips = zips.zip_codes.map(z => parseInt(z, 10));
 
       await setExAsync(key, cacheDurationInSeconds, JSON.stringify(zips));
 

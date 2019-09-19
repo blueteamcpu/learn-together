@@ -8,6 +8,7 @@ const getZipsNearMe = require('../../resources/zipcodesNearMe');
 router.get('/explore', async (req, res, next) => {
   try {
     let { term, offset } = req.query;
+    term = term ? term.trim().toLowerCase() : null;
 
     const query = {
       limit: 20,
@@ -18,26 +19,42 @@ router.get('/explore', async (req, res, next) => {
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
     if (req.user && req.user.zipcode) {
-      const { zip_codes: zipCodes } = await getZipsNearMe(req.user.zipcode, 20);
+      const zipCodes = await getZipsNearMe(req.user.zipcode, 20);
 
-      console.log(zipCodes);
-    }
-
-    if (term) {
-      term = term.trim().toLowerCase();
-
-      if (term.length) {
+      if (term) {
         query.where = {
-          [Op.or]: [
-            {
-              name: { [Op.substring]: titleCase(term) },
+          [Op.and]: {
+            zipcode: {
+              [Op.in]: zipCodes,
             },
-            {
-              description: { [Op.substring]: term },
-            },
-          ],
+            [Op.or]: [
+              {
+                name: { [Op.substring]: titleCase(term) },
+              },
+              {
+                description: { [Op.substring]: term },
+              },
+            ],
+          },
+        };
+      } else {
+        query.where = {
+          zipcode: {
+            [Op.in]: zipCodes,
+          },
         };
       }
+    } else if (term) {
+      query.where = {
+        [Op.or]: [
+          {
+            name: { [Op.substring]: titleCase(term) },
+          },
+          {
+            description: { [Op.substring]: term },
+          },
+        ],
+      };
     }
 
     const groups = await Group.findAll(query);
