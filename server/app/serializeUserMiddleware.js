@@ -3,7 +3,7 @@ const {
   existsAsync,
   getAsync,
   setExAsync,
-  cacheDuration,
+  cacheDurationInSeconds,
 } = require('../redis');
 
 const middleware = async (req, _, next) => {
@@ -22,7 +22,7 @@ const middleware = async (req, _, next) => {
 
         await setExAsync(
           req.session.userId,
-          cacheDuration,
+          cacheDurationInSeconds,
           JSON.stringify(user)
         );
 

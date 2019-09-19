@@ -1,7 +1,10 @@
 const axios = require('axios');
-const { existsAsync, getAsync, setAsync } = require('../server/redis');
-
-// cache string 'zips-zipcode-radius'
+const {
+  existsAsync,
+  getAsync,
+  setExAsync,
+  cacheDurationInSeconds,
+} = require('../server/redis');
 
 const generateCacheString = (zip, radius) => {
   return `zips-${zip}-${radius}`;
@@ -28,7 +31,7 @@ const getZipsNearMe = async (myZip, radius) => {
         generateRequestUrl(myZip, radius)
       );
 
-      await setAsync(key, JSON.stringify(zips));
+      await setExAsync(key, cacheDurationInSeconds, JSON.stringify(zips));
 
       return zips;
     }

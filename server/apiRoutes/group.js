@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const { Group, GroupMember, User } = require('../db/index.js');
 const { titleCase } = require('../../utils/index');
 const { queryForUser, isLoggedIn } = require('../../utils/backend');
+const getZipsNearMe = require('../../resources/zipcodesNearMe');
 
 router.get('/explore', async (req, res, next) => {
   try {
@@ -15,6 +16,12 @@ router.get('/explore', async (req, res, next) => {
     };
 
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
+
+    if (req.user && req.user.zipcode) {
+      const { zip_codes: zipCodes } = await getZipsNearMe(req.user.zipcode, 20);
+
+      console.log(zipCodes);
+    }
 
     if (term) {
       term = term.trim().toLowerCase();
@@ -34,13 +41,6 @@ router.get('/explore', async (req, res, next) => {
     }
 
     const groups = await Group.findAll(query);
-
-    // const data = groups.map(async group => {
-    //   const memberCount = await GroupMember.count({
-    //     where: { groupId: group.id },
-    //   });
-    //   return { group, memberCount };
-    // });
 
     res.json(groups);
   } catch (error) {
