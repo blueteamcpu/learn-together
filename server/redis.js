@@ -8,5 +8,6 @@ const cacheDuration = 1000 * 60 * 2;
 
 const getAsync = promisify(client.get).bind(client);
 const setExAsync = promisify(client.setex).bind(client);
+const existsAsync = promisify(client.exists).bind(client);
 
-module.exports = { getAsync, setExAsync, cacheDuration };
+module.exports = { existsAsync, getAsync, setExAsync, cacheDuration };
