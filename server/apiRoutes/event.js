@@ -13,7 +13,11 @@ const { titleCase } = require('../../utils/index');
 router.get('/explore', async (req, res, next) => {
   try {
     let { term, offset } = req.query;
-    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
+    const query = {
+      limit: 20,
+      attributes: ['id', 'name', 'description', 'day'],
+      order: [['day', 'DESC']],
+    };
 
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 

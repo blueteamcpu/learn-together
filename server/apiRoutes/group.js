@@ -8,7 +8,11 @@ router.get('/explore', async (req, res, next) => {
   try {
     let { term, offset } = req.query;
 
-    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
+    const query = {
+      limit: 20,
+      attributes: ['id', 'name', 'description'],
+      include: [{ model: User, attributes: ['id'] }],
+    };
 
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
@@ -31,14 +35,14 @@ router.get('/explore', async (req, res, next) => {
 
     const groups = await Group.findAll(query);
 
-    const data = groups.map(async group => {
-      const memberCount = await GroupMember.count({
-        where: { groupId: group.id },
-      });
-      return { group, memberCount };
-    });
+    // const data = groups.map(async group => {
+    //   const memberCount = await GroupMember.count({
+    //     where: { groupId: group.id },
+    //   });
+    //   return { group, memberCount };
+    // });
 
-    res.json(await Promise.all(data));
+    res.json(groups);
   } catch (error) {
     next(error);
   }
