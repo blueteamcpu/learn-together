@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Post } = require('../db/index');
-const {isLoggedIn} = require('../../utils/backend');
+const { isLoggedIn } = require('../../utils/backend');
 
 // create an post
 router.post('/createPost', isLoggedIn, async (req, res, next) => {
@@ -58,7 +58,7 @@ router.get('/eventPosts/:eventId', async (req, res, next) => {
     }
 });
 
-  // grab a single post i.e. when someone clicks on a post link to read comments
+// grab a single post i.e. when someone clicks on a post link to read comments
 router.get('/:postId', async (req, res, next) => {
     try {
         const posts = await Post.findOne({

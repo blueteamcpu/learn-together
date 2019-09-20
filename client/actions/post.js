@@ -39,7 +39,7 @@ export const loadPost = (postId) => async (dispatch, _, axios) => {
 
 export const removePost = (postId) => async (dispatch, _, axios) => {
     try {
-        const {data: deleted} = await axios.delete(`/api/post/deletePost/${postId}`);
+        const { data: deleted } = await axios.delete(`/api/post/deletePost/${postId}`);
         if (deleted) {
             dispatch(_removePost());
         } else {
@@ -52,21 +52,17 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
 };
 
 export const loadPosts = (id, type) => async (dispatch, _, axios) => {
-    switch (type){
+    switch (type) {
         case 'group': {
-            const posts = await axios.get(`/api/posts/groupPosts/${id}` );
+            const posts = await axios.get(`/api/posts/groupPosts/${id}`);
             dispatch(_loadPosts(posts));
         }
-
-        break
-
+            break;
         case 'event': {
             const posts = await axios.get(`api/posts/eventPosts/${id}`);
             dispatch(_loadPosts(posts));
         }
-
-        break;
-
+            break;
         default:
             return 'Wrong Type'
     }
