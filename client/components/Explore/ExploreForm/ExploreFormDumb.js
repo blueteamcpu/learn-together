@@ -3,12 +3,14 @@ import { Form, Responsive, Select, Button } from 'semantic-ui-react';
 
 const SelectDistance = ({ handleDistance, distance }) => (
   <Select
-    value={distance}
-    options={['5', '10', '25', '50', '100'].map(value => ({
-      key: value,
-      value,
-      text: value,
-    }))}
+    value={distance + '-mi'}
+    options={['5', '10', '25', '50', '100']
+      .map(s => s + '-mi')
+      .map(value => ({
+        key: value,
+        value,
+        text: value,
+      }))}
     onChange={handleDistance}
   />
 );
@@ -46,7 +48,7 @@ class ExploreForm extends Component {
       this.props.category,
       this.props.term,
       0,
-      e.target.innerText
+      e.target.innerText.split('-')[0]
     );
   };
 
