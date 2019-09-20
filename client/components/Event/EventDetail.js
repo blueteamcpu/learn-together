@@ -80,10 +80,6 @@ class EventDetail extends Component {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                        { !going ? 
-                            <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
-                            <Button onClick={this.unrsvp} color='red'>Not Going</Button>
-                        }
                         <Menu tabular attached='top'>
                             <Menu.Item name='info' active={activeItem==='info'} onClick={this.handleMenuClick}/>
                             <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}>Attendees ({attendees.length})</Menu.Item>
@@ -92,6 +88,14 @@ class EventDetail extends Component {
                             <Menu.Item name='edit' active={activeItem==='edit'} onClick={this.handleMenuClick}>Edit Event</Menu.Item>
                             : null 
                             }
+                            <Menu.Menu position='right'>
+                                <Menu.Item>
+                                    { !going ? 
+                                        <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
+                                        <Button onClick={this.unrsvp} color='red'>Not Going</Button>
+                                    }
+                                </Menu.Item>
+                            </Menu.Menu>
                         </Menu>
                         </Grid.Row>
                         </Grid>
