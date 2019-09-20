@@ -80,8 +80,12 @@ router.get(
 //TODO: add admin/group owner restrictions to this
 router.post('/newevent', async (req, res, next) => {
   try {
+    const day = req.body.day;
+    const formattedDay = `${day.slice(3,5)}-${day.slice(0,2)}-${day.slice(6,10)}`;
+
     const newEvent = await Event.create({
       ...req.body,
+      day: formattedDay,
       hostId: req.user.id,
       groupId: req.body.groupId,
     });
