@@ -180,11 +180,23 @@ router.delete('/deleteattendee', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
   try {
-    const deletedEvent = await Event.destroy(
-      { where: { id: req.params.id } },
-      { returning: true }
-    );
-    res.send(deletedEvent[1]);
+
+    let validEventHost = await Event.findOne({
+        where: { id: req.params.id, hostId: req.user.id },
+      });
+
+    if (validEventHost) {
+      const deletedEvent = await Event.destroy({ 
+          where: { id: req.params.id } 
+        },
+        { returning: true }
+        );
+      res.send(deletedEvent[1]);
+      } else
+        throw new Error(
+          'Events',
+          'You must be the host to delete this event'
+        );
   } catch (err) {
     next(err);
   }
