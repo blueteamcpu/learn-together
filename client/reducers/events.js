@@ -43,12 +43,14 @@ export default (state = initialState, action) => {
       };
     }
     case UNJOIN_EVENT: {
+      console.log('redux: action.attendee', action.attendee)
+      console.log('redux: event users', state.detailedEvent.users)
       return {
         ...state,
         detailedEvent: {
           ...state.detailedEvent,
           users: state.detailedEvent.users.filter(
-            user => user.id !== action.attendee.id
+            user => user.id !== action.attendee.userId
           ),
         },
       };

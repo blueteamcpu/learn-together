@@ -19,7 +19,7 @@ class EventDetail extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            going: false,
+            going: null,
             activeItem: 'info',
             event: {}
          }
@@ -36,22 +36,21 @@ class EventDetail extends Component {
         const { event } = this.props;
         const attendees = event.users;
         
-
-        if (attendees && this.state.going === false) {
-            const isGoing = attendees.find(user => user.id === this.props.user.id)
+        if (attendees && this.state.going === null) {
+            const isGoing = attendees.find(user => user.id === this.props.user.id);
             if (isGoing) {
-                this.setState({going: true})
+                this.setState({going: true});
             }
             }
     }
 
     rsvp() {
-        this.props.joinEvent(this.props.event)
-        this.setState({going: true})
+        this.props.joinEvent(this.props.event);
+        this.setState({going: true});
     }
     unrsvp() {
-        this.props.unjoinEvent(this.props.event)
-        this.setState({going: false})
+        this.props.unjoinEvent(this.props.event);
+        this.setState({going: false});
     }
 
     
@@ -59,7 +58,7 @@ class EventDetail extends Component {
     handleMenuClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() { 
-        const { event, user, group } = this.props;
+        const { event, user } = this.props;
         const { going, activeItem } = this.state;
         const attendees = event.users;
 
@@ -91,8 +90,8 @@ class EventDetail extends Component {
                             <Menu.Menu position='right'>
                                 <Menu.Item>
                                     { !going ? 
-                                        <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
-                                        <Button onClick={this.unrsvp} color='red'>Not Going</Button>
+                                        <Button onClick={this.rsvp} color='red'>Not Going</Button> :
+                                        <Button onClick={this.unrsvp} color='green'>I'm Going!</Button>
                                     }
                                 </Menu.Item>
                             </Menu.Menu>
