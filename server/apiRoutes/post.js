@@ -72,5 +72,32 @@ router.get('/:postId', async (req, res, next) => {
     }
 });
 
+router.delete('/deletePost/:postId', isLoggedIn, async (req, res, next) => {
+    if (req.user.isSiteAdmin) {
+        const deleted = await Post.destroy({
+            where: {
+                id: req.params.id,
+            }
+        });
+        if (deleted) {
+            res.status(201);
+        } else {
+            res.status(401);
+        }
+    } else {
+        const deleted = Post.destroy({
+            where: {
+                id: req.params.id,
+                userId: req.user.id
+            }
+        });
+        if (deleted) {
+            res.status(201);
+        } else {
+            res.status(401);
+        }
+    }
+})
+
 
 module.exports = router;

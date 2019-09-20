@@ -20,13 +20,13 @@ export default (state = initialState, action) => {
             return { ...state, currentPost: action.post, loadingPost: false };
         }
         case LOADPOSTS: {
-            return {...state, posts: action.posts};
+            return {...state, posts: action.posts, loadingPost: false};
         }
         case REMOVEPOST: {
             return { ...state, currentPost: {} }
         }
         case FAILEDTOLOADPOST: {
-            return { ...state, failedToLoadPost: true }
+            return { ...state, failedToLoadPost: true, loadingPost: false }
         }
         case FAILEDTOREMOVEPOST: {
             return { ...state, failedToRemoveUser: true }
