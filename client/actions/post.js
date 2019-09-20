@@ -50,3 +50,24 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
         console.error(err);
     }
 };
+
+export const loadPosts = (id, type) => async (dispatch, _, axios) => {
+    switch (type){
+        case 'group': {
+            const posts = await axios.get(`/api/posts/groupPosts/${id}` );
+            dispatch(_loadPosts(posts));
+        }
+
+        break
+
+        case 'event': {
+            const posts = await axios.get(`api/posts/eventPosts/${id}`);
+            dispatch(_loadPosts(posts));
+        }
+
+        break;
+
+        default:
+            return 'Wrong Type'
+    }
+};
