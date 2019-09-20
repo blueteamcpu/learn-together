@@ -3,13 +3,15 @@ import ExploreForm from './ExploreFormDumb';
 import { changeTerm } from '../../../actions/explore';
 
 const mapStateToProps = ({
-  authentication,
+  authentication: {
+    user: { id, zipcode },
+  },
   explore: { category, term, distance },
 }) => ({
   category,
   term,
   distance,
-  isLoggedIn: authentication.user.id,
+  isLoggedIn: id && zipcode,
 });
 
 const mapDispatchToProps = dispatch => ({
