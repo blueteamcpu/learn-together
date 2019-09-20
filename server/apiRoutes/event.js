@@ -120,7 +120,7 @@ router.get('/:id', async (req, res, next) => {
     const event = await Event.findOne({
       where: { id: req.params.id },
       include: [
-        { model: User, attributes: ['firstName', 'lastName', 'imageURL'] },
+        { model: User, attributes: ['id', 'firstName', 'lastName', 'imageURL'] },
         { model: Group, attributes: ['name'] },
       ],
     });
@@ -152,7 +152,12 @@ router.post('/addattendee', async (req, res, next) => {
         userId: req.user.id,
         eventId: req.body.id,
       });
-      res.send(attendee);
+      const user = await User.findOne({
+                    where: { id: attendee.userId },
+                    attributes: ['id', 'firstName', 'lastName', 'imageURL']
+                }
+      );
+      res.send(user);
     } else
       throw new Error(
         'Events',

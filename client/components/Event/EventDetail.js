@@ -119,8 +119,8 @@ class EventDetail extends Component {
                                 (activeItem === 'attendees' ? 
                                 <List>
                                     {attendees.map(person => 
-                                        <List.Item key={person.event_attendee.id}>
-                                            <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName} {event.hostId === person.event_attendee.userId ? '(Host)' : null}</List.Content>
+                                        <List.Item key={person.id}>
+                                            <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName} {event.hostId === person.id ? '(Host)' : null}</List.Content>
                                         </List.Item>
                                         )
                                     }
