@@ -44,20 +44,6 @@ router.get('/groupPosts/:groupId', async (req, res, next) => {
     }
 });
 
-//get all posts associated to an event
-router.get('/eventPosts/:eventId', async (req, res, next) => {
-    try {
-        const posts = await Post.findAll({
-            where: {
-                groupId: req.params.eventId
-            }
-        });
-        res.json(posts);
-    } catch (err) {
-        next(err);
-    }
-});
-
 // grab a single post i.e. when someone clicks on a post link to read comments
 router.get('/:postId', async (req, res, next) => {
     try {
@@ -82,7 +68,7 @@ router.delete('/deletePost/:postId', isLoggedIn, async (req, res, next) => {
         if (deleted) {
             res.status(201);
         } else {
-            res.status(401);
+            res.status(400);
         }
     } else {
         const deleted = Post.destroy({
@@ -94,7 +80,7 @@ router.delete('/deletePost/:postId', isLoggedIn, async (req, res, next) => {
         if (deleted) {
             res.status(201);
         } else {
-            res.status(401);
+            res.status(400);
         }
     }
 })
