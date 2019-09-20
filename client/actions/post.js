@@ -1,5 +1,6 @@
 // Action Types
 const LOADPOST = 'LOADPOST';
+const LOADPOSTS = 'LOADPOSTS';
 const FAILEDTOLOADPOST = 'FAILEDTOLOADPOST';
 const REMOVEPOST = 'REMOVEPOST';
 const FAILEDTODELETEPOST = 'FAILEDTODELETEPOST';
@@ -9,6 +10,11 @@ export const _loadPost = (post) => ({
     type: LOADPOST,
     post,
 });
+
+export const _loadPosts = (posts) => ({
+    type: LOADPOSTS,
+    posts
+})
 
 const _failedtoDeleteUser = () => ({ type: FAILEDTODELETEPOST });
 
