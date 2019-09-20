@@ -1,5 +1,6 @@
 import {
-    GETPOST,
+    LOADPOST,
+    LOADPOSTS,
     FAILEDTOLOADPOST,
     REMOVEPOST,
     FAILEDTOREMOVEPOST,
@@ -7,6 +8,7 @@ import {
 
 const initialState = {
     currentPost: {},
+    posts: [],
     failedToLoadPost: false,
     failedToRemoveUser: false,
     loadingPost: true,
@@ -14,8 +16,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case GETPOST: {
+        case LOADPOST: {
             return { ...state, currentPost: action.post, loadingPost: false };
+        }
+        case LOADPOSTS: {
+            return {...state, posts: action.posts};
         }
         case REMOVEPOST: {
             return { ...state, currentPost: {} }
