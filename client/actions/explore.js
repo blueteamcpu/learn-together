@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import qs from 'query-string';
 
 // ACTION TYPES
@@ -9,6 +10,7 @@ export const CHANGED_CATEGORY = 'CHANGED_CATEGORY';
 export const GET_MORE_CONTENT = 'GET_MORE_CONTENT';
 export const NO_MORE_CONTENT = 'NO_MORE_CONTENT';
 export const CHANGE_TERM = 'CHANGE_TERM';
+export const CHANGE_DISTANCE = 'CHANGE_DISTANCE';
 
 // ACTION CREATORS
 const fetching = () => ({ type: FETCHING });
@@ -27,12 +29,18 @@ const changeCategory = (category, items) => ({
   items,
 });
 
+const changeDistance = (distance, items) => ({
+  type: CHANGE_DISTANCE,
+  distance,
+  items,
+});
+
 export const changeTerm = term => ({ type: CHANGE_TERM, term });
 
 const noMoreContent = () => ({ type: NO_MORE_CONTENT });
 
 // HELPER
-const generateUrl = (category, term, offset) => {
+const generateUrl = (category, term, offset, distance) => {
   let url = '/api';
 
   if (category === 'Groups') {
@@ -54,6 +62,11 @@ const generateUrl = (category, term, offset) => {
     addedQueries = true;
   }
 
+  if (distance) {
+    queries.distance = distance;
+    addedQueries = true;
+  }
+
   if (addedQueries) {
     url += `?${qs.stringify(queries)}`;
   }
@@ -62,7 +75,7 @@ const generateUrl = (category, term, offset) => {
 };
 
 // THUNKS
-export const getContent = (category, term, offset) => async (
+export const getContent = (category, term, offset, distance) => async (
   dispatch,
   getState,
   axios
@@ -73,7 +86,7 @@ export const getContent = (category, term, offset) => async (
       dispatch(fetching());
     }
 
-    const url = generateUrl(category, term, offset);
+    const url = generateUrl(category, term, offset, distance);
 
     const { data } = await axios.get(url);
 
@@ -84,6 +97,8 @@ export const getContent = (category, term, offset) => async (
         } else {
           dispatch(noMoreContent());
         }
+      } else if (distance && currentState.explore.distance !== distance) {
+        dispatch(changeDistance(distance, data));
       } else if (currentState.explore.category === category) {
         dispatch(gotContent(data));
       } else {

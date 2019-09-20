@@ -7,6 +7,7 @@ import {
   GET_MORE_CONTENT,
   NO_MORE_CONTENT,
   CHANGE_TERM,
+  CHANGE_DISTANCE,
 } from '../actions/explore';
 
 const initialState = {
@@ -16,6 +17,7 @@ const initialState = {
   items: [],
   category: 'Groups',
   term: '',
+  distance: '25',
   offset: 0,
   noMoreContent: false,
 };
@@ -53,6 +55,15 @@ export default (state = initialState, action) => {
       return {
         ...state,
         category: action.category,
+        items: action.items,
+        fetching: false,
+        offset: 0,
+      };
+    }
+    case CHANGE_DISTANCE: {
+      return {
+        ...state,
+        distance: action.distance,
         items: action.items,
         fetching: false,
         offset: 0,
