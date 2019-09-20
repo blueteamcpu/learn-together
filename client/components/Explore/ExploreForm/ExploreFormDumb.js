@@ -38,7 +38,7 @@ const ExploreButton = () => (
 class ExploreForm extends Component {
   handleCategory = e => {
     const { innerText } = e.target;
-    this.props.fetchData(innerText, this.props.term);
+    this.props.fetchData(innerText, this.props.term, 0, this.props.distance);
   };
 
   handleDistance = e => {

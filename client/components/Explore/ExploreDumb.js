@@ -20,7 +20,7 @@ class Explore extends Component {
 
   componentDidMount() {
     if (!this.props.items.length) {
-      this.fetchData(this.props.category, null, 0);
+      this.fetchData(this.props.category, null, 0, this.props.distance);
     }
   }
 
