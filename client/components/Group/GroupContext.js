@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 
 class GroupContext extends React.Component {
   render() {
-    const { context, history, groupId } = this.props;
+    const { context, history, groupId, isMember } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
     <Fragment>
-      {context === 'events' ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
+      {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
     <List relaxed>
       {this.props.groupDetailed[context].map(i => {
         switch(context) {

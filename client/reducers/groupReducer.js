@@ -42,6 +42,8 @@ export const getMyGroups = () => async (dispatch, _, axios) => {
   }
 };
 
+//export const joinGroup = () => async (dispatch, _, axios)
+
 // Presumabely we will need some sort of tracking thing which manages the groups
 // that a user is connected to for updates
 // I'm not sure if this is groups plural, or if we only want to connect to one at a time
