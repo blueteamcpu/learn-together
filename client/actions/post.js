@@ -51,21 +51,13 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
     }
 };
 
-export const loadPosts = (id, type) => async (dispatch, _, axios) => {
+export const loadPosts = (id) => async (dispatch, _, axios) => {
     try {
-        switch (type) {
-            case 'group': {
-                const posts = await axios.get(`/api/posts/groupPosts/${id}`);
-                dispatch(_loadPosts(posts));
-                break;
-            }
-            case 'event': {
-                const posts = await axios.get(`api/posts/eventPosts/${id}`);
-                dispatch(_loadPosts(posts));
-                break;
-            }
-            default:
-                throw new Error('Type', 'Input type needs to be a group or a string.');
+        const posts = await axios.get(`/api/posts/groupPosts/${id}`);
+        if (!posts) {
+            dispatch(_failedToLoadPost());
+        } else {
+            dispatch(_loadPosts(posts));
         }
     } catch (err) {
         console.error(err)
