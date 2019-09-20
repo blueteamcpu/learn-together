@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Responsive, Select, Button } from 'semantic-ui-react';
+import { Form, Responsive, Select, Button, FormField } from 'semantic-ui-react';
 
 const SelectDistance = ({ handleDistance, distance }) => (
   <Select
@@ -59,11 +59,19 @@ class ExploreForm extends Component {
 
   render() {
     const { handleSubmit, handleCategory, handleDistance } = this;
-    const { category, term, handleChange, distance } = this.props;
+    const { category, term, handleChange, distance, isLoggedIn } = this.props;
 
     return (
       <Form onSubmit={handleSubmit}>
         <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
+          {isLoggedIn && (
+            <FormField>
+              <SelectDistance
+                distance={distance}
+                handleDistance={handleDistance}
+              />
+            </FormField>
+          )}
           <Form.Field>
             <SelectCategory
               handleCategory={handleCategory}
@@ -77,10 +85,12 @@ class ExploreForm extends Component {
 
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <Form.Group inline>
-            <SelectDistance
-              distance={distance}
-              handleDistance={handleDistance}
-            />
+            {isLoggedIn && (
+              <SelectDistance
+                distance={distance}
+                handleDistance={handleDistance}
+              />
+            )}
             <SelectCategory
               handleCategory={handleCategory}
               category={category}
