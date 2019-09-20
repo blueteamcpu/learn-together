@@ -24,7 +24,7 @@ const titleCase = str => {
 const firstSentenceOnly = p => {
   const idx = p.search(/(\?|\.|!)/);
 
-  if (idx > 50) {
+  if (idx > 50 || idx === -1) {
     return p.slice(0, 50) + '...';
   } else {
     return p.slice(0, idx + 1);
