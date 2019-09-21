@@ -3,7 +3,7 @@ import { Button, Container, Divider, Grid, Header, Menu, Segment} from 'semantic
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import { getDetailGroup } from '../../reducers/groupReducer';
+import { getDetailGroup, joinGroup, leaveGroup } from '../../reducers/groupReducer';
 
 import GroupContext from './GroupContext';
 
@@ -15,10 +15,7 @@ class GroupDetail extends Component {
     super();
     this.state = { context: 'events',
                    activeItem: 'events',
-                   isMember: false,
                  };
-    this.joinGroup = this.joinGroup.bind(this);
-    this.leaveGroup = this.leaveGroup.bind(this);
   }
 
   handleItemClick = (e, { name }) => {
@@ -26,43 +23,21 @@ class GroupDetail extends Component {
     this.props.getDetailGroup(this.props.match.params.groupId, name);
   };
 
-  async joinGroup(match) {
-    try {
-      const result = axios.post('/api/groups/addself', {groupId: match.params.groupId});
-      this.setState({ isMember: true});
-    }
-    catch(e) {
-      console.log('Failed to add user to group?');
-    }
-  }
-
-  leaveGroup(match) {
-    console.log(match);
-    try {
-      const result = axios.delete('/api/groups/removeself', {data: {groupId: match.params.groupId}});
-      this.setState({ isMember: false});
-    }
-    catch(e) {
-      console.log("I suck at math");
-    }
-  }
-
   componentDidMount() {
     this.props.getDetailGroup(this.props.match.params.groupId, this.state.context);
     this.setState({ groupId: this.props.match.params.groupId});
   }
 
-  compontentDidUpdate() {
-    const { context } = this.state;
-    if(this.props.members.length && this.props.user.id !== undefined) {
-      this.props.members.filter(m => m.id === this.props.user.id).length ?
-        this.setState({ isMember: true }) :
-        null;
-    }
-  }
+  // compontentDidUpdate() {
+  //   if(this.state.isMember === null && (this.props.members.length && this.props.user.id !== undefined)) {
+  //     this.props.members.filter(m => m.id === this.props.user.id).length ?
+  //       this.setState({ isMember: true }) :
+  //       null;
+  //   }
+  // }
 
   render() {
-    const { groupDetailed, history, match } = this.props;
+    const { groupDetailed, history, match, joinGroup, leaveGroup } = this.props;
     const userId = this.props.user ? this.props.user.id : null;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
@@ -82,15 +57,15 @@ class GroupDetail extends Component {
                  activeItem={this.state.activeItem}
                  handleItemClick={this.handleItemClick}
                  userId={userId}
-                 isMember={this.state.isMember}
-                 joinGroup={this.joinGroup}
-                 leaveGroup={this.leaveGroup}
+                 isMember={groupDetailed.isMember}
+                 joinGroup={joinGroup}
+                 leaveGroup={leaveGroup}
         />
         <Segment attached='bottom'>
           <GroupContext context={this.state.context}
                         history={history}
                         groupId={group.id}
-                        isMember={this.state.isMember}
+                        isMember={groupDetailed.isMember}
           />
         </Segment>        
       </Container>
@@ -105,7 +80,9 @@ const mapStateToProps = ({ groups, authentication }) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getDetailGroup(id, context) { dispatch(getDetailGroup(id, context)); }
+  getDetailGroup(id, context) { dispatch(getDetailGroup(id, context)); },
+  joinGroup() { dispatch(joinGroup());},
+  leaveGroup() { dispatch(leaveGroup());},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
@@ -143,10 +120,10 @@ function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGr
         <Menu.Menu position='right'>
           <Menu.Item>
             { userId ? !isMember ? 
-              <Button color='green' onClick={() => joinGroup(match)}>
+              <Button color='green' onClick={() => joinGroup()}>
                 Join
               </Button>
-              : <Button color='red' onClick={() => leaveGroup(match)}>
+              : <Button color='red' onClick={() => leaveGroup()}>
                   Abandon
                 </Button>
               : null
