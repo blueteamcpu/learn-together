@@ -82,6 +82,7 @@ class CreateEventForm extends Component {
                 verticalAlign="middle"
             >
                 <Grid.Column style={{ maxWidth: 450 }}>
+                <br/>
                 <Header as="h2" color="teal" textAlign="center">
                     Create Event
                 </Header>
