@@ -9,17 +9,58 @@ const {
   GroupMember,
 } = require('../db/index');
 const { titleCase } = require('../../utils/index');
+const getZipsNearMe = require('../../resources/zipcodesNearMe');
 
+// eslint-disable-next-line complexity
 router.get('/explore', async (req, res, next) => {
   try {
-    let { term, offset } = req.query;
-    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
+    let { term, offset, distance } = req.query;
+    term = term ? term.trim().toLowerCase() : null;
+
+    const query = {
+      limit: 20,
+      attributes: ['id', 'name', 'description', 'day'],
+      order: [['day', 'DESC']],
+    };
 
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
-    if (term) {
-      term = term.trim().toLowerCase();
+    if (req.user && req.user.zipcode) {
+      const zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
 
+      if (term) {
+        query.where = {
+          [Op.and]: {
+            zipcode: {
+              [Op.in]: zipCodes,
+            },
+            [Op.or]: [
+              {
+                name: { [Op.substring]: titleCase(term) },
+              },
+              {
+                description: {
+                  [Op.or]: [
+                    {
+                      [Op.substring]: term,
+                    },
+                    {
+                      [Op.substring]: titleCase(term),
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        };
+      } else {
+        query.where = {
+          zipcode: {
+            [Op.in]: zipCodes,
+          },
+        };
+      }
+    } else if (term) {
       query.where = {
         [Op.or]: [
           {
