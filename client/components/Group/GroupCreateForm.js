@@ -20,21 +20,17 @@ class GroupCreateForm extends Component {
     this.state = {
       values: {
         name: '',
-        subject: '',
+        topic: '',
         description: '',
         zipCode: '',
         ownerId: '',
       },
+      errors: {}
     };
-  }
-
-  componentDidMount() {
-    this.setState({ ownerId: this.props.user.id });
   }
 
   handleChange = e => {
     const { name, value } = e.target;
-
     this.setState(state => ({
       ...state,
       values: { ...state.values, [name]: value },
@@ -44,15 +40,31 @@ class GroupCreateForm extends Component {
   handleSubmit = async (e, postNewGroup) => {
     e.preventDefault();
 
-    const { data } = await axios
-      .post('api/groups/newgroup', this.state.values)
-      .then(data => postNewGroup(this.state))
-      .catch(e => {
+    try {
+      const { data } = await axios.post('/api/groups/newgroup',
+					this.state.values,
+					{
+					  validateStatus: function(status) {
+					    return status === 201 || status === 401;
+					  },
+					});
+      if (data.error) {
         this.setState(state => ({
           ...state,
           errors: { ...state.errors, ...data.error },
         }));
-      });
+      } else if (data.errors) {
+        this.setState(state => ({
+          ...state,
+          errors: { ...state.errors, ...data.errors },
+        }));
+      } else {
+        this.props.history.push(`/groups/${data.id}`);
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   render() {
@@ -66,7 +78,7 @@ class GroupCreateForm extends Component {
         >
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as="h2" color="teal" textAlign="center">
-              Create Event
+              Create Group
             </Header>
             <Form
               size="large"
@@ -74,30 +86,27 @@ class GroupCreateForm extends Component {
             >
               <Segment stacked>
                 <Form.Input
-                  fluid
                   placeholder="Group Name"
                   name="name"
                   value={values.name}
                   onChange={this.handleChange}
                 />
                 <Form.TextArea
-                  fluid
                   placeholder="Description"
                   name="description"
                   value={values.description}
                   onChange={this.handleChange}
                 />
-                <Form.TextArea
-                  fluid
-                  placeholder="Subject"
-                  name="subject"
+                <Form.Input
+                  placeholder="Topic"
+                  name="topic"
                   value={values.subject}
                   onChange={this.handleChange}
                 />
                 <Form.Input
-                  fluid
                   placeholder="Zip Code"
                   name="zipCode"
+                  type="number"
                   value={values.zipCode}
                   onChange={this.handleChange}
                 />

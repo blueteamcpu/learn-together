@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const SET_GROUPS = 'SET_GROUPS';
 const SET_DETAIL_GROUP = 'SET_DETAIL_GROUP';
+const SET_DETAIL_ISMEMBER = 'SET_DETAIL_ISMEMBER';
 const FAILED_GROUPS_GET = 'FAILED_GROUPS_GET';
 const GET_MY_GROUPS = 'GET_MY_GROUPS';
 
@@ -28,6 +29,18 @@ export const getDetailGroup = (id, context) => dispatch => {
     .catch(e => dispatch({ type: FAILED_GROUPS_GET, groupGetFailed: true }));
 };
 
+export const joinGroup = () => (dispatch, getState) => {
+  axios.post('/api/groups/addself', {groupId: getState().groups.groupDetailed.group.id})
+    .then(() => dispatch({ type: SET_DETAIL_ISMEMBER, isMember: true }))
+    .catch(e => console.log('Failed to add user to group?'));
+};
+
+export const leaveGroup = () => (dispatch, getState) => {
+  axios.delete('/api/groups/removeself', {data: {groupId: getState().groups.groupDetailed.group.id}})
+    .then(() => dispatch({ type: SET_DETAIL_ISMEMBER, isMember: false }))
+    .catch(e => console.log("I suck at math"));
+};
+
 const gotMyGroups = groups => ({
   type: GET_MY_GROUPS,
   groups,
@@ -42,6 +55,8 @@ export const getMyGroups = () => async (dispatch, _, axios) => {
   }
 };
 
+//export const joinGroup = () => async (dispatch, _, axios)
+
 // Presumabely we will need some sort of tracking thing which manages the groups
 // that a user is connected to for updates
 // I'm not sure if this is groups plural, or if we only want to connect to one at a time
@@ -51,6 +66,8 @@ const initialState = {
   groupDetailed: {
     group: {},
     members: {},
+    isMember: false,
+    isAdmin: false,
   },
 };
 
@@ -61,6 +78,9 @@ export default (state = initialState, action) => {
     }
     case SET_DETAIL_GROUP: {
       return { ...state, groupDetailed: { ...action.group } };
+    }
+    case SET_DETAIL_ISMEMBER: {
+      return { ...state, groupDetailed: {...state.groupDetailed, isMember: action.isMember}};
     }
     case FAILED_GROUPS_GET: {
       return { ...state, groupGetFailed: action.groupGetFailed };
