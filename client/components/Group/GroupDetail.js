@@ -58,6 +58,7 @@ class GroupDetail extends Component {
                         history={history}
                         groupId={group.id}
                         isMember={groupDetailed.isMember}
+                        isAdmin={groupDetailed.isAdmin}
           />
         </Segment>        
       </Container>

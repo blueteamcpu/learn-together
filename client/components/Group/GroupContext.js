@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 class GroupContext extends React.Component {
   render() {
-    const { context, history, groupId, isMember } = this.props;
+    const { context, history, groupId, isMember, isAdmin } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
     <Fragment>
@@ -83,14 +83,18 @@ function Events({ item, history }) {
   );
 }
 
-function Members({ item }) {
+function Members({ item, isAdmin }) {
+  const memberStatus = item.group_member.isAdmin ? 'Admin' : 'Member';
   return(
     <List.Item>
       <Image avatar src={item.imageURL} />
       <List.Content>
         <List.Header>{item.username}</List.Header>
+        <List.Description>
+          Is a {memberStatus} { isAdmin ? <Button basic negative floated='right' size='small'>Remove</Button> : null}
+        </List.Description>
       </List.Content>
-    </List.Item>
+    </List.Item>    
   );
 }
 
