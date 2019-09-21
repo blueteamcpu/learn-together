@@ -4,6 +4,7 @@ import {
   Form,
   Grid,
   Segment,
+  Message
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import Axios from 'axios';
@@ -25,7 +26,8 @@ class UpdateEventForm extends Component {
                 groupId: '',
               },
               errors: {},
-              event: {}
+              event: {},
+              submitted: false,
             }
             this.deleteEvent = this.deleteEvent.bind(this);
     }
@@ -54,7 +56,6 @@ class UpdateEventForm extends Component {
                       return status === 200 || status === 401;
                     },
                 });
-                console.log('DATA:', data)
             if (data.error) {
                 this.setState(state => ({
                 ...state,
@@ -67,6 +68,7 @@ class UpdateEventForm extends Component {
                 }));
             } else {
                 this.props.getEventDetail(this.props.eventId);
+                this.setState({submitted: true});
             }
         } catch (error) {
             console.error(error);
@@ -80,7 +82,7 @@ class UpdateEventForm extends Component {
 
 
     render() {
-        const { values, errors } = this.state;
+        const { values, errors, submitted } = this.state;
         return (
             <Fragment>
             <Grid
@@ -89,6 +91,9 @@ class UpdateEventForm extends Component {
                 verticalAlign="middle"
             >
                 <Grid.Column style={{ maxWidth: 450 }}>
+                {submitted && (
+                    <Message floating> Your event has been updated!</Message>
+                )}
                 <Form size="large" onSubmit={this.handleSubmit}>
                     <Segment>
                     <Form.Input
