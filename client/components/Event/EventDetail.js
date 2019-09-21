@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import UpdateEventForm from './UpdateEventForm';
 import { Link } from 'react-router-dom';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
+import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer'
 import {
     Button,
     Container,
@@ -21,7 +22,7 @@ class EventDetail extends Component {
         this.state = { 
             going: null,
             activeItem: 'info',
-            event: {}
+            event: {},
          }
          this.rsvp = this.rsvp.bind(this);
          this.unrsvp = this.unrsvp.bind(this);
@@ -30,6 +31,7 @@ class EventDetail extends Component {
 
     componentDidMount() {
         this.props.getEventDetail(this.props.match.params.eventId);
+        this.props.getMyGroups();
     }
     
     componentDidUpdate() {
@@ -62,6 +64,15 @@ class EventDetail extends Component {
         const { going, activeItem } = this.state;
         const attendees = event.users;
 
+        console.log('groupList: ', this.props.groups)
+        let member = false;
+
+        this.props.groups.forEach(group => {
+            if (group.id === event.groupId) {
+                member = true
+            }
+            });
+
         return ( 
 
             <Fragment>
@@ -75,7 +86,6 @@ class EventDetail extends Component {
                                 <Header as="h3" style={{ fontSize: '2em' }}>
                                 {event.name}
                                 </Header>
-                                
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
@@ -88,12 +98,17 @@ class EventDetail extends Component {
                             : null 
                             }
                             <Menu.Menu position='right'>
+                                { member ? 
                                 <Menu.Item>
                                     { !going ? 
                                         <Button onClick={this.rsvp} color='red'>Not Going</Button> :
                                         <Button onClick={this.unrsvp} color='green'>I'm Going!</Button>
                                     }
+                                </Menu.Item> :
+                                <Menu.Item>
+                                    You must be a group member to join this event.
                                 </Menu.Item>
+                                }
                             </Menu.Menu>
                         </Menu>
                         </Grid.Row>
@@ -146,6 +161,7 @@ const mapStateToProps = state => ({
   events: state.events.allEvents,
   event: state.events.detailedEvent,
   user: state.authentication.user,
+  groups: state.groups.groupList
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -158,6 +174,9 @@ const mapDispatchToProps = (dispatch) => ({
     unjoinEvent(event) {
         dispatch(_unjoinEvent(event));
     },
+    getMyGroups() {
+        dispatch(_getMyGroups());
+    } 
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventDetail);
