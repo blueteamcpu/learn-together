@@ -2,6 +2,7 @@ const { server, io } = require('./app/index');
 const { db } = require('./db/index');
 
 io.on('connection', socket => {
+  // any time a user is logged in on the front end
   socket.on('login', userId => {
     socket.userId = userId;
   });

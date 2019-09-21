@@ -2,15 +2,22 @@ const router = require('express').Router();
 const { Comment } = require('../db/index');
 const { isLoggedIn } = require('../../utils/backend');
 
-router.get('/event/:id', async (req, res, next) => {
+// type: post / event
+router.get('/:type/:id', async (req, res, next) => {
   try {
     let { offset } = req.query;
+    let { type, id } = req.params;
+
+    if (!type || !id) {
+      res.sendStatus(400);
+    }
+
     offset = offset ? parseInt(offset, 10) * 30 : 0;
 
     const query = {
-      where: { eventId: req.params.id },
+      where: { [type + 'Id']: id },
       limit: 30,
-      include: [{ model: Comment, through: 'threadId' }],
+      include: [{ model: Comment, attributes: ['id'] }],
     };
 
     if (offset) {
@@ -18,28 +25,23 @@ router.get('/event/:id', async (req, res, next) => {
     }
 
     const comments = await Comment.findAll(query);
+
     res.json(comments);
   } catch (error) {
     next(error);
   }
 });
 
-router.get('/post/:id', async (req, res, next) => {
+router.get('/thread/:id', async (req, res, next) => {
   try {
-    let { offset } = req.query;
-    offset = offset ? parseInt(offset, 10) * 30 : 0;
-
-    const query = {
-      where: { postId: req.params.id },
-      limit: 30,
-      include: [{ model: Comment, through: 'threadId' }],
-    };
-
-    if (offset) {
-      query.offset = offset;
+    if (!req.params.id) {
+      res.sendStatus(400);
     }
 
-    const comments = await Comment.findAll(query);
+    const comments = await Comment.findAll({
+      where: { threadId: req.params.id },
+    });
+
     res.json(comments);
   } catch (error) {
     next(error);
@@ -131,3 +133,5 @@ router.post('/posts/:id', isLoggedIn, async (req, res, next) => {
     next(error);
   }
 });
+
+module.exports = router;
