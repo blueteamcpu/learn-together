@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const uuid = require('uuid/v4');
 const { Comment } = require('../db/index');
 const { isLoggedIn } = require('../../utils/backend');
 
@@ -51,23 +52,38 @@ router.get('/thread/:id', async (req, res, next) => {
 router.post(
   '/events/:eventId/comment/:commentId',
   isLoggedIn,
-  async (req, res, next) => {
+  (req, res, next) => {
     try {
       const io = req.app.get('io');
+      const room = `event-${req.params.eventId}`;
 
-      const comment = await Comment.commentOnAComment(
+      const id = uuid();
+
+      Comment.commentOnAComment(
         req.params.commentId,
         req.body.content,
+        id,
         req.user.id
-      );
+      ).catch(() => {
+        io.in(room).emit('message-thread-error', {
+          threadId: req.params.commentId,
+          id,
+        });
+      });
 
-      if (comment) {
-        io.in(`event-${req.params.eventId}`).emit('message-thread', comment);
-        res.end();
-      } else {
-        const error = new Error('thread-depth > 1');
-        res.status(400).json({ error });
-      }
+      const initDate = new Date();
+
+      io.in(room).emit('message-thread', {
+        id,
+        content: req.body.content,
+        createdAt: initDate,
+        updatedAt: initDate,
+        threadId: req.params.commentId,
+        userId: req.user.id,
+        username: req.user.username,
+      });
+      
+      res.end();
     } catch (error) {
       next(error);
     }
