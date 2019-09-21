@@ -161,7 +161,7 @@ router.get('/:id', async (req, res, next) => {
     const event = await Event.findOne({
       where: { id: req.params.id },
       include: [
-        { model: User, attributes: ['id', 'firstName', 'lastName', 'imageURL'] },
+        { model: User, attributes: ['id', 'username', 'imageURL'] },
         { model: Group, attributes: ['name'] },
       ],
     });
@@ -195,7 +195,7 @@ router.post('/addattendee', async (req, res, next) => {
       });
       const user = await User.findOne({
                     where: { id: attendee.userId },
-                    attributes: ['id', 'firstName', 'lastName', 'imageURL']
+                    attributes: ['id', 'username', 'imageURL']
                 }
       );
       res.send(user);

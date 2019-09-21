@@ -43,8 +43,6 @@ export default (state = initialState, action) => {
       };
     }
     case UNJOIN_EVENT: {
-      console.log('redux: action.attendee', action.attendee)
-      console.log('redux: event users', state.detailedEvent.users)
       return {
         ...state,
         detailedEvent: {

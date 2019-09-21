@@ -123,7 +123,7 @@ class EventDetail extends Component {
                                 <List>
                                     {attendees.map(person => 
                                         <List.Item key={person.id}>
-                                            <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName} {event.hostId === person.id ? '(Host)' : null}</List.Content>
+                                            <List.Content><Image avatar src={person.imageURL} />{person.username} {event.hostId === person.id ? '(Host)' : null}</List.Content>
                                         </List.Item>
                                         )
                                     }
