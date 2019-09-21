@@ -7,7 +7,7 @@ io.on('connection', socket => {
     socket.userId = userId;
   });
 
-  // type: event / post / comment
+  // type: event / post
   socket.on('join-room', (type, id) => {
     if (socket.userId) {
       socket.join(`${type}-${id}`);
@@ -16,7 +16,7 @@ io.on('connection', socket => {
     }
   });
 
-  // type: event / post / comment
+  // type: event / post
   socket.on('leave-room', (type, id) => {
     socket.leave(`${type}-${id}`);
   });
