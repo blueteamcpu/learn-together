@@ -25,9 +25,13 @@ router.get('/explore', async (req, res, next) => {
 
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
-    if (req.user && req.user.zipcode) {
-      const zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
+    let zipCodes = null;
 
+    if (req.user && req.user.zipcode) {
+      zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
+    }
+
+    if (zipCodes) {
       if (term) {
         query.where = {
           [Op.and]: {
