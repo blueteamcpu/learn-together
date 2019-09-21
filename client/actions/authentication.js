@@ -13,7 +13,7 @@ const failedToLogOut = () => ({ type: FAILEDTOLOGOUT });
 
 export const gotUser = user => {
   socket.emit('login', user.id);
-  
+
   return {
     type: GOT_USER,
     user,
