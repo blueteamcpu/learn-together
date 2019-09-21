@@ -10,9 +10,16 @@ Post.init(
       unique: true,
       primaryKey: true,
     },
+    title: {
+      type: sequelize.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      }
+    },
     description: {
       type: sequelize.TEXT,
-      allowNull: true,
+      allowNull: false,
       validate: {
         notEmpty: true,
       },
