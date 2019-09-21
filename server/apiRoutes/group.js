@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Op } = require('sequelize');
-const { Group, GroupMember, User } = require('../db/index.js');
+const { Group, GroupMember, User } = require('../db/index');
 const { titleCase } = require('../../utils/index');
 const { queryForUser, isLoggedIn } = require('../../utils/backend');
 const getZipsNearMe = require('../../resources/zipcodesNearMe');
@@ -72,6 +72,7 @@ router.post('/newgroup', async (req, res, next) => {
 					  description: req.body.description,
 					  zipcode: req.body.zipCode,
 					  ownerId: req.user.id,
+					  topicId: req.body.topicId,
 					});
     await GroupMember.create({
       isAdmin: true,
