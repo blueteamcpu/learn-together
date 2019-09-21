@@ -64,7 +64,6 @@ class EventDetail extends Component {
         const { going, activeItem } = this.state;
         const attendees = event.users;
 
-        console.log('groupList: ', this.props.groups)
         let member = false;
 
         this.props.groups.forEach(group => {
