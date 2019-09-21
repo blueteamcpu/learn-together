@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import UpdateEventForm from './UpdateEventForm';
 import { Link } from 'react-router-dom';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
+import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer'
 import {
     Button,
     Container,
@@ -19,9 +20,9 @@ class EventDetail extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            going: false,
+            going: null,
             activeItem: 'info',
-            event: {}
+            event: {},
          }
          this.rsvp = this.rsvp.bind(this);
          this.unrsvp = this.unrsvp.bind(this);
@@ -30,28 +31,28 @@ class EventDetail extends Component {
 
     componentDidMount() {
         this.props.getEventDetail(this.props.match.params.eventId);
+        this.props.getMyGroups();
     }
     
     componentDidUpdate() {
         const { event } = this.props;
         const attendees = event.users;
         
-
-        if (attendees && this.state.going === false) {
-            const isGoing = attendees.find(user => user.id === this.props.user.id)
+        if (attendees && this.state.going === null) {
+            const isGoing = attendees.find(user => user.id === this.props.user.id);
             if (isGoing) {
-                this.setState({going: true})
+                this.setState({going: true});
             }
             }
     }
 
     rsvp() {
-        this.props.joinEvent(this.props.event)
-        this.setState({going: true})
+        this.props.joinEvent(this.props.event);
+        this.setState({going: true});
     }
     unrsvp() {
-        this.props.unjoinEvent(this.props.event)
-        this.setState({going: false})
+        this.props.unjoinEvent(this.props.event);
+        this.setState({going: false});
     }
 
     
@@ -59,9 +60,17 @@ class EventDetail extends Component {
     handleMenuClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() { 
-        const { event, user, group } = this.props;
+        const { event, user } = this.props;
         const { going, activeItem } = this.state;
         const attendees = event.users;
+
+        let member = false;
+
+        this.props.groups.forEach(group => {
+            if (group.id === event.groupId) {
+                member = true
+            }
+            });
 
         return ( 
 
@@ -76,14 +85,9 @@ class EventDetail extends Component {
                                 <Header as="h3" style={{ fontSize: '2em' }}>
                                 {event.name}
                                 </Header>
-                                
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                        { !going ? 
-                            <Button onClick={this.rsvp} color='green'>I'm Going!</Button> :
-                            <Button onClick={this.unrsvp} color='red'>Not Going</Button>
-                        }
                         <Menu tabular attached='top'>
                             <Menu.Item name='info' active={activeItem==='info'} onClick={this.handleMenuClick}/>
                             <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}>Attendees ({attendees.length})</Menu.Item>
@@ -92,6 +96,19 @@ class EventDetail extends Component {
                             <Menu.Item name='edit' active={activeItem==='edit'} onClick={this.handleMenuClick}>Edit Event</Menu.Item>
                             : null 
                             }
+                            <Menu.Menu position='right'>
+                                { member ? 
+                                <Menu.Item>
+                                    { !going ? 
+                                        <Button onClick={this.rsvp} color='red'>Not Going</Button> :
+                                        <Button onClick={this.unrsvp} color='green'>I'm Going!</Button>
+                                    }
+                                </Menu.Item> :
+                                <Menu.Item>
+                                    You must be a group member to join this event.
+                                </Menu.Item>
+                                }
+                            </Menu.Menu>
                         </Menu>
                         </Grid.Row>
                         </Grid>
@@ -118,10 +135,12 @@ class EventDetail extends Component {
                                 : 
                                 (activeItem === 'attendees' ? 
                                 <List>
-                                {attendees.map(person => 
-                                    <List.Item key={person.id}>
-                                    <List.Content><Image avatar src={person.imageURL} />{person.firstName} {person.lastName}</List.Content>
-                                    </List.Item>) }
+                                    {attendees.map(person => 
+                                        <List.Item key={person.id}>
+                                            <List.Content><Image avatar src={person.imageURL} />{person.username} {event.hostId === person.id ? '(Host)' : null}</List.Content>
+                                        </List.Item>
+                                        )
+                                    }
                                 </List> 
                                 : 
                                         <UpdateEventForm eventId={event.id} history={this.props.history}/>
@@ -141,6 +160,7 @@ const mapStateToProps = state => ({
   events: state.events.allEvents,
   event: state.events.detailedEvent,
   user: state.authentication.user,
+  groups: state.groups.groupList
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -153,6 +173,9 @@ const mapDispatchToProps = (dispatch) => ({
     unjoinEvent(event) {
         dispatch(_unjoinEvent(event));
     },
+    getMyGroups() {
+        dispatch(_getMyGroups());
+    } 
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EventDetail);
