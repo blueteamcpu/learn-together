@@ -11,6 +11,7 @@ import EventDetail from '../Event/EventDetail';
 // I think eventually we split these routes out into a Dashboard route
 // For now, just keeping the ball rolling
 import GroupDetail from '../Group/GroupDetail';
+import GroupCreateForm from '../Group/GroupCreateForm';
 import UserProfile from '../UserProfile/UserProfile';
 import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
 import Explore from '../Explore/Explore';
@@ -33,7 +34,9 @@ class App extends Component {
             path="/groups/:groupId/events/create"
             component={CreateEventForm}
           />
+          <Route exact path="/groups/createnew" component={GroupCreateForm} />
           <Route exact path="/groups/:groupId" component={GroupDetail} />
+
           <Route exact path="/explore" component={Explore} />
           <LoggedInOnly exact path="/dashboard" component={Dashboard} />
           <Route

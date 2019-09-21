@@ -68,18 +68,18 @@ router.get('/explore', async (req, res, next) => {
 
 router.post('/newgroup', async (req, res, next) => {
   try {
-    const newGroup = await Group.create({
-      ...req.body.group,
-      ownerId: req.user.id,
-    });
-
+    const newGroup = await Group.create({ name: req.body.name,
+					  description: req.body.description,
+					  zipcode: req.body.zipCode,
+					  ownerId: req.user.id,
+					});
     await GroupMember.create({
       isAdmin: true,
       groupId: newGroup.id,
       userId: req.user.id,
     });
 
-    res.status(201).json(newGroup);
+    res.status(201).send(newGroup);
   } catch (error) {
     next(error);
   }
