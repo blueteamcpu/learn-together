@@ -30,7 +30,6 @@ class GroupDetail extends Component {
 
   render() {
     const { groupDetailed, history, match, joinGroup, leaveGroup, adminRemoveMember } = this.props;
-    console.log(groupDetailed);
     const userId = this.props.user ? this.props.user.id : null;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
@@ -51,6 +50,7 @@ class GroupDetail extends Component {
                  handleItemClick={this.handleItemClick}
                  userId={userId}
                  isMember={groupDetailed.isMember}
+                 isAdmin={groupDetailed.isAdmin}
                  joinGroup={joinGroup}
                  leaveGroup={leaveGroup}
         />
@@ -82,7 +82,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
 
-function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGroup, leaveGroup}) {
+function TabMenu ({ match, activeItem, handleItemClick, userId,
+                    isAdmin, isMember, joinGroup, leaveGroup}) {
   return (
     <div>
       <Menu attached='top' tabular>
@@ -93,14 +94,6 @@ function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGr
         >
           Events
         </Menu.Item>
-
-        <Menu.Item
-          name='members'
-          active={activeItem === 'members'}
-          onClick={handleItemClick}
-        >
-          Members
-        </Menu.Item>
         {
           userId ?
             <Menu.Item
@@ -109,6 +102,24 @@ function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGr
               onClick={handleItemClick}
             >
               Chat
+            </Menu.Item>
+          : null
+        }
+        <Menu.Item
+          name='members'
+          active={activeItem === 'members'}
+          onClick={handleItemClick}
+        >
+          Members
+        </Menu.Item>
+        {
+          isAdmin ?
+            <Menu.Item
+              name='update'
+              active={activeItem === 'update'}
+              onClick={handleItemClick}
+            >
+              Update
             </Menu.Item>
           : null
         }

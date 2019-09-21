@@ -86,6 +86,16 @@ router.post('/newgroup', async (req, res, next) => {
   }
 });
 
+router.put('/update/:groupId', async (req, res, next) => {
+  try {
+    const update = await Group.update(req.body, { where: { id: req.params.groupId }});
+    res.status(202).send();
+  }
+  catch(e){
+    next(e);
+  }
+});
+
 // NICK: TODO Finish this route to facilitate detailed Groups and all the thingies
 router.get('/detail/:groupId/:context?', async (req, res, next) => {
   const context = req.params.context;
@@ -108,6 +118,10 @@ router.get('/detail/:groupId/:context?', async (req, res, next) => {
         res.send({ group, events: [...events], isAdmin,
 		   isMember: isMember ? true : false });
         break;
+      }
+      case 'update': {
+	res.send({group, isAdmin, update: true,
+		   isMember: isMember ? true : false});
       }
     }
   } catch (e) {
