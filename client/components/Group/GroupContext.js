@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 class GroupContext extends React.Component {
   render() {
-    const { context, history, groupId, isMember, isAdmin } = this.props;
+    const { context, history, groupId, isMember, isAdmin, adminRemoveMember } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
     <Fragment>
@@ -14,7 +14,10 @@ class GroupContext extends React.Component {
       {this.props.groupDetailed[context].map(i => {
         switch(context) {
         case 'members':
-          return <Members key={i.id} item={i}/>;
+          return <Members key={i.id} item={i}
+                          isAdmin={isAdmin}
+                          groupId={groupId}
+                          adminRemoveMember={adminRemoveMember}/>;
           break;
         case 'events':
           return <Events key={i.id} item={i} history={history}/>;
@@ -83,7 +86,7 @@ function Events({ item, history }) {
   );
 }
 
-function Members({ item, isAdmin }) {
+function Members({ item, isAdmin, groupId, adminRemoveMember }) {
   const memberStatus = item.group_member.isAdmin ? 'Admin' : 'Member';
   return(
     <List.Item>
@@ -91,7 +94,7 @@ function Members({ item, isAdmin }) {
       <List.Content>
         <List.Header>{item.username}</List.Header>
         <List.Description>
-          Is a {memberStatus} { isAdmin ? <Button basic negative floated='right' size='small'>Remove</Button> : null}
+          Is a {memberStatus} { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
         </List.Description>
       </List.Content>
     </List.Item>    

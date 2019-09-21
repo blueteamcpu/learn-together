@@ -3,7 +3,7 @@ import { Button, Container, Divider, Grid, Header, Menu, Segment} from 'semantic
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import { getDetailGroup, joinGroup, leaveGroup } from '../../reducers/groupReducer';
+import { getDetailGroup, joinGroup, leaveGroup, adminRemoveMember } from '../../reducers/groupReducer';
 
 import GroupContext from './GroupContext';
 
@@ -29,7 +29,8 @@ class GroupDetail extends Component {
   }
 
   render() {
-    const { groupDetailed, history, match, joinGroup, leaveGroup } = this.props;
+    const { groupDetailed, history, match, joinGroup, leaveGroup, adminRemoveMember } = this.props;
+    console.log(groupDetailed);
     const userId = this.props.user ? this.props.user.id : null;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
@@ -59,6 +60,7 @@ class GroupDetail extends Component {
                         groupId={group.id}
                         isMember={groupDetailed.isMember}
                         isAdmin={groupDetailed.isAdmin}
+                        adminRemoveMember={adminRemoveMember}
           />
         </Segment>        
       </Container>
@@ -69,13 +71,13 @@ class GroupDetail extends Component {
 const mapStateToProps = ({ groups, authentication }) => ({
   groupDetailed: groups.groupDetailed,
   user: authentication.user
-  
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getDetailGroup(id, context) { dispatch(getDetailGroup(id, context)); },
   joinGroup() { dispatch(joinGroup());},
   leaveGroup() { dispatch(leaveGroup());},
+  adminRemoveMember(userId, groupId) { dispatch(adminRemoveMember(userId, groupId));},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
