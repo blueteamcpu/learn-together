@@ -4,11 +4,13 @@ import {
   Form,
   Grid,
   Segment,
+  Message
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import Axios from 'axios';
 import { updateEvent as _updateEvent, getEventDetail as _getEventDetail, deleteEvent as _deleteEvent } from '../../actions/events';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
 
 class UpdateEventForm extends Component {
     constructor(props) {
@@ -25,7 +27,8 @@ class UpdateEventForm extends Component {
                 groupId: '',
               },
               errors: {},
-              event: {}
+              event: {},
+              submitted: false,
             }
             this.deleteEvent = this.deleteEvent.bind(this);
     }
@@ -54,7 +57,6 @@ class UpdateEventForm extends Component {
                       return status === 200 || status === 401;
                     },
                 });
-
             if (data.error) {
                 this.setState(state => ({
                 ...state,
@@ -66,7 +68,8 @@ class UpdateEventForm extends Component {
                 errors: { ...state.errors, ...data.errors },
                 }));
             } else {
-                this.props.updateEvent(data);
+                this.props.getEventDetail(this.props.eventId);
+                this.setState({submitted: true});
             }
         } catch (error) {
             console.error(error);
@@ -75,12 +78,12 @@ class UpdateEventForm extends Component {
 
     deleteEvent(){
         this.props.deleteEvent(this.state.event.id);
-        this.props.history.push('/dashboard');
+        // this.props.history.push('/dashboard');
     }
 
 
     render() {
-        const { values, errors } = this.state;
+        const { values, errors, submitted } = this.state;
         return (
             <Fragment>
             <Grid
@@ -89,6 +92,9 @@ class UpdateEventForm extends Component {
                 verticalAlign="middle"
             >
                 <Grid.Column style={{ maxWidth: 450 }}>
+                {submitted && (
+                    <Message floating> Your event has been updated!</Message>
+                )}
                 <Form size="large" onSubmit={this.handleSubmit}>
                     <Segment>
                     <Form.Input
@@ -152,7 +158,7 @@ class UpdateEventForm extends Component {
                         Update Event
                     </Button>
                     
-                    <Button size='large' fluid onClick={this.deleteEvent}>Delete Event</Button>
+                    <Button as={Link} to='/dashboard' size='large' fluid onClick={this.deleteEvent}>Delete Event</Button>
                     </Segment>
                 </Form>
                 </Grid.Column>
@@ -163,9 +169,6 @@ class UpdateEventForm extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    updateEvent(event) {
-        dispatch(_updateEvent(event));
-    },
     getEventDetail(eventId) {
         dispatch(_getEventDetail(eventId));
     },

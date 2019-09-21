@@ -90,17 +90,6 @@ export const createEvent = event => async (dispatch, _, axios) => {
   }
 };
 
-export const updateEvent = event => async (dispatch, _, axios) => {
-  try {
-    dispatch({
-      type: UPDATE_EVENT,
-      event,
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const getMyEvents = () => async (dispatch, _, axios) => {
   try {
     const { data: events } = await axios.get('/api/events/myevents');

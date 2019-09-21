@@ -7,7 +7,6 @@ import {
   Segment,
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
-import { connect } from 'react-redux';
 import Axios from 'axios';
 
 class CreateEventForm extends Component {
@@ -82,11 +81,15 @@ class CreateEventForm extends Component {
                 verticalAlign="middle"
             >
                 <Grid.Column style={{ maxWidth: 450 }}>
+                <br/>
                 <Header as="h2" color="teal" textAlign="center">
                     Create Event
                 </Header>
                 <Form size="large" onSubmit={this.handleSubmit}>
                     <Segment stacked>
+                    <Header as="h3" textAlign="center">
+                        Group: {this.props.group.name}
+                    </Header>
                     <Form.Input
                         fluid
                         placeholder="Event Name"

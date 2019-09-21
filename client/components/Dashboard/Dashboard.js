@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import Dashboard from './DashboardDumb';
 import { getMyEvents as _getMyEvents } from '../../actions/events';
-import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer';
+import { getMyGroups as _getMyGroups,
+	 createNewGroup as _createNewGroup } from '../../reducers/groupReducer';
 
 const mapStateToProps = ({ events: { eventList }, groups: { groupList } }) => ({
   events: eventList,

@@ -1,3 +1,7 @@
+if (process.env.IS_PRODUCTION !== true) {
+  require('dotenv').config();
+}
+
 const path = require('path');
 const express = require('express');
 const morgan = require('morgan');

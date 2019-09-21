@@ -1,36 +1,38 @@
 const { User } = require('../db/index');
-const { client, cacheDuration } = require('../redis');
+const {
+  existsAsync,
+  getAsync,
+  setExAsync,
+  cacheDurationInSeconds,
+} = require('../redis');
 
-const middleware = (req, _, next) => {
-  if (req.session && req.session.userId) {
-    client.get(req.session.userId, async (error, data) => {
-      if (error) {
-        next(error);
-      } else if (data) {
+const middleware = async (req, _, next) => {
+  try {
+    if (req.session && req.session.userId) {
+      const userIsCached = await existsAsync(req.session.userId);
+
+      if (userIsCached) {
+        const data = await getAsync(req.session.userId);
+
         req.user = JSON.parse(data);
-        next();
       } else {
         const user = await User.findOne({
           where: { id: req.session.userId },
         });
 
-        client.setex(
+        await setExAsync(
           req.session.userId,
-          cacheDuration,
-          JSON.stringify(user),
-          err => {
-            if (err) {
-              next(err);
-            } else {
-              req.user = user;
-              next();
-            }
-          }
+          cacheDurationInSeconds,
+          JSON.stringify(user)
         );
+
+        req.user = user;
       }
-    });
-  } else {
+    }
+
     next();
+  } catch (error) {
+    next(error);
   }
 };
 

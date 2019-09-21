@@ -70,6 +70,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "babel-jest": "^24.9.0",
+    "dotenv": "^8.1.0",
     "jest": "^24.9.0",
     "nodemon": "^1.19.2",
     "webpack": "^4.39.3",

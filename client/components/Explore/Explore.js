@@ -8,8 +8,8 @@ import Explore from './ExploreDumb';
 const mapStateToProps = ({ explore }) => explore;
 
 const mapDispatchToProps = dispatch => ({
-  fetchContent(category, term, offset) {
-    dispatch(_getContent(category, term, offset));
+  fetchContent(category, term, offset, distance) {
+    dispatch(_getContent(category, term, offset, distance));
   },
   delayOver() {
     dispatch(_delayOver());

@@ -9,17 +9,58 @@ const {
   GroupMember,
 } = require('../db/index');
 const { titleCase } = require('../../utils/index');
+const getZipsNearMe = require('../../resources/zipcodesNearMe');
 
+// eslint-disable-next-line complexity
 router.get('/explore', async (req, res, next) => {
   try {
-    let { term, offset } = req.query;
-    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
+    let { term, offset, distance } = req.query;
+    term = term ? term.trim().toLowerCase() : null;
+
+    const query = {
+      limit: 20,
+      attributes: ['id', 'name', 'description', 'day'],
+      order: [['day', 'DESC']],
+    };
 
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
-    if (term) {
-      term = term.trim().toLowerCase();
+    if (req.user && req.user.zipcode) {
+      const zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
 
+      if (term) {
+        query.where = {
+          [Op.and]: {
+            zipcode: {
+              [Op.in]: zipCodes,
+            },
+            [Op.or]: [
+              {
+                name: { [Op.substring]: titleCase(term) },
+              },
+              {
+                description: {
+                  [Op.or]: [
+                    {
+                      [Op.substring]: term,
+                    },
+                    {
+                      [Op.substring]: titleCase(term),
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        };
+      } else {
+        query.where = {
+          zipcode: {
+            [Op.in]: zipCodes,
+          },
+        };
+      }
+    } else if (term) {
       query.where = {
         [Op.or]: [
           {
@@ -74,14 +115,16 @@ router.get(
   }
 );
 
-//TODO: put routes in a more logical order
-
 //create new event
 //TODO: add admin/group owner restrictions to this
 router.post('/newevent', async (req, res, next) => {
   try {
+    const day = req.body.day;
+    const formattedDay = `${day.slice(3,5)}-${day.slice(0,2)}-${day.slice(6,10)}`;
+
     const newEvent = await Event.create({
       ...req.body,
+      day: formattedDay,
       hostId: req.user.id,
       groupId: req.body.groupId,
     });
@@ -101,10 +144,11 @@ router.put('/:id', async (req, res, next) => {
     const updatedEvent = await Event.update(
       { ...req.body },
       {
+        returning: true,
         where: { id: req.params.id },
       }
     );
-    res.send(updatedEvent);
+    res.send(updatedEvent[1]);
   } catch (err) {
     next(err);
   }
@@ -116,7 +160,7 @@ router.get('/:id', async (req, res, next) => {
     const event = await Event.findOne({
       where: { id: req.params.id },
       include: [
-        { model: User, attributes: ['firstName', 'lastName', 'imageURL'] },
+        { model: User, attributes: ['id', 'username', 'imageURL'] },
         { model: Group, attributes: ['name'] },
       ],
     });
@@ -127,7 +171,6 @@ router.get('/:id', async (req, res, next) => {
 });
 
 //get all events
-//TODO: add whatever we are doing for loading, paginating, filtering, ordering
 router.get('/', async (req, res, next) => {
   try {
     const events = await Event.findAll();
@@ -148,7 +191,12 @@ router.post('/addattendee', async (req, res, next) => {
         userId: req.user.id,
         eventId: req.body.id,
       });
-      res.send(attendee);
+      const user = await User.findOne({
+                    where: { id: attendee.userId },
+                    attributes: ['id', 'username', 'imageURL']
+                }
+      );
+      res.send(user);
     } else
       throw new Error(
         'Events',
@@ -176,15 +224,25 @@ router.delete('/deleteattendee', async (req, res, next) => {
 });
 
 //delete event
-//TODO: add restrictions
-
 router.delete('/:id', async (req, res, next) => {
   try {
-    const deletedEvent = await Event.destroy(
-      { where: { id: req.params.id } },
-      { returning: true }
-    );
-    res.send(deletedEvent[1]);
+
+    let validEventHost = await Event.findOne({
+        where: { id: req.params.id, hostId: req.user.id },
+      });
+
+    if (validEventHost) {
+      const deletedEvent = await Event.destroy({ 
+          where: { id: req.params.id } 
+        },
+        { returning: true }
+        );
+      res.send(deletedEvent[1]);
+      } else
+        throw new Error(
+          'Events',
+          'You must be the host to delete this event'
+        );
   } catch (err) {
     next(err);
   }

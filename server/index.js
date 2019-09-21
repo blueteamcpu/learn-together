@@ -1,5 +1,7 @@
 const { server, io } = require('./app/index');
+const { promisify } = require('util');
 const { db } = require('./db/index');
+const { client } = require('./redis');
 
 io.on('connection', socket => {
   // any time a user is logged in on the front end
@@ -24,8 +26,15 @@ io.on('connection', socket => {
 
 const PORT = process.env.PORT || 3000;
 
-db.sync({ force: false })
-  .then(() => {
-    server.listen(PORT, () => console.log(`App listening on port ${PORT}`));
-  })
-  .catch(console.error);
+const listenAsync = promisify(server.listen).bind(server);
+
+client.on('connect', () => {
+  db.sync()
+    .then(() => listenAsync(PORT))
+    .then(() => console.log(`App listening on port ${PORT}`))
+    .catch(console.error);
+});
+
+client.on('error', error => {
+  throw error;
+});

@@ -5,7 +5,6 @@ import {
   DELETE_EVENT,
   JOIN_EVENT,
   UNJOIN_EVENT,
-  UPDATE_EVENT,
   GET_MY_EVENTS,
 } from '../actions/events';
 
@@ -48,13 +47,10 @@ export default (state = initialState, action) => {
         detailedEvent: {
           ...state.detailedEvent,
           users: state.detailedEvent.users.filter(
-            user => user.id !== action.attendee.id
+            user => user.id !== action.attendee.userId
           ),
         },
       };
-    }
-    case UPDATE_EVENT: {
-      return { ...state, detailedEvent: action.event };
     }
     case DELETE_EVENT: {
       return {
