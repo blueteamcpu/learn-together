@@ -7,7 +7,6 @@ import {
   Segment,
 } from 'semantic-ui-react';
 const { DateInput, TimeInput } = SemanticUiCalendarReact;
-import { connect } from 'react-redux';
 import Axios from 'axios';
 
 class CreateEventForm extends Component {
