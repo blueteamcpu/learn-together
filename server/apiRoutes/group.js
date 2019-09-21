@@ -90,7 +90,7 @@ router.get('/detail/:groupId/:context?', async (req, res, next) => {
   const context = req.params.context;
   try {
     const group = await Group.findByPk(req.params.groupId);
-    const isMember = await GroupMember.findOne({ where: {groupId: group.id, userId: req.user.id}});
+    const isMember = req.user ? await GroupMember.findOne({ where: {groupId: group.id, userId: req.user.id}}) : null;
     let isAdmin = false;
     if(isMember !== null) isAdmin = isMember.isAdmin;
     switch (context) {
@@ -110,6 +110,7 @@ router.get('/detail/:groupId/:context?', async (req, res, next) => {
       }
     }
   } catch (e) {
+    console.log(e);
     next(e);
   }
 });
