@@ -28,14 +28,6 @@ class GroupDetail extends Component {
     this.setState({ groupId: this.props.match.params.groupId});
   }
 
-  // compontentDidUpdate() {
-  //   if(this.state.isMember === null && (this.props.members.length && this.props.user.id !== undefined)) {
-  //     this.props.members.filter(m => m.id === this.props.user.id).length ?
-  //       this.setState({ isMember: true }) :
-  //       null;
-  //   }
-  // }
-
   render() {
     const { groupDetailed, history, match, joinGroup, leaveGroup } = this.props;
     const userId = this.props.user ? this.props.user.id : null;
