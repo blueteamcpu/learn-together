@@ -4,7 +4,6 @@ const { Comment } = require('../db/index');
 const { isLoggedIn } = require('../../utils/backend');
 
 // type: post / event
-
 router.get('/:type/:id', async (req, res, next) => {
   try {
     let { offset } = req.query;
@@ -50,20 +49,23 @@ router.get('/thread/:id', async (req, res, next) => {
   }
 });
 
+// type: post / event
 router.post('/:type/:typeId/comment/:commentId', isLoggedIn, (req, res) => {
+  const { type, typeId, commentId } = req.params;
+  const { content } = req.body;
+
+  if (!type || !typeId || !commentId || !content) {
+    res.sendStatus(400);
+  }
+
   const io = req.app.get('io');
-  const room = `${req.params.type}-${req.params.typeId}`;
+  const room = `${type}-${typeId}`;
 
   const id = uuid();
 
-  Comment.commentOnAComment(
-    req.params.commentId,
-    req.body.content,
-    id,
-    req.user.id
-  ).catch(() => {
+  Comment.commentOnAComment(commentId, content, id, req.user.id).catch(() => {
     io.in(room).emit('message-thread-error', {
-      threadId: req.params.commentId,
+      threadId: commentId,
       id,
     });
   });
@@ -72,10 +74,10 @@ router.post('/:type/:typeId/comment/:commentId', isLoggedIn, (req, res) => {
 
   io.in(room).emit('message-thread', {
     id,
-    content: req.body.content,
+    content: content,
     createdAt: initDate,
     updatedAt: initDate,
-    threadId: req.params.commentId,
+    threadId: commentId,
     userId: req.user.id,
     username: req.user.username,
   });
@@ -83,17 +85,26 @@ router.post('/:type/:typeId/comment/:commentId', isLoggedIn, (req, res) => {
   res.end();
 });
 
-router.post('/:type/:id', isLoggedIn, (req, res) => {
+// type: post / event
+router.post('/:type/:typeId', isLoggedIn, (req, res) => {
+  const { type, typeId } = req.params;
+  const { content } = req.body;
+
+  if (!type || !typeId || !content) {
+    res.sendStatus(400);
+  }
+
   const io = req.app.get('io');
-  const room = `${req.params.type}-${req.params.id}`;
+  const room = `${type}-${typeId}`;
 
   const id = uuid();
+  const fk = type + 'Id';
 
   Comment.create({
     id,
     userId: req.user.id,
-    content: req.body.content,
-    [req.params.type + 'Id']: req.params.id,
+    content: content,
+    [fk]: typeId,
   }).catch(() => {
     io.in(room).emit('message-error', { id });
   });
@@ -102,10 +113,10 @@ router.post('/:type/:id', isLoggedIn, (req, res) => {
 
   io.in(room).emit('message', {
     id,
-    content: req.body.content,
+    content: content,
     createdAt: initDate,
     updatedAt: initDate,
-    [req.params.type + 'Id']: req.params.id,
+    [fk]: typeId,
     userId: req.user.id,
     username: req.user.username,
   });
