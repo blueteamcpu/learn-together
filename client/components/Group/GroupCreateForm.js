@@ -70,10 +70,8 @@ class GroupCreateForm extends Component {
   };
 
   componentDidMount() {
-    console.log("Component is mounting");
     axios.get('/api/affiliates/topics/all')
       .then(response => {
-        console.log(response.data);
         this.setState({ topicsList: response.data});
       })
       .catch(e => this.setState({errors: {...this.state.errors, e}}));
