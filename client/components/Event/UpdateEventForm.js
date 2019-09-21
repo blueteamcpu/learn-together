@@ -10,6 +10,7 @@ const { DateInput, TimeInput } = SemanticUiCalendarReact;
 import Axios from 'axios';
 import { updateEvent as _updateEvent, getEventDetail as _getEventDetail, deleteEvent as _deleteEvent } from '../../actions/events';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
 
 class UpdateEventForm extends Component {
     constructor(props) {
@@ -77,7 +78,7 @@ class UpdateEventForm extends Component {
 
     deleteEvent(){
         this.props.deleteEvent(this.state.event.id);
-        this.props.history.push('/dashboard');
+        // this.props.history.push('/dashboard');
     }
 
 
@@ -157,7 +158,7 @@ class UpdateEventForm extends Component {
                         Update Event
                     </Button>
                     
-                    <Button size='large' fluid onClick={this.deleteEvent}>Delete Event</Button>
+                    <Button as={Link} to='/dashboard' size='large' fluid onClick={this.deleteEvent}>Delete Event</Button>
                     </Segment>
                 </Form>
                 </Grid.Column>

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { User } = require('../db/index');
 const { compareStrAgainstHash } = require('../../utils/index');
 const { queryForUser, isLoggedIn } = require('../../utils/backend');
-const { client, cacheDuration } = require('../redis');
+const { client, cacheDurationInSeconds, setExAsync } = require('../redis');
 
 router.put(
   '/updateUser',
@@ -17,19 +17,12 @@ router.put(
         zipcode: req.body.zipcode,
         username: req.body.username,
       });
-
-      client.setex(
+      await setExAsync(
         req.session.userId,
-        cacheDuration,
+        cacheDurationInSeconds,
         JSON.stringify(newUser),
-        err => {
-          if (err) {
-            next(err);
-          } else {
-            res.send(newUser);
-          }
-        }
       );
+      res.send(newUser);
     } catch (err) {
       next(err);
     }
@@ -52,19 +45,11 @@ router.put(
           password: req.body.NPass,
         });
 
-        client.setex(
+        await setExAsync(
           req.session.userId,
-          cacheDuration,
+          cacheDurationInSeconds,
           JSON.stringify(user),
-          err => {
-            if (err) {
-              next(err);
-            } else {
-              res.send(user);
-            }
-          }
         );
-
         res.sendStatus(204);
       } else {
         res.sendStatus(401);
