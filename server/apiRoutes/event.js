@@ -115,8 +115,6 @@ router.get(
   }
 );
 
-//TODO: put routes in a more logical order
-
 //create new event
 //TODO: add admin/group owner restrictions to this
 router.post('/newevent', async (req, res, next) => {
@@ -172,7 +170,6 @@ router.get('/:id', async (req, res, next) => {
 });
 
 //get all events
-//TODO: add whatever we are doing for loading, paginating, filtering, ordering
 router.get('/', async (req, res, next) => {
   try {
     const events = await Event.findAll();
@@ -226,8 +223,6 @@ router.delete('/deleteattendee', async (req, res, next) => {
 });
 
 //delete event
-//TODO: add restrictions
-
 router.delete('/:id', async (req, res, next) => {
   try {
 

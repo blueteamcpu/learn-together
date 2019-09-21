@@ -87,6 +87,9 @@ class CreateEventForm extends Component {
                 </Header>
                 <Form size="large" onSubmit={this.handleSubmit}>
                     <Segment stacked>
+                    <Header as="h3" textAlign="center">
+                        Group: {this.props.group.name}
+                    </Header>
                     <Form.Input
                         fluid
                         placeholder="Event Name"
