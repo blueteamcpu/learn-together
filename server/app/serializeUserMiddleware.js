@@ -1,40 +1,38 @@
-const redis = require('redis');
 const { User } = require('../db/index');
+const {
+  existsAsync,
+  getAsync,
+  setExAsync,
+  cacheDurationInSeconds,
+} = require('../redis');
 
-const REDIS_PORT = process.env.REDIS_PORT || 6379;
-const client = redis.createClient(REDIS_PORT);
-const cacheDuration = 1000 * 60 * 2;
+const middleware = async (req, _, next) => {
+  try {
+    if (req.session && req.session.userId) {
+      const userIsCached = await existsAsync(req.session.userId);
 
-const middleware = (req, _, next) => {
-  if (req.session && req.session.userId) {
-    client.get(req.session.userId, async (error, data) => {
-      if (error) {
-        next(error);
-      } else if (data) {
+      if (userIsCached) {
+        const data = await getAsync(req.session.userId);
+
         req.user = JSON.parse(data);
-        next();
       } else {
         const user = await User.findOne({
           where: { id: req.session.userId },
         });
 
-        client.setex(
+        await setExAsync(
           req.session.userId,
-          cacheDuration,
-          JSON.stringify(user),
-          err => {
-            if (err) {
-              next(err);
-            } else {
-              req.user = user;
-              next();
-            }
-          }
+          cacheDurationInSeconds,
+          JSON.stringify(user)
         );
+
+        req.user = user;
       }
-    });
-  } else {
+    }
+
     next();
+  } catch (error) {
+    next(error);
   }
 };
 

@@ -2,41 +2,65 @@ const router = require('express').Router();
 const { Op } = require('sequelize');
 const { Group, GroupMember, User } = require('../db/index.js');
 const { titleCase } = require('../../utils/index');
+const { queryForUser, isLoggedIn } = require('../../utils/backend');
+const getZipsNearMe = require('../../resources/zipcodesNearMe');
 
+// eslint-disable-next-line complexity
 router.get('/explore', async (req, res, next) => {
   try {
-    let { term, section } = req.query;
-    const query = { limit: 20 };
+    let { term, offset, distance } = req.query;
+    term = term ? term.trim().toLowerCase() : null;
 
-    query.offset = section ? parseInt(section, 10) * 20 : 0;
+    const query = {
+      limit: 20,
+      attributes: ['id', 'name', 'description'],
+      include: [{ model: User, attributes: ['id'] }],
+    };
 
-    if (term) {
-      term = term.trim().toLowerCase();
+    query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
-      if (term.length) {
+    if (req.user && req.user.zipcode) {
+      const zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
+
+      if (term) {
         query.where = {
-          [Op.or]: [
-            {
-              name: { [Op.substring]: titleCase(term) },
+          [Op.and]: {
+            zipcode: {
+              [Op.in]: zipCodes,
             },
-            {
-              description: { [Op.substring]: term },
-            },
-          ],
+            [Op.or]: [
+              {
+                name: { [Op.substring]: titleCase(term) },
+              },
+              {
+                description: { [Op.substring]: term },
+              },
+            ],
+          },
+        };
+      } else {
+        query.where = {
+          zipcode: {
+            [Op.in]: zipCodes,
+          },
         };
       }
+    } else if (term) {
+      query.where = {
+        [Op.or]: [
+          {
+            name: { [Op.substring]: titleCase(term) },
+          },
+          {
+            description: { [Op.substring]: term },
+          },
+        ],
+      };
     }
 
     const groups = await Group.findAll(query);
 
-    const data = groups.map(async group => {
-      const memberCount = await GroupMember.count({
-        where: { groupId: group.id },
-      });
-      return { group, memberCount };
-    });
-
-    res.json(await Promise.all(data));
+    res.json(groups);
   } catch (error) {
     next(error);
   }
@@ -44,18 +68,18 @@ router.get('/explore', async (req, res, next) => {
 
 router.post('/newgroup', async (req, res, next) => {
   try {
-    const newGroup = await Group.create({
-      ...req.body.group,
-      ownerId: req.user.id,
-    });
-
+    const newGroup = await Group.create({ name: req.body.name,
+					  description: req.body.description,
+					  zipcode: req.body.zipCode,
+					  ownerId: req.user.id,
+					});
     await GroupMember.create({
       isAdmin: true,
       groupId: newGroup.id,
       userId: req.user.id,
     });
 
-    res.status(201).json(newGroup);
+    res.status(201).send(newGroup);
   } catch (error) {
     next(error);
   }
@@ -65,21 +89,28 @@ router.post('/newgroup', async (req, res, next) => {
 router.get('/detail/:groupId/:context?', async (req, res, next) => {
   const context = req.params.context;
   try {
-  const group = await Group.findByPk(req.params.groupId);
-  switch(context){
-  case 'members': {
-    const members = await group.getUsers({ attributes: ['username', 'imageURL', 'id']});
-    res.send({ group, members: [...members] });
-    break;
-  }
-  case 'events': {
-    const events = await group.getEvents();
-    res.send({ group, events: [...events] });
-    break;
-  }
-  }
-  }
-  catch(e) {
+    const group = await Group.findByPk(req.params.groupId);
+    const isMember = req.user ? await GroupMember.findOne({ where: {groupId: group.id, userId: req.user.id}}) : null;
+    let isAdmin = false;
+    if(isMember !== null) isAdmin = isMember.isAdmin;
+    switch (context) {
+      case 'members': {
+        const members = await group.getUsers({
+          attributes: ['username', 'imageURL', 'id'],
+        });
+        res.send({ group, members: [...members],
+		   isAdmin, isMember: isMember ? true : false });
+        break;
+      }
+      case 'events': {
+        const events = await group.getEvents();
+        res.send({ group, events: [...events], isAdmin,
+		   isMember: isMember ? true : false });
+        break;
+      }
+    }
+  } catch (e) {
+    console.log(e);
     next(e);
   }
 });
@@ -129,16 +160,22 @@ router.get('/groupusers', async (req, res, next) => {
 });
 
 // Gets all groups for a specific user
-router.get('/mygroups', async (req, res, next) => {
-  try {
-    // I think this is right, I'm going to have to test it.
-    const user = await User.findByPk(req.session.userId);
-    const userGroups = await user.getGroups();
-    res.send(userGroups);
-  } catch (error) {
-    next(error);
+router.get(
+  '/mygroups',
+  isLoggedIn,
+  queryForUser(User),
+  async (req, res, next) => {
+    try {
+      // I think this is right, I'm going to have to test it.
+      const userGroups = await req.user.getGroups({
+        attributes: ['id', 'name', 'description'],
+      });
+      res.send(userGroups);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.post('/create', async (req, res, next) => {
   try {
@@ -203,10 +240,13 @@ router.delete('/removemember', async (req, res, next) => {
 
 router.post('/addself', async (req, res, next) => {
   try {
+    console.log(req.body);
+    console.log(req.session.userId);
     const group = await GroupMember.create({
       userId: req.session.userId,
       groupId: req.body.groupId,
     });
+
     res.status(201).send();
   } catch (error) {
     next(error);
@@ -222,6 +262,17 @@ router.delete('/removeself', async (req, res, next) => {
     else throw new Error('Groups', 'Unable to remove member from group');
   } catch (error) {
     next(error);
+  }
+});
+
+//get all events for a specific group
+router.get('/:id/events', async (req, res, next) => {
+  try {
+    const group = await Group.findByPk({ where: { id: req.params.id } });
+    const groupEvents = await group.getEvents();
+    res.send(groupEvents);
+  } catch (err) {
+    next(err);
   }
 });
 

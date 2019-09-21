@@ -1,6 +1,11 @@
 import { connect } from 'react-redux';
 import CreateEventForm from './CreateEventFormDumb';
-import { createEvent as _createEvent } from '../../actions/events';
+import { createEvent as _createEvent } from '../../../actions/events';
+
+
+const mapStateToProps = state => ({
+  group: state.groups.groupDetailed.group,
+});
 
 const mapDispatchToProps = (dispatch) => ({
     createEvent(event) {
@@ -9,6 +14,6 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(CreateEventForm);

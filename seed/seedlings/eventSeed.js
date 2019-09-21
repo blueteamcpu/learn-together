@@ -11,20 +11,22 @@ const event = {
 const date = new Date();
 
 module.exports = [
-  { name: 'Testing the waters',
+  {
+    name: 'Testing the waters',
     description: 'Trying to figure out how Times are working for this model',
-    day: date.getDay(),
+    day: new Date().setDate(11),
     startTime: '10:00',
     endTime: '12:00',
     location: 'The best place on Earth',
     zipcode: '23498',
   },
-  { name: 'Another event!',
+  {
+    name: 'Another event!',
     description: 'We have not idea what we are doing, but we are doin it!!!',
-    day: date.getDay(),
+    day: date,
     startTime: '07:00',
     endTime: '11:00',
     location: 'Down in the darkest place we know',
     zipcode: '98765',
-  }
+  },
 ];

@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Grid, Item, List, Image, Segment} from 'semantic-ui-react';
+import { Container, Grid, Item, List, Image, Segment, Button} from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 class GroupContext extends React.Component {
   render() {
-    const { context, history } = this.props;
+    const { context, history, groupId, isMember, isAdmin } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
+    <Fragment>
+      {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
     <List relaxed>
       {this.props.groupDetailed[context].map(i => {
         switch(context) {
@@ -24,6 +27,7 @@ class GroupContext extends React.Component {
         }
       })}
     </List>
+    </Fragment>
     );
   }
 }
@@ -46,7 +50,7 @@ function Events({ item, history }) {
   const weekday = dateDayAsString(item.day);
   const month = dateMonthAsString(item.day);
   const dayNum = new Date(item.day).getDay();
-  const year = new Date(item.day).getYear();
+  const year = new Date(item.day).getFullYear();
   return(
     <List.Item as='a' onClick={() => history.push(`/events/${item.id}`)}>
       <List.Content>
@@ -79,14 +83,18 @@ function Events({ item, history }) {
   );
 }
 
-function Members({ item }) {
+function Members({ item, isAdmin }) {
+  const memberStatus = item.group_member.isAdmin ? 'Admin' : 'Member';
   return(
     <List.Item>
       <Image avatar src={item.imageURL} />
       <List.Content>
         <List.Header>{item.username}</List.Header>
+        <List.Description>
+          Is a {memberStatus} { isAdmin ? <Button basic negative floated='right' size='small'>Remove</Button> : null}
+        </List.Description>
       </List.Content>
-    </List.Item>
+    </List.Item>    
   );
 }
 

@@ -87,7 +87,6 @@ class UserProfileDumb extends Component {
 
   async handleSubmit(ev) {
     ev.preventDefault();
-    console.log('submitting');
 
     try {
       const {
@@ -102,7 +101,7 @@ class UserProfileDumb extends Component {
 
       if (this.state.changePassword) {
         const passwords = { password, NPass };
-        await axios.put('/user/updateUserPass', passwords);
+        await axios.put('/api/user/updateUserPass', passwords);
         this.makeSubmitted(true);
       } else {
         this.props.updateUser(firstName, lastName, username, email, zipcode);
@@ -238,7 +237,7 @@ class UserProfileDumb extends Component {
                         Submit
                       </Button>
                     </Form.Field>
-                    
+
                     <Form.Field>
                       <Button
                         primary

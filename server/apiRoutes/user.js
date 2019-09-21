@@ -1,35 +1,63 @@
 const router = require('express').Router();
-const {compareStrAgainstHash} = require('../../utils/index');
+const { User } = require('../db/index');
+const { compareStrAgainstHash } = require('../../utils/index');
+const { queryForUser, isLoggedIn } = require('../../utils/backend');
+const { client, cacheDurationInSeconds, setExAsync } = require('../redis');
 
-router.put('/updateUser', async (req, res, next) => {
+router.put(
+  '/updateUser',
+  isLoggedIn,
+  queryForUser(User),
+  async (req, res, next) => {
     try {
-        const newUser = await req.user.update({
+      const newUser = await req.user.update({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         email: req.body.email,
         zipcode: req.body.zipcode,
-        username: req.body.username
-    });
-    res.send(newUser);
-} catch (err){
-    next(err);
-}
-});
-
-router.put('/updateUserPass', async (req, res, next) => {
-    try {
-        const validation = await compareStrAgainstHash(req.body.password, req.user.password);
-        if (validation){
-            await req.user.update({
-            password: req.body.NPass
-            });
-            res.sendStatus(204);
-        } else {
-            res.sendStatus(401);
-        }
-    } catch (err){
-        next(err);
+        username: req.body.username,
+      });
+      await setExAsync(
+        req.session.userId,
+        cacheDurationInSeconds,
+        JSON.stringify(newUser),
+      );
+      res.send(newUser);
+    } catch (err) {
+      next(err);
     }
-});
+  }
+);
+
+router.put(
+  '/updateUserPass',
+  isLoggedIn,
+  queryForUser(User),
+  async (req, res, next) => {
+    try {
+      const validation = await compareStrAgainstHash(
+        req.body.password,
+        req.user.password
+      );
+
+      if (validation) {
+        const user = await req.user.update({
+          password: req.body.NPass,
+        });
+
+        await setExAsync(
+          req.session.userId,
+          cacheDurationInSeconds,
+          JSON.stringify(user),
+        );
+        res.sendStatus(204);
+      } else {
+        res.sendStatus(401);
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 module.exports = router;

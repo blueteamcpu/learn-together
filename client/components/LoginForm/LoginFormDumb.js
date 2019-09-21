@@ -10,7 +10,6 @@ import {
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 
-
 class LoginForm extends Component {
   constructor(props) {
     super(props);
@@ -42,10 +41,10 @@ class LoginForm extends Component {
         },
       });
 
-      if (data.error) {
+      if (data.errors) {
         this.setState(state => ({
           ...state,
-          errors: { ...state.errors, ...data.error },
+          errors: { ...state.errors, ...data.errors },
         }));
       } else {
         this.props.gotUser(data);
