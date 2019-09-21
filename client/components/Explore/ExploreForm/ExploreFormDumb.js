@@ -1,9 +1,23 @@
 import React, { Component } from 'react';
-import { Form, Responsive, Select, Button } from 'semantic-ui-react';
+import { Form, Responsive, Select, Button, FormField } from 'semantic-ui-react';
 
-const ExploreSelect = ({ handleSelect, category }) => (
+const SelectDistance = ({ handleDistance, distance }) => (
   <Select
-    onChange={handleSelect}
+    value={distance + '-mi'}
+    options={['5', '10', '25', '50', '100']
+      .map(s => s + '-mi')
+      .map(value => ({
+        key: value,
+        value,
+        text: value,
+      }))}
+    onChange={handleDistance}
+  />
+);
+
+const SelectCategory = ({ handleCategory, category }) => (
+  <Select
+    onChange={handleCategory}
     value={category}
     options={['Groups', 'Events'].map(value => ({
       key: value,
@@ -24,9 +38,18 @@ const ExploreButton = () => (
 );
 
 class ExploreForm extends Component {
-  handleSelect = e => {
+  handleCategory = e => {
     const { innerText } = e.target;
-    this.props.fetchData(innerText, this.props.term);
+    this.props.fetchData(innerText, this.props.term, 0, this.props.distance);
+  };
+
+  handleDistance = e => {
+    this.props.fetchData(
+      this.props.category,
+      this.props.term,
+      0,
+      e.target.innerText.split('-')[0]
+    );
   };
 
   handleSubmit = e => {
@@ -35,15 +58,23 @@ class ExploreForm extends Component {
   };
 
   render() {
-    const { handleSubmit, handleSelect } = this;
-    const { category, term, handleChange } = this.props;
+    const { handleSubmit, handleCategory, handleDistance } = this;
+    const { category, term, handleChange, distance, isLoggedIn } = this.props;
 
     return (
       <Form onSubmit={handleSubmit}>
         <Responsive maxWidth={Responsive.onlyMobile.maxWidth}>
+          {isLoggedIn && (
+            <FormField>
+              <SelectDistance
+                distance={distance}
+                handleDistance={handleDistance}
+              />
+            </FormField>
+          )}
           <Form.Field>
-            <ExploreSelect
-              handleSelect={handleSelect}
+            <SelectCategory
+              handleCategory={handleCategory}
               category={category}
               style={{ marginBottom: '0.1rem' }}
             />
@@ -54,7 +85,16 @@ class ExploreForm extends Component {
 
         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
           <Form.Group inline>
-            <ExploreSelect handleSelect={handleSelect} category={category} />
+            {isLoggedIn && (
+              <SelectDistance
+                distance={distance}
+                handleDistance={handleDistance}
+              />
+            )}
+            <SelectCategory
+              handleCategory={handleCategory}
+              category={category}
+            />
             <ExploreInput term={term} handleChange={handleChange} />
             <ExploreButton />
           </Form.Group>

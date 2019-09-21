@@ -3,42 +3,64 @@ const { Op } = require('sequelize');
 const { Group, GroupMember, User } = require('../db/index.js');
 const { titleCase } = require('../../utils/index');
 const { queryForUser, isLoggedIn } = require('../../utils/backend');
+const getZipsNearMe = require('../../resources/zipcodesNearMe');
 
+// eslint-disable-next-line complexity
 router.get('/explore', async (req, res, next) => {
   try {
-    let { term, offset } = req.query;
+    let { term, offset, distance } = req.query;
+    term = term ? term.trim().toLowerCase() : null;
 
-    const query = { limit: 20, attributes: ['id', 'name', 'description'] };
+    const query = {
+      limit: 20,
+      attributes: ['id', 'name', 'description'],
+      include: [{ model: User, attributes: ['id'] }],
+    };
 
     query.offset = offset ? parseInt(offset, 10) * 20 : 0;
 
-    if (term) {
-      term = term.trim().toLowerCase();
+    if (req.user && req.user.zipcode) {
+      const zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
 
-      if (term.length) {
+      if (term) {
         query.where = {
-          [Op.or]: [
-            {
-              name: { [Op.substring]: titleCase(term) },
+          [Op.and]: {
+            zipcode: {
+              [Op.in]: zipCodes,
             },
-            {
-              description: { [Op.substring]: term },
-            },
-          ],
+            [Op.or]: [
+              {
+                name: { [Op.substring]: titleCase(term) },
+              },
+              {
+                description: { [Op.substring]: term },
+              },
+            ],
+          },
+        };
+      } else {
+        query.where = {
+          zipcode: {
+            [Op.in]: zipCodes,
+          },
         };
       }
+    } else if (term) {
+      query.where = {
+        [Op.or]: [
+          {
+            name: { [Op.substring]: titleCase(term) },
+          },
+          {
+            description: { [Op.substring]: term },
+          },
+        ],
+      };
     }
 
     const groups = await Group.findAll(query);
 
-    const data = groups.map(async group => {
-      const memberCount = await GroupMember.count({
-        where: { groupId: group.id },
-      });
-      return { group, memberCount };
-    });
-
-    res.json(await Promise.all(data));
+    res.json(groups);
   } catch (error) {
     next(error);
   }

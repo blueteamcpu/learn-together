@@ -13,14 +13,14 @@ import ExploreForm from './ExploreForm/ExploreForm';
 import ExploreCards from './ExploreCards/ExploreCards';
 
 class Explore extends Component {
-  fetchData = (category, term = null, offset = null) => {
-    this.props.fetchContent(category, term, offset);
+  fetchData = (category, term = null, offset = null, distance = null) => {
+    this.props.fetchContent(category, term, offset, distance);
     setTimeout(() => this.props.delayOver(), 1000);
   };
 
   componentDidMount() {
     if (!this.props.items.length) {
-      this.fetchData(this.props.category, null, 0);
+      this.fetchData(this.props.category, null, 0, this.props.distance);
     }
   }
 
