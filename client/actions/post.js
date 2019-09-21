@@ -1,9 +1,10 @@
 // Action Types
-const LOADPOST = 'LOADPOST';
-const LOADPOSTS = 'LOADPOSTS';
-const FAILEDTOLOADPOST = 'FAILEDTOLOADPOST';
-const REMOVEPOST = 'REMOVEPOST';
-const FAILEDTODELETEPOST = 'FAILEDTODELETEPOST';
+export const LOADPOST = 'LOADPOST';
+export const LOADPOSTS = 'LOADPOSTS';
+export const FAILEDTOLOADPOST = 'FAILEDTOLOADPOST';
+export const REMOVEPOST = 'REMOVEPOST';
+export const FAILEDTOREMOVEPOST = 'FAILEDTOREMOVEPOST';
+export const CREATEPOST = 'CREATEPOST';
 
 // Actions
 export const _loadPost = (post) => ({
@@ -16,11 +17,13 @@ export const _loadPosts = (posts) => ({
     posts
 })
 
-const _failedtoDeleteUser = () => ({ type: FAILEDTODELETEPOST });
+const _failedtoRemovePost = () => ({ type: FAILEDTOREMOVEPOST });
 
 const _removePost = () => ({ type: REMOVEPOST });
 
 const _failedToLoadPost = () => ({ type: FAILEDTOLOADPOST });
+
+const _createPost = (post) => ({ type: CREATEPOST, post })
 
 // Thunks
 export const loadPost = (postId) => async (dispatch, _, axios) => {
@@ -43,10 +46,10 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
         if (deleted) {
             dispatch(_removePost());
         } else {
-            dispatch(_failedtoDeleteUser())
+            dispatch(_failedtoRemovePost())
         }
     } catch (err) {
-        dispatch(_failedtoDeleteUser());
+        dispatch(_failedtoRemovePost());
         console.error(err);
     }
 };
@@ -63,3 +66,11 @@ export const loadPosts = (id) => async (dispatch, _, axios) => {
         console.error(err)
     }
 };
+
+export const createPost = (post) => async (dispatch, _, axios) => {
+    try {
+        dispatch(_createPost(post));
+    } catch (err) {
+        console.error(err);
+    }
+}
