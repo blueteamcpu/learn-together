@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Header, Grid, Button, Divider } from 'semantic-ui-react';
+import { Container, Header, Grid, Button, Divider, Segment } from 'semantic-ui-react';
 import CardGroup from '../CardGroup/CardGroupDumb';
 import { firstSentenceOnly } from '../../../utils/index';
 
@@ -10,18 +10,22 @@ class DashBoard extends Component {
   }
 
   render() {
-    const { groups, events } = this.props;
+    const { groups, events, history } = this.props;
 
     return (
       <main style={{ marginTop: '2em' }}>
         <Grid>
           <Grid.Row centered>
             <Container textAlign="center">
-              <Header as="h1">Your Groups</Header>
+
+              <Header clearing as="h1">
+                Your Groups
+              </Header>
               <Divider />
             </Container>
           </Grid.Row>
           <Grid.Row centered>
+            <Button color='red' onClick={() => history.push('/groups/createnew')}>Create New Group</Button>
             <CardGroup
               items={groups.map(g => ({
                 id: g.id,

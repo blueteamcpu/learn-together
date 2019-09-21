@@ -68,18 +68,18 @@ router.get('/explore', async (req, res, next) => {
 
 router.post('/newgroup', async (req, res, next) => {
   try {
-    const newGroup = await Group.create({
-      ...req.body.group,
-      ownerId: req.user.id,
-    });
-
+    const newGroup = await Group.create({ name: req.body.name,
+					  description: req.body.description,
+					  zipcode: req.body.zipCode,
+					  ownerId: req.user.id,
+					});
     await GroupMember.create({
       isAdmin: true,
       groupId: newGroup.id,
       userId: req.user.id,
     });
 
-    res.status(201).json(newGroup);
+    res.status(201).send(newGroup);
   } catch (error) {
     next(error);
   }
@@ -90,21 +90,27 @@ router.get('/detail/:groupId/:context?', async (req, res, next) => {
   const context = req.params.context;
   try {
     const group = await Group.findByPk(req.params.groupId);
+    const isMember = req.user ? await GroupMember.findOne({ where: {groupId: group.id, userId: req.user.id}}) : null;
+    let isAdmin = false;
+    if(isMember !== null) isAdmin = isMember.isAdmin;
     switch (context) {
       case 'members': {
         const members = await group.getUsers({
           attributes: ['username', 'imageURL', 'id'],
         });
-        res.send({ group, members: [...members] });
+        res.send({ group, members: [...members],
+		   isAdmin, isMember: isMember ? true : false });
         break;
       }
       case 'events': {
         const events = await group.getEvents();
-        res.send({ group, events: [...events] });
+        res.send({ group, events: [...events], isAdmin,
+		   isMember: isMember ? true : false });
         break;
       }
     }
   } catch (e) {
+    console.log(e);
     next(e);
   }
 });
@@ -234,10 +240,13 @@ router.delete('/removemember', async (req, res, next) => {
 
 router.post('/addself', async (req, res, next) => {
   try {
+    console.log(req.body);
+    console.log(req.session.userId);
     const group = await GroupMember.create({
       userId: req.session.userId,
       groupId: req.body.groupId,
     });
+
     res.status(201).send();
   } catch (error) {
     next(error);

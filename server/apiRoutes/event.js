@@ -144,10 +144,11 @@ router.put('/:id', async (req, res, next) => {
     const updatedEvent = await Event.update(
       { ...req.body },
       {
+        returning: true,
         where: { id: req.params.id },
       }
     );
-    res.send(updatedEvent);
+    res.send(updatedEvent[1]);
   } catch (err) {
     next(err);
   }

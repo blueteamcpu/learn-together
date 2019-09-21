@@ -27,6 +27,7 @@ async function doTheSeeding() {
         return models.GroupMember.create({
           userId: u.id,
           groupId: groups[Math.floor(Math.random() * groups.length)].id,
+	  isAdmin: Math.random() > 0.5 ? true : false,
         });
       })
     );

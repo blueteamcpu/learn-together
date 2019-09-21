@@ -54,7 +54,7 @@ class UpdateEventForm extends Component {
                       return status === 200 || status === 401;
                     },
                 });
-
+                console.log('DATA:', data)
             if (data.error) {
                 this.setState(state => ({
                 ...state,
@@ -66,7 +66,7 @@ class UpdateEventForm extends Component {
                 errors: { ...state.errors, ...data.errors },
                 }));
             } else {
-                this.props.updateEvent(data);
+                this.props.getEventDetail(this.props.eventId);
             }
         } catch (error) {
             console.error(error);
@@ -163,9 +163,6 @@ class UpdateEventForm extends Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    updateEvent(event) {
-        dispatch(_updateEvent(event));
-    },
     getEventDetail(eventId) {
         dispatch(_getEventDetail(eventId));
     },

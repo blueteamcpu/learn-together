@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Divider, Grid, Header, Menu, Segment} from 'semantic-ui-react';
+import { Button, Container, Divider, Grid, Header, Menu, Segment} from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
-import { getDetailGroup } from '../../reducers/groupReducer';
+import { getDetailGroup, joinGroup, leaveGroup } from '../../reducers/groupReducer';
 
 import GroupContext from './GroupContext';
 
@@ -10,9 +11,12 @@ class GroupDetail extends Component {
   // context default should become post I think
   // But for now I'm leaving it at members just to
   // Keep things rolling for myself
-  state = { context: 'members',
-            activeItem: 'members',
-          };
+  constructor() {
+    super();
+    this.state = { context: 'events',
+                   activeItem: 'events',
+                 };
+  }
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name, context: name });
@@ -24,12 +28,9 @@ class GroupDetail extends Component {
     this.setState({ groupId: this.props.match.params.groupId});
   }
 
-  compontentDidUpdate() {
-    const { context } = this.state;
-  }
-
   render() {
-    const { groupDetailed, history } = this.props;
+    const { groupDetailed, history, match, joinGroup, leaveGroup } = this.props;
+    const userId = this.props.user ? this.props.user.id : null;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
     return (
@@ -44,26 +45,42 @@ class GroupDetail extends Component {
             </Grid.Column>
           </Grid>
         </Segment>
-        <TabMenu activeItem={this.state.activeItem} handleItemClick={this.handleItemClick}/>
+        <TabMenu match={match}
+                 activeItem={this.state.activeItem}
+                 handleItemClick={this.handleItemClick}
+                 userId={userId}
+                 isMember={groupDetailed.isMember}
+                 joinGroup={joinGroup}
+                 leaveGroup={leaveGroup}
+        />
         <Segment attached='bottom'>
-          <GroupContext context={this.state.context} history={history} groupId={group.id}/>
+          <GroupContext context={this.state.context}
+                        history={history}
+                        groupId={group.id}
+                        isMember={groupDetailed.isMember}
+                        isAdmin={groupDetailed.isAdmin}
+          />
         </Segment>        
       </Container>
     );
   }
 }
 
-const mapStateToProps = ({ groups }) => ({
+const mapStateToProps = ({ groups, authentication }) => ({
   groupDetailed: groups.groupDetailed,
+  user: authentication.user
+  
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  getDetailGroup(id, context) { dispatch(getDetailGroup(id, context)); }
+  getDetailGroup(id, context) { dispatch(getDetailGroup(id, context)); },
+  joinGroup() { dispatch(joinGroup());},
+  leaveGroup() { dispatch(leaveGroup());},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
 
-function TabMenu ({ activeItem, handleItemClick}) {
+function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGroup, leaveGroup}) {
   return (
     <div>
       <Menu attached='top' tabular>
@@ -76,20 +93,36 @@ function TabMenu ({ activeItem, handleItemClick}) {
         </Menu.Item>
 
         <Menu.Item
-          name='chat'
-          active={activeItem === 'chat'}
-          onClick={handleItemClick}
-        >
-          Chat
-        </Menu.Item>
-        
-        <Menu.Item
           name='members'
           active={activeItem === 'members'}
           onClick={handleItemClick}
         >
           Members
         </Menu.Item>
+        {
+          userId ?
+            <Menu.Item
+              name='chat'
+              active={activeItem === 'chat'}
+              onClick={handleItemClick}
+            >
+              Chat
+            </Menu.Item>
+          : null
+        }
+        <Menu.Menu position='right'>
+          <Menu.Item>
+            { userId ? !isMember ? 
+              <Button color='green' onClick={() => joinGroup()}>
+                Join
+              </Button>
+              : <Button color='red' onClick={() => leaveGroup()}>
+                  Abandon
+                </Button>
+              : null
+            }
+          </Menu.Item>
+        </Menu.Menu>
       </Menu>
     </div>
   );

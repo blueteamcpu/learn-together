@@ -5,7 +5,6 @@ import {
   DELETE_EVENT,
   JOIN_EVENT,
   UNJOIN_EVENT,
-  UPDATE_EVENT,
   GET_MY_EVENTS,
 } from '../actions/events';
 
@@ -52,9 +51,6 @@ export default (state = initialState, action) => {
           ),
         },
       };
-    }
-    case UPDATE_EVENT: {
-      return { ...state, detailedEvent: action.event };
     }
     case DELETE_EVENT: {
       return {
