@@ -6,7 +6,7 @@ import axios from 'axios';
 import { getDetailGroup, joinGroup, leaveGroup, adminRemoveMember } from '../../reducers/groupReducer';
 
 import GroupContext from './GroupContext';
-import CreatePost from '../CreatePost'
+import CreatePost from '../CreatePost';
 
 class GroupDetail extends Component {
   // context default should become post I think
