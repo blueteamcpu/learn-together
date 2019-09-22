@@ -72,8 +72,13 @@ export const loadPosts = (id) => async (dispatch, _, axios) => {
 
 export const createPost = (post) => async (dispatch, _, axios) => {
     try {
-        dispatch(_createPost(post));
+        const created = await axios.post('/api/posts/createPost', post)
+        if (created){
+            dispatch(_createPost(created));
+        } else {
+            dispatch(_failedToLoadPost());
+        }
     } catch (err) {
         console.error(err);
     }
-}
+};
