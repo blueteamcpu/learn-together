@@ -29,4 +29,13 @@ socket.on('message-error', ({ id }) => {
   store.dispatch(removeComment(id));
 });
 
+setTimeout(
+  () =>
+    socket.emit('join-room', {
+      type: 'event',
+      id: 'c70fd89f-f912-47f9-b741-66cc29c1d7fa',
+    }),
+  1000 * 30
+);
+
 export default socket;
