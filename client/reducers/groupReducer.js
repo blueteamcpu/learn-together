@@ -42,7 +42,6 @@ export const leaveGroup = () => (dispatch, getState) => {
 };
 
 export const adminRemoveMember = (userId, groupId) => (dispatch, getState) => {
-  console.log(userId, groupId);
   axios.delete('/api/groups/removemember', { data: { userId: userId, groupId: groupId }})
     .then(() => {
       dispatch(getDetailGroup(groupId, 'members'));

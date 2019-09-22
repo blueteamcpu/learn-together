@@ -233,7 +233,6 @@ router.post('/addmember', async (req, res, next) => {
 // This is for an admin/owner to remove a user from a group
 router.delete('/removemember', async (req, res, next) => {
   try {
-    console.log(req.body);
     // So we need to check that the logged in user can actually add a person to the group
     // The client should put checks in place to not let this happen, but who knows what
     // Sneaky people can do. We need to check on the server as well.

@@ -9,7 +9,6 @@ class GroupContext extends React.Component {
   render() {
     const { context, history, groupId, isMember, isAdmin, adminRemoveMember } = this.props;
     if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
-    console.log('context ', context);
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
