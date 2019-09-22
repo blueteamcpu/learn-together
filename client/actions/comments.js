@@ -11,7 +11,7 @@ const gotMoreComments = comments => ({ type: MORE_COMMENTS, comments });
 
 export const gotSingleComment = comment => ({ type: SINGLE_COMMENT, comment });
 
-export const gotSingleThreadComment = (comment) => ({
+export const gotSingleThreadComment = comment => ({
   type: SINGLE_THREAD_COMMENT,
   comment,
 });

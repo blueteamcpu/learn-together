@@ -5,7 +5,7 @@ import {
   SINGLE_THREAD_COMMENT,
   REMOVE_COMMENT,
   REMOVE_THREAD_COMMENT,
-} from '../action/comments';
+} from '../actions/comments';
 
 const initialState = {
   comments: [],
