@@ -37,9 +37,9 @@ const mapStateToProps = ({ groups, posts }) => ({
   posts: posts.posts,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  getDetailGroup(id) { dispatch(getDetailGroup(id)); },
-});
+// const mapDispatchToProps = (dispatch) => ({
+//   getDetailGroup(id) { dispatch(getDetailGroup(id)); }
+// });
 
 export default connect(mapStateToProps, null)(GroupContext);
 
