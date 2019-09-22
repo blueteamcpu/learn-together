@@ -13,9 +13,9 @@ import {
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-import { postNewGroup } from '../../reducers/groupReducer';
+import { getDetailGroup } from '../../reducers/groupReducer';
 
-class GroupCreateForm extends Component {
+class UpdateGroupForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,7 +26,8 @@ class GroupCreateForm extends Component {
         zipCode: '',
         ownerId: '',
       },
-      errors: false
+      errors: {},
+      updated: false,
     };
   }
 
@@ -39,18 +40,16 @@ class GroupCreateForm extends Component {
     }));
   };
 
-  handleSubmit = async (e, postNewGroup) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const { data } = await axios.post('/api/groups/newgroup',
+      const { data } = await axios.put(`/api/groups/update/${this.props.groups.group.id}`,
 					this.state.values,
 					{
 					  validateStatus: function(status) {
-					    return status === 201 || status === 401;
+					    return status === 202 || status === 401;
 					  },
 					});
-      console.log(data);
       if (data.error) {
         this.setState(state => ({
           ...state,
@@ -62,7 +61,8 @@ class GroupCreateForm extends Component {
           errors: { ...state.errors, ...data.errors },
         }));
       } else {
-        this.props.history.push(`/groups/${data.id}`);
+        this.setState({ updated: true });
+        this.props.getDetailGroup(this.props.groups.group.id);
       }
 
     } catch (error) {
@@ -73,7 +73,13 @@ class GroupCreateForm extends Component {
   componentDidMount() {
     axios.get('/api/affiliates/topics/all')
       .then(response => {
-        this.setState({ topicsList: response.data});
+        const values = this.props.groups.group;
+        this.setState({ topicsList: response.data, values: { name: values.name,
+                                                             topicId: values.topicId,
+                                                             description: values.description,
+                                                             zipCode: values.zipcode,
+                                                             ownerId: values.ownerId,
+                                                           }});
       })
       .catch(e => this.setState({errors: {...this.state.errors, e}}));
     axios.get('/api/affiliates/courses/all')
@@ -85,18 +91,21 @@ class GroupCreateForm extends Component {
     const { errors, values } = this.state;
     return (
       <Fragment>
+        { this.state.updated ? <Message floating color='green'>Your event has been updated!</Message>
+          : null
+        }
         <Grid
           textAlign="center"
           style={{ height: '85vh' }}
-          verticalAlign="middle"
+          verticalAlign="top"
         >
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as="h2" color="teal" textAlign="center">
-              Create Group
+              Update Group
             </Header>
             <Form
               size="large"
-              onSubmit={e => this.handleSubmit(e, this.props.postNewGroup)}
+              onSubmit={e => this.handleSubmit(e)}
             >
               <Segment stacked>
                 <Form.Input
@@ -119,6 +128,7 @@ class GroupCreateForm extends Component {
                       <Select
                         placeholder="Topic"
                         name="topicId"
+                        defaultValue={values.topicId ? values.topicId : null}
                         onChange={this.handleChange}
                         options={this.state.topicsList.map(({id, name}) => ({
                           key: id,
@@ -132,32 +142,35 @@ class GroupCreateForm extends Component {
                 <Form.Input
                   placeholder="Zip Code"
                   name="zipCode"
-                  type="number" max={99999}
+                  type="number"
                   value={values.zipCode}
                   onChange={this.handleChange}
                   error={errors.zipcode ? errors.zipcode : null}
                 />
                 <Button color="teal" fluid size="large" type="submit">
-                  Create
+                  Update
                 </Button>
               </Segment>
             </Form>
           </Grid.Column>
         </Grid>
+
       </Fragment>
     );
   }
 }
 
-const mapStateToProps = ({ authentication }) => ({
+const mapStateToProps = ({ authentication, groups }) => ({
   user: authentication.user,
+  groups: groups.groupDetailed,
 });
 
 const mapDispatchToProps = dispatch => ({
-  postNewGroup: group => dispatch(postNewGroup(group)),
+  getDetailGroup: id => dispatch(getDetailGroup(id, 'update')),
 });
+
 
 export default connect(
   mapStateToProps,
-  null
-)(GroupCreateForm);
+  mapDispatchToProps,
+)(UpdateGroupForm);

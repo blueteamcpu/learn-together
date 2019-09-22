@@ -3,30 +3,37 @@ import { Container, Grid, Item, List, Image, Segment, Button } from 'semantic-ui
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import UpdateGroupForm from './UpdateGroupForm';
+
 class GroupContext extends React.Component {
   render() {
-    const { context, history, groupId, isMember, isAdmin, posts } = this.props;
-    if (this.props.groupDetailed[context] === undefined || context === undefined) return null;
+    const { context, history, groupId, isMember, isAdmin, adminRemoveMember } = this.props;
+    if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
-        <List relaxed>
-          {this.props.groupDetailed[context].map(i => {
-            switch (context) {
-              case 'members':
-                return <Members key={i.id} item={i} />;
-                break;
-              case 'events':
-                return <Events key={i.id} item={i} history={history} />;
-                break;
-              case 'chat':
-                return <Fragment><Chat key={i.id} item={i} /></Fragment>;
-                break;
-              default:
-                return null;
-            }
-          })}
-        </List>
+        { context === 'update' ? <UpdateGroupForm />
+          : <List relaxed>
+              {this.props.groupDetailed[context].map(i => {
+                switch(context) {
+                case 'members':
+                  return <Members key={i.id} item={i}
+                  isAdmin={isAdmin}
+                  groupId={groupId}
+                  adminRemoveMember={adminRemoveMember}/>;
+                  break;
+                case 'events':
+                  return <Events key={i.id} item={i} history={history}/>;
+                  break;
+                case 'chat':
+                  return <Chat item={i}/>;
+                  break;
+                default:
+                  return null;
+                }
+              })}
+            </List>
+        }
       </Fragment>
     );
   }
@@ -84,7 +91,7 @@ function Events({ item, history }) {
   );
 }
 
-function Members({ item, isAdmin }) {
+function Members({ item, isAdmin, groupId, adminRemoveMember }) {
   const memberStatus = item.group_member.isAdmin ? 'Admin' : 'Member';
   return (
     <List.Item>
@@ -92,7 +99,7 @@ function Members({ item, isAdmin }) {
       <List.Content>
         <List.Header>{item.username}</List.Header>
         <List.Description>
-          Is a {memberStatus} {isAdmin ? <Button basic negative floated='right' size='small'>Remove</Button> : null}
+          Is a {memberStatus} { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
         </List.Description>
       </List.Content>
     </List.Item>

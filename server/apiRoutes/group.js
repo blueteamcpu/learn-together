@@ -76,7 +76,7 @@ router.post('/newgroup', async (req, res, next) => {
 					  description: req.body.description,
 					  zipcode: req.body.zipCode,
 					  ownerId: req.user.id,
-					  topicId: req.body.topicId,
+					  topicId: req.body.topicId !== '' ? req.body.topicId : null,
 					});
     await GroupMember.create({
       isAdmin: true,
@@ -87,6 +87,16 @@ router.post('/newgroup', async (req, res, next) => {
     res.status(201).send(newGroup);
   } catch (error) {
     next(error);
+  }
+});
+
+router.put('/update/:groupId', async (req, res, next) => {
+  try {
+    const update = await Group.update(req.body, { where: { id: req.params.groupId }});
+    res.status(202).send();
+  }
+  catch(e){
+    next(e);
   }
 });
 
@@ -112,6 +122,10 @@ router.get('/detail/:groupId/:context?', async (req, res, next) => {
         res.send({ group, events: [...events], isAdmin,
 		   isMember: isMember ? true : false });
         break;
+      }
+      case 'update': {
+	res.send({group, isAdmin, update: true,
+		   isMember: isMember ? true : false});
       }
     }
   } catch (e) {
@@ -245,8 +259,6 @@ router.delete('/removemember', async (req, res, next) => {
 
 router.post('/addself', async (req, res, next) => {
   try {
-    console.log(req.body);
-    console.log(req.session.userId);
     const group = await GroupMember.create({
       userId: req.session.userId,
       groupId: req.body.groupId,

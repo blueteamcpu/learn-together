@@ -5,10 +5,10 @@ import axios from 'axios';
 import { loadPosts as _loadPosts } from '../../actions/post';
 
 
-import { getDetailGroup, joinGroup, leaveGroup } from '../../reducers/groupReducer';
+import { getDetailGroup, joinGroup, leaveGroup, adminRemoveMember } from '../../reducers/groupReducer';
 
 import GroupContext from './GroupContext';
-import CreatePost from '../CreatePost'
+import CreatePost from '../CreatePost';
 
 class GroupDetail extends Component {
   // context default should become post I think
@@ -36,7 +36,7 @@ class GroupDetail extends Component {
   }
 
   render() {
-    const { groupDetailed, history, match, joinGroup, leaveGroup } = this.props;
+    const { groupDetailed, history, match, joinGroup, leaveGroup, adminRemoveMember } = this.props;
     const userId = this.props.user ? this.props.user.id : null;
     const { group, members } = groupDetailed;
     if(group.name === undefined) return null;
@@ -57,6 +57,7 @@ class GroupDetail extends Component {
                  handleItemClick={this.handleItemClick}
                  userId={userId}
                  isMember={groupDetailed.isMember}
+                 isAdmin={groupDetailed.isAdmin}
                  joinGroup={joinGroup}
                  leaveGroup={leaveGroup}
         />
@@ -66,6 +67,7 @@ class GroupDetail extends Component {
                         groupId={group.id}
                         isMember={groupDetailed.isMember}
                         isAdmin={groupDetailed.isAdmin}
+                        adminRemoveMember={adminRemoveMember}
           />
         </Segment>        
       </Container>
@@ -76,7 +78,6 @@ class GroupDetail extends Component {
 const mapStateToProps = ({ groups, authentication }) => ({
   groupDetailed: groups.groupDetailed,
   user: authentication.user
-  
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -84,11 +85,13 @@ const mapDispatchToProps = (dispatch) => ({
   joinGroup() { dispatch(joinGroup());},
   leaveGroup() { dispatch(leaveGroup());},
   loadPosts: (id) => dispatch(_loadPosts(id)),
+  adminRemoveMember(userId, groupId) { dispatch(adminRemoveMember(userId, groupId));},
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
 
-function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGroup, leaveGroup}) {
+function TabMenu ({ match, activeItem, handleItemClick, userId,
+                    isAdmin, isMember, joinGroup, leaveGroup}) {
   return (
     <div>
       <Menu attached='top' tabular>
@@ -99,14 +102,6 @@ function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGr
         >
           Events
         </Menu.Item>
-
-        <Menu.Item
-          name='members'
-          active={activeItem === 'members'}
-          onClick={handleItemClick}
-        >
-          Members
-        </Menu.Item>
         {
           userId ?
             <Menu.Item
@@ -115,6 +110,24 @@ function TabMenu ({ match, activeItem, handleItemClick, userId, isMember, joinGr
               onClick={handleItemClick}
             >
               Chat
+            </Menu.Item>
+          : null
+        }
+        <Menu.Item
+          name='members'
+          active={activeItem === 'members'}
+          onClick={handleItemClick}
+        >
+          Members
+        </Menu.Item>
+        {
+          isAdmin ?
+            <Menu.Item
+              name='update'
+              active={activeItem === 'update'}
+              onClick={handleItemClick}
+            >
+              Update
             </Menu.Item>
           : null
         }

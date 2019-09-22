@@ -23,6 +23,10 @@ Group.init(
     zipcode: {
       type: INTEGER,
       allowNull: false,
+      validate: {
+	isNumeric: true,
+	notNull: true,
+      }
     },
     description: {
       type: TEXT,
@@ -37,6 +41,7 @@ Group.init(
 
 Group.beforeCreate(instance => {
   instance.name = titleCase(instance.name.trim());
+  instance.zipcode = instance.zipcode * 1;
 });
 
 Group.beforeUpdate(instance => {
