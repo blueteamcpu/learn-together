@@ -10,7 +10,7 @@ import CreatePost from '../CreatePost';
 
 class GroupDetail extends Component {
   // context default should become post I think
-  // But for now I'm leaving it at members just to
+  // But for now I'm leaving it at events just to
   // Keep things rolling for myself
   constructor() {
     super();
@@ -85,6 +85,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(GroupDetail);
 
 function TabMenu ({ match, activeItem, handleItemClick, userId,
                     isAdmin, isMember, joinGroup, leaveGroup}) {
+  const groupButtonColor = !isMember ? 'green' : 'red';
+  const groupButtonFunction = !isMember ? joinGroup : leaveGroup;
+  console.log(groupButtonColor);
   return (
     <div>
       <Menu attached='top' tabular>
@@ -124,19 +127,16 @@ function TabMenu ({ match, activeItem, handleItemClick, userId,
             </Menu.Item>
           : null
         }
-        <Menu.Menu position='right'>
-          <Menu.Item>
-            { userId ? !isMember ? 
-              <Button color='green' onClick={() => joinGroup()}>
-                Join
-              </Button>
-              : <Button color='red' onClick={() => leaveGroup()}>
-                  Abandon
-                </Button>
-              : null
-            }
-          </Menu.Item>
-        </Menu.Menu>
+        { userId ?
+          <Menu.Item position='right'
+                     name='memberStatus'
+                     active={true}
+                     color={groupButtonColor}
+                     onClick={() => groupButtonFunction()}
+                     content={ userId && !isMember ? 'Join' : 'Abandon' }
+          />
+          : null
+        }
       </Menu>
     </div>
   );
