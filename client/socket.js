@@ -29,6 +29,7 @@ socket.on('message-error', ({ id }) => {
   store.dispatch(removeComment(id));
 });
 
+// for development
 setTimeout(
   () =>
     socket.emit('join-room', {
