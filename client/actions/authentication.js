@@ -1,10 +1,9 @@
-import socket from '../socket';
-
 // ACTION TYPES
 export const GOT_USER = 'GOT_USER';
 export const REMOVED_USER = 'REMOVED_USER';
 export const FAILEDTOLOADUSER = 'FAILEDTOLOADUSER';
 export const FAILEDTOLOGOUT = 'FAILEDTOLOGOUT';
+export const SOCKET_AUTH = 'SOCKET_AUTH';
 
 // ACTIONS
 const failedToLoadUser = () => ({ type: FAILEDTOLOADUSER });
@@ -12,8 +11,6 @@ const failedToLoadUser = () => ({ type: FAILEDTOLOADUSER });
 const failedToLogOut = () => ({ type: FAILEDTOLOGOUT });
 
 export const gotUser = user => {
-  socket.emit('login', user.id);
-
   return {
     type: GOT_USER,
     user,
@@ -21,6 +18,8 @@ export const gotUser = user => {
 };
 
 const loggedOut = () => ({ type: REMOVED_USER });
+
+export const socketAuth = () => ({ type: SOCKET_AUTH });
 
 // THUNKS
 export const getMe = () => async (dispatch, _, axios) => {

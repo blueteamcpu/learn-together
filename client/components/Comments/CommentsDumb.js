@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Comment, Form, Header } from 'semantic-ui-react';
+import Axios from 'axios';
+import socket from '../../socket';
 
 class Comments extends Component {
   constructor(props) {
@@ -10,11 +12,27 @@ class Comments extends Component {
     };
   }
 
+  joinRoom = () =>
+    socket.emit('join-room', {
+      type: this.props.type,
+      id: this.props.id,
+    });
+
   componentDidMount() {
+    if (this.props.socketAuth) {
+      this.joinRoom();
+    }
+
     this.props.getInitialComments(this.props.type, this.props.id);
   }
 
-  handleChange = (e, { name, value }) => {
+  componentDidUpdate(prevProps) {
+    if (prevProps.socketAuth === false && this.props.socketAuth) {
+      this.joinRoom();
+    }
+  }
+
+  handleChange = (_, { name, value }) => {
     this.setState(state => ({
       ...state,
       values: { ...state.values, [name]: value },
@@ -25,29 +43,15 @@ class Comments extends Component {
     e.preventDefault();
 
     try {
-      //TODO: make create comment axios post below
+      await Axios.post(
+        `/api/comments/${this.props.type}/${this.props.id}`,
+        this.state.values
+      );
 
-      // const { data } = await Axios.post('/api/comments/createComment',
-      //     this.state.values,
-      //     {
-      //         validateStatus: function(status) {
-      //         return status === 200 || status === 401;
-      //         },
-      //     });
-
-      if (data.error) {
-        this.setState(state => ({
-          ...state,
-          errors: { ...state.errors, ...data.error },
-        }));
-      } else if (data.errors) {
-        this.setState(state => ({
-          ...state,
-          errors: { ...state.errors, ...data.errors },
-        }));
-      } else {
-        //TODO: dispatch to redux
-      }
+      this.setState(state => ({
+        ...state,
+        values: { content: '' },
+      }));
     } catch (error) {
       console.error(error);
     }
@@ -57,62 +61,45 @@ class Comments extends Component {
     const { values, errors } = this.state;
     const { handleChange, handleSubmit } = this;
 
-    //TODO: replace with real comment list from redux
-    const commentList = [
-      {
-        username: 'katherinep',
-        createdAt: '5:42',
-        content: 'Sounds like a super fun event!',
-      },
-      {
-        username: 'mrimmutable',
-        createdAt: '6:05',
-        content: 'Im going!',
-      },
-      {
-        username: 'fakeuser',
-        createdAt: '6:35',
-        content: 'I cant make it this time',
-      },
-    ];
-
     return (
       <Comment.Group>
         <Header as="h3" dividing>
           Comments
         </Header>
 
-        {this.props.comments.map(comment => (
-          <Comment key={comment.id}>
-            <Comment.Content>
-              <Comment.Author as="a">{comment.username}</Comment.Author>
-              <Comment.Metadata>
-                <div>{comment.createdAt}</div>
-              </Comment.Metadata>
-              <Comment.Text>{comment.content}</Comment.Text>
-              <Comment.Actions>
-                <Comment.Action>Reply</Comment.Action>
-              </Comment.Actions>
-              {/* small form below for a reply to a comment. need to get it to only show up after you click reply */}
-              {/* <Form reply>
-                      <Form.TextArea />
-                      <Button
-                        content='Add Reply'
-                        labelPosition='left'
-                        icon='edit'
-                        primary
-                      />
-                    </Form> */}
-            </Comment.Content>
-          </Comment>
-        ))}
+        {this.props.comments.map(comment => {
+          const createdAt = new Date(comment.createdAt);
 
-        <Form reply>
+          return (
+            <Comment key={comment.id}>
+              <Comment.Content>
+                <Comment.Author as="a">{comment.user.username}</Comment.Author>
+                <Comment.Metadata>
+                  <div>
+                    {createdAt.getMonth() + 1} / {createdAt.getDate()} /{' '}
+                    {createdAt.getFullYear()}
+                  </div>
+                </Comment.Metadata>
+                <Comment.Text>{comment.content}</Comment.Text>
+                <Comment.Actions>
+                  <Comment.Action>
+                    Reply{' '}
+                    {comment.comments.length
+                      ? `(${comment.comments.length})`
+                      : ''}
+                  </Comment.Action>
+                </Comment.Actions>
+              </Comment.Content>
+            </Comment>
+          );
+        })}
+
+        <Form reply onSubmit={handleSubmit}>
           <Form.TextArea
-            name="title"
-            value={values.title}
+            name="content"
+            value={values.content}
             onChange={handleChange}
-            error={errors.title ? errors.title : null}
+            error={errors.content ? errors.content : null}
           />
           <Button
             content="Add Reply"

@@ -6,6 +6,7 @@ import {
   removeComment,
   removeThreadComment,
 } from './actions/comments';
+import { socketAuth } from './actions/authentication';
 
 const socket = process.env.SOCKET_URL ? io(process.env.SOCKET_URL) : io();
 
@@ -29,14 +30,8 @@ socket.on('message-error', ({ id }) => {
   store.dispatch(removeComment(id));
 });
 
-// for development
-setTimeout(
-  () =>
-    socket.emit('join-room', {
-      type: 'event',
-      id: 'c70fd89f-f912-47f9-b741-66cc29c1d7fa',
-    }),
-  1000 * 30
-);
+socket.on('authenticated', () => {
+  store.dispatch(socketAuth());
+});
 
 export default socket;

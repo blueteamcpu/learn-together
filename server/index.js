@@ -9,7 +9,10 @@ io.on('connection', socket => {
   // any time a user is logged in on the front end
   socket.on('login', userId => {
     console.log('logging in baby');
+    
     socket.userId = userId;
+
+    socket.emit('authenticated');
   });
 
   // type: event / post

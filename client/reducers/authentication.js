@@ -3,6 +3,7 @@ import {
   FAILEDTOLOADUSER,
   REMOVED_USER,
   FAILEDTOLOGOUT,
+  SOCKET_AUTH,
 } from '../actions/authentication';
 
 const initialState = {
@@ -10,12 +11,20 @@ const initialState = {
   failedToLogOut: false,
   loadingUser: true,
   user: {},
+  socketAuth: false,
 };
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case GOT_USER: {
-      return { ...state, user: action.user, loadingUser: false };
+      return {
+        ...state,
+        user: action.user,
+        loadingUser: false,
+      };
+    }
+    case SOCKET_AUTH: {
+      return { ...state, socketAuth: true };
     }
     case REMOVED_USER: {
       return { ...state, user: {} };
