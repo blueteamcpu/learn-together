@@ -76,7 +76,7 @@ router.post('/newgroup', async (req, res, next) => {
 					  description: req.body.description,
 					  zipcode: req.body.zipCode,
 					  ownerId: req.user.id,
-					  topicId: req.body.topicId,
+					  topicId: req.body.topicId !== '' ? req.body.topicId : null,
 					});
     await GroupMember.create({
       isAdmin: true,

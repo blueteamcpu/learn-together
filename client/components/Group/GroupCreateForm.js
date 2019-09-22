@@ -26,7 +26,7 @@ class GroupCreateForm extends Component {
         zipCode: '',
         ownerId: '',
       },
-      errors: {}
+      errors: false
     };
   }
 
@@ -50,6 +50,7 @@ class GroupCreateForm extends Component {
 					    return status === 201 || status === 401;
 					  },
 					});
+      console.log(data);
       if (data.error) {
         this.setState(state => ({
           ...state,
@@ -81,7 +82,7 @@ class GroupCreateForm extends Component {
   }
 
   render() {
-    const { values } = this.state;
+    const { errors, values } = this.state;
     return (
       <Fragment>
         <Grid
@@ -103,12 +104,14 @@ class GroupCreateForm extends Component {
                   name="name"
                   value={values.name}
                   onChange={this.handleChange}
+                  error={errors.name ? errors.name : null}
                 />
                 <Form.TextArea
                   placeholder="Description"
                   name="description"
                   value={values.description}
                   onChange={this.handleChange}
+                  error={errors.description ? errors.description : null}
                 />
                 <Form.Field>
                   {
@@ -129,9 +132,10 @@ class GroupCreateForm extends Component {
                 <Form.Input
                   placeholder="Zip Code"
                   name="zipCode"
-                  type="number"
+                  type="number" max={99999}
                   value={values.zipCode}
                   onChange={this.handleChange}
+                  error={errors.zipcode ? errors.zipcode : null}
                 />
                 <Button color="teal" fluid size="large" type="submit">
                   Create
