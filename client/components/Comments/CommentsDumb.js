@@ -32,6 +32,13 @@ class Comments extends Component {
     }
   }
 
+  componentWillUnmount() {
+    socket.emit('leave-room', {
+      type: this.props.type,
+      id: this.props.id,
+    });
+  }
+
   handleChange = (_, { name, value }) => {
     this.setState(state => ({
       ...state,

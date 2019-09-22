@@ -9,7 +9,7 @@ io.on('connection', socket => {
   // any time a user is logged in on the front end
   socket.on('login', userId => {
     console.log('logging in baby');
-    
+
     socket.userId = userId;
 
     socket.emit('authenticated');
@@ -28,6 +28,7 @@ io.on('connection', socket => {
 
   // type: event / post
   socket.on('leave-room', (type, id) => {
+    console.log('leaving room', type, id);
     socket.leave(`${type}-${id}`);
   });
 });
