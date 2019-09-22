@@ -259,8 +259,6 @@ router.delete('/removemember', async (req, res, next) => {
 
 router.post('/addself', async (req, res, next) => {
   try {
-    console.log(req.body);
-    console.log(req.session.userId);
     const group = await GroupMember.create({
       userId: req.session.userId,
       groupId: req.body.groupId,
