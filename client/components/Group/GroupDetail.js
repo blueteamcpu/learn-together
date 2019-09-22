@@ -87,7 +87,6 @@ function TabMenu ({ match, activeItem, handleItemClick, userId,
                     isAdmin, isMember, joinGroup, leaveGroup}) {
   const groupButtonColor = !isMember ? 'green' : 'red';
   const groupButtonFunction = !isMember ? joinGroup : leaveGroup;
-  console.log(groupButtonColor);
   return (
     <div>
       <Menu attached='top' tabular>
