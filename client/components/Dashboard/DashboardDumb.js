@@ -21,7 +21,7 @@ class DashBoard extends Component {
               <Header clearing as="h1">
                 Your Groups
               </Header>
-              <Button color='red' onClick={() => history.push('/groups/createnew')}>Create New Group</Button>
+              <Button color='teal' size='mini' onClick={() => history.push('/groups/createnew')}>Create New Group</Button>
               <Divider />
             </Container>
           </Grid.Row>
