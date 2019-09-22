@@ -21,17 +21,16 @@ class Post extends Component {
         }
     }
 
-    componentDidMount({match}) {
+    componentDidMount() {
         const {loadPost } = this.props;
-        console.log('MATCH: ', match)
-        const id = match.params.postId;
+        const id = this.props.match.params.postId;
         const post = loadPost(id);
         this.setState({ title: post.title, description: post.description, creator: post.creator, admin: post.admin, user: post.user, loading: false });
     }
 
-    deletePost({match}) {
+    deletePost() {
         const {removePost } = this.props;
-        const id = match.params.id
+        const id = this.props.match.params.id;
         const removed = removePost(id);
         if (removed) {
             history.push('/explore');
