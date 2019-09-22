@@ -32,6 +32,12 @@ router.get('/userPosts', isLoggedIn, async (req, res, next) => {
 
 //get all posts associated to a group
 router.get('/groupPosts/:groupId', async (req, res, next) => {
+    const fakePost = {
+        id: 1,
+        title: 'fun stuff',
+        description: 'this description is fun'
+    }
+    const arr = [fakePost]
     try {
         const posts = await Post.findAll({
             where: {
@@ -41,7 +47,7 @@ router.get('/groupPosts/:groupId', async (req, res, next) => {
                 { model: User, attributes: ['id', 'username', 'imageURL'] },
               ],
         });
-        res.json(posts);
+        res.json(arr);
     } catch (err) {
         next(err);
     }

@@ -13,8 +13,10 @@ class GroupContext extends React.Component {
     }
   }
   render() {
-    const { context, history, groupId, isMember, isAdmin, adminRemoveMember } = this.props;
+    const { context, history, groupId, isMember, isAdmin, adminRemoveMember, posts } = this.props;
     if (this.props.groupDetailed[context] === undefined || context === undefined) return null;
+    console.log('CONTEXT: ', context);
+    console.log('POSTS: ', posts);
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
@@ -29,11 +31,7 @@ class GroupContext extends React.Component {
                     groupId={groupId}
                     adminRemoveMember={adminRemoveMember} />);
                   break;
-                case 'events':
-                  return <Events key={i.id} item={i} history={history} />;
-                  break;
                 case 'chat':
-                  console.log('hit Chant!')
                   return (
                     <Fragment>
                       {console.log('Inside the Fragment!')}
@@ -56,6 +54,9 @@ class GroupContext extends React.Component {
                       <Chat item={i} />
                     </Fragment>
                   );
+                  break;
+                  case 'events':
+                  return <Events key={i.id} item={i} history={history} />;
                   break;
                 default:
                   return null;
