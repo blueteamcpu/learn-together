@@ -1,9 +1,27 @@
 const router = require('express').Router();
 const uuid = require('uuid/v4');
-const { Comment } = require('../db/index');
+const { Comment, User } = require('../db/index');
 const { isLoggedIn } = require('../../utils/backend');
 
 // type: post / event
+router.get('/thread/:id', async (req, res, next) => {
+  try {
+    if (!req.params.id) {
+      res.sendStatus(400);
+    }
+
+    const comments = await Comment.findAll({
+      where: { threadId: req.params.id },
+      include: [{ model: User, attributes: ['id', 'username'] }],
+      order: [['createdAt', 'DESC']],
+    });
+
+    res.json(comments);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get('/:type/:id', async (req, res, next) => {
   try {
     let { offset } = req.query;
@@ -18,7 +36,11 @@ router.get('/:type/:id', async (req, res, next) => {
     const query = {
       where: { [type + 'Id']: id },
       limit: 30,
-      include: [{ model: Comment, attributes: ['id'] }],
+      include: [
+        { model: Comment, attributes: ['id'] },
+        { model: User, attributes: ['id', 'username'] },
+      ],
+      order: [['createdAt', 'DESC']],
     };
 
     if (offset) {
@@ -26,22 +48,6 @@ router.get('/:type/:id', async (req, res, next) => {
     }
 
     const comments = await Comment.findAll(query);
-
-    res.json(comments);
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get('/thread/:id', async (req, res, next) => {
-  try {
-    if (!req.params.id) {
-      res.sendStatus(400);
-    }
-
-    const comments = await Comment.findAll({
-      where: { threadId: req.params.id },
-    });
 
     res.json(comments);
   } catch (error) {
@@ -78,8 +84,10 @@ router.post('/:type/:typeId/comment/:commentId', isLoggedIn, (req, res) => {
     createdAt: initDate,
     updatedAt: initDate,
     threadId: commentId,
-    userId: req.user.id,
-    username: req.user.username,
+    user: {
+      id: req.user.id,
+      username: req.user.username,
+    },
   });
 
   res.end();
@@ -117,8 +125,10 @@ router.post('/:type/:typeId', isLoggedIn, (req, res) => {
     createdAt: initDate,
     updatedAt: initDate,
     [fk]: typeId,
-    userId: req.user.id,
-    username: req.user.username,
+    user: {
+      id: req.user.id,
+      username: req.user.username,
+    },
   });
 
   res.end();
