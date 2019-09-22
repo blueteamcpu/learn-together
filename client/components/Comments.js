@@ -52,6 +52,9 @@ class Comments extends Component {
 
 
   render() { 
+      const { values, errors } = this.state;
+      const { handleChange, handleSubmit } = this;
+
       //TODO: replace with real comment list from redux
       const commentList = [
         {
@@ -94,6 +97,16 @@ class Comments extends Component {
                     <Comment.Actions>
                       <Comment.Action>Reply</Comment.Action>
                     </Comment.Actions>
+                    {/* small form below for a reply to a comment. need to get it to only show up after you click reply */}
+                    {/* <Form reply>
+                      <Form.TextArea />
+                      <Button
+                        content='Add Reply'
+                        labelPosition='left'
+                        icon='edit'
+                        primary
+                      />
+                    </Form> */}
                   </Comment.Content>
                 </Comment>
               )
