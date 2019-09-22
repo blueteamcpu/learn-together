@@ -47,12 +47,17 @@ router.get('/groupPosts/:groupId', async (req, res, next) => {
 // grab a single post i.e. when someone clicks on a post link to read comments
 router.get('/:postId', async (req, res, next) => {
     try {
-        const posts = await Post.findOne({
+        const post = await Post.findOne({
             where: {
                 id: req.params.postId
             }
         });
-        res.json(posts);
+        if (post.userId === req.user.id) {
+            post.creator = true;
+        } else if (req.user.isSiteAdmin) {
+            post.admin = true;
+        }
+        res.json(post);
     } catch (err) {
         next(err)
     }

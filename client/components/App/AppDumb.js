@@ -16,6 +16,7 @@ import UserProfile from '../UserProfile/UserProfile';
 import LoggedInOnly from '../LoggedInOnly/LoggedInOnly';
 import Explore from '../Explore/Explore';
 import Dashboard from '../Dashboard/Dashboard';
+import Post from '../Post/Post';
 
 class App extends Component {
   componentDidMount() {
@@ -47,6 +48,7 @@ class App extends Component {
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
           <LoggedInOnly exact={true} path="/profile" component={UserProfile} />
+          <Route exact = {true} path = "/posts/:postId" component = {Post} />
         </Switch>
       </Fragment>
     );

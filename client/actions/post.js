@@ -1,9 +1,9 @@
 // Action Types
-const LOADPOST = 'LOADPOST';
-const LOADPOSTS = 'LOADPOSTS';
-const FAILEDTOLOADPOST = 'FAILEDTOLOADPOST';
-const REMOVEPOST = 'REMOVEPOST';
-const FAILEDTODELETEPOST = 'FAILEDTODELETEPOST';
+export const LOADPOST = 'LOADPOST';
+export const LOADPOSTS = 'LOADPOSTS';
+export const FAILEDTOLOADPOST = 'FAILEDTOLOADPOST';
+export const REMOVEPOST = 'REMOVEPOST';
+export const FAILEDTOREMOVEPOST = 'FAILEDTODELETEPOST';
 
 // Actions
 export const _loadPost = (post) => ({
@@ -16,9 +16,12 @@ export const _loadPosts = (posts) => ({
     posts
 })
 
-const _failedtoDeleteUser = () => ({ type: FAILEDTODELETEPOST });
+const _failedtoDeletePost = () => ({ type: FAILEDTOREMOVEPOST });
 
-const _removePost = () => ({ type: REMOVEPOST });
+const _removePost = (postId) => ({
+    type: REMOVEPOST,
+    postId
+});
 
 const _failedToLoadPost = () => ({ type: FAILEDTOLOADPOST });
 
@@ -41,12 +44,12 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
     try {
         const { data: deleted } = await axios.delete(`/api/post/deletePost/${postId}`);
         if (deleted) {
-            dispatch(_removePost());
+            dispatch(_removePost(postId));
         } else {
-            dispatch(_failedtoDeleteUser())
+            dispatch(_failedtoDeletePost())
         }
     } catch (err) {
-        dispatch(_failedtoDeleteUser());
+        dispatch(_failedtoDeletePost());
         console.error(err);
     }
 };
