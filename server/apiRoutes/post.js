@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Post } = require('../db/index');
+const { Post, User } = require('../db/index');
 const { isLoggedIn } = require('../../utils/backend');
 
 // create an post
@@ -36,7 +36,10 @@ router.get('/groupPosts/:groupId', async (req, res, next) => {
         const posts = await Post.findAll({
             where: {
                 groupId: req.params.groupId
-            }
+            },
+            include: [
+                { model: User, attributes: ['id', 'username', 'imageURL'] },
+              ],
         });
         res.json(posts);
     } catch (err) {
@@ -44,25 +47,7 @@ router.get('/groupPosts/:groupId', async (req, res, next) => {
     }
 });
 
-// grab a single post i.e. when someone clicks on a post link to read comments
-router.get('/:postId', async (req, res, next) => {
-    try {
-        const post = await Post.findOne({
-            where: {
-                id: req.params.postId
-            }
-        });
-        if (post.userId === req.user.id) {
-            post.creator = true;
-        } else if (req.user.isSiteAdmin) {
-            post.admin = true;
-        }
-        res.json(post);
-    } catch (err) {
-        next(err)
-    }
-});
-
+//delete a post
 router.delete('/deletePost/:postId', isLoggedIn, async (req, res, next) => {
     if (req.user.isSiteAdmin) {
         const deleted = await Post.destroy({
@@ -88,7 +73,25 @@ router.delete('/deletePost/:postId', isLoggedIn, async (req, res, next) => {
             res.status(400);
         }
     }
-})
+});
 
+// grab a single post i.e. when someone clicks on a post link to read comments
+router.get('/:postId', async (req, res, next) => {
+    try {
+        const post = await Post.findOne({
+            where: {
+                id: req.params.postId
+            }
+        });
+        if (post.userId === req.user.id) {
+            post.creator = true;
+        } else if (req.user.isSiteAdmin) {
+            post.admin = true;
+        }
+        res.json(post);
+    } catch (err) {
+        next(err)
+    }
+});
 
 module.exports = router;
