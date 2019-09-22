@@ -61,19 +61,16 @@ class Comments extends Component {
           username: 'katherinep',
           createdAt: '5:42',
           content: 'Sounds like a super fun event!',
-          imageURL: 'https://upload.wikimedia.org/wikipedia/commons/6/67/User_Avatar.png'
         },
         {
           username: 'mrimmutable',
           createdAt: '6:05',
           content: 'Im going!',
-          imageURL: 'https://upload.wikimedia.org/wikipedia/commons/6/67/User_Avatar.png'
         },
         {
           username: 'fakeuser',
           createdAt: '6:35',
           content: 'I cant make it this time',
-          imageURL: 'https://upload.wikimedia.org/wikipedia/commons/6/67/User_Avatar.png'
         },
       ]
 
@@ -87,7 +84,6 @@ class Comments extends Component {
           {
             commentList.map(comment => 
                   <Comment>
-                  <Comment.Avatar src={comment.imageURL} />
                   <Comment.Content>
                     <Comment.Author as='a'>{comment.username}</Comment.Author>
                     <Comment.Metadata>
