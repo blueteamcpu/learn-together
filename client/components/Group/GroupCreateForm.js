@@ -8,6 +8,7 @@ import {
   Message,
   Segment,
   TextArea,
+  Select,
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -20,7 +21,7 @@ class GroupCreateForm extends Component {
     this.state = {
       values: {
         name: '',
-        topic: '',
+        topicId: '',
         description: '',
         zipCode: '',
         ownerId: '',
@@ -29,8 +30,9 @@ class GroupCreateForm extends Component {
     };
   }
 
-  handleChange = e => {
-    const { name, value } = e.target;
+  handleChange = (e, data) => {
+    let { name, value } = data;
+
     this.setState(state => ({
       ...state,
       values: { ...state.values, [name]: value },
@@ -67,6 +69,17 @@ class GroupCreateForm extends Component {
     }
   };
 
+  componentDidMount() {
+    axios.get('/api/affiliates/topics/all')
+      .then(response => {
+        this.setState({ topicsList: response.data});
+      })
+      .catch(e => this.setState({errors: {...this.state.errors, e}}));
+    axios.get('/api/affiliates/courses/all')
+      .then(response => this.setState({ courseList: response.data}))
+      .catch(e => this.setState({errors: {...this.state.errors, e}}));
+  }
+
   render() {
     const { values } = this.state;
     return (
@@ -97,12 +110,22 @@ class GroupCreateForm extends Component {
                   value={values.description}
                   onChange={this.handleChange}
                 />
-                <Form.Input
-                  placeholder="Topic"
-                  name="topic"
-                  value={values.subject}
-                  onChange={this.handleChange}
-                />
+                <Form.Field>
+                  {
+                    this.state.topicsList ?
+                      <Select
+                        placeholder="Topic"
+                        name="topicId"
+                        onChange={this.handleChange}
+                        options={this.state.topicsList.map(({id, name}) => ({
+                          key: id,
+                          value: id,
+                          text: name,
+                        }))}
+                      />
+                    : null
+                  }
+                </Form.Field>
                 <Form.Input
                   placeholder="Zip Code"
                   name="zipCode"

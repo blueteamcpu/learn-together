@@ -9,6 +9,10 @@ const compression = require('compression');
 const helmet = require('helmet');
 
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+
+app.set('io', io);
 
 app.use(morgan('dev'));
 app.use(helmet());
@@ -27,4 +31,4 @@ app.use('/api', require('../apiRoutes/index'));
 
 app.use(require('./errorMiddleware/index'));
 
-module.exports = app;
+module.exports = { server, io };

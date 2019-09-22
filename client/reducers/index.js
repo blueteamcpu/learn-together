@@ -10,5 +10,5 @@ export default combineReducers({
   groups,
   explore,
   events,
-  posts,
+  posts
 });

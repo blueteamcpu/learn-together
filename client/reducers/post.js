@@ -4,6 +4,7 @@ import {
     FAILEDTOLOADPOST,
     REMOVEPOST,
     FAILEDTOREMOVEPOST,
+    CREATEPOST
 } from '../actions/post';
 
 const initialState = {
@@ -31,6 +32,9 @@ export default (state = initialState, action) => {
         }
         case FAILEDTOREMOVEPOST: {
             return { ...state, failedToRemoveUser: true }
+        }
+        case CREATEPOST: {
+            return { ...state, posts: [...state.posts, action.post]}
         }
         default:
             return state

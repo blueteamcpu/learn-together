@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import UpdateEventForm from './UpdateEventForm';
+import Comments from '../Comments'
 import { Link } from 'react-router-dom';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
 import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer'
@@ -148,6 +149,9 @@ class EventDetail extends Component {
                         }
                        </Fragment>
                  : null }
+                 <br />
+                 <br />
+                <Comments/>
                 </Segment>
                 </Container>
             </Fragment>
