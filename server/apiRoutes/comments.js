@@ -13,7 +13,7 @@ router.get('/thread/:id', async (req, res, next) => {
     const comments = await Comment.findAll({
       where: { threadId: req.params.id },
       include: [{ model: User, attributes: ['id', 'username'] }],
-      order: [['createdAt', 'DESC']],
+      order: [['createdAt', 'ASC']],
     });
 
     res.json(comments);
@@ -40,7 +40,7 @@ router.get('/:type/:id', async (req, res, next) => {
         { model: Comment, attributes: ['id'] },
         { model: User, attributes: ['id', 'username'] },
       ],
-      order: [['createdAt', 'DESC']],
+      order: [['createdAt', 'ASC']],
     };
 
     if (offset) {
@@ -88,7 +88,7 @@ router.post('/:type/:typeId/comment/:commentId', isLoggedIn, (req, res) => {
       id: req.user.id,
       username: req.user.username,
     },
-    comments: []
+    comments: [],
   });
 
   res.end();
@@ -130,7 +130,7 @@ router.post('/:type/:typeId', isLoggedIn, (req, res) => {
       id: req.user.id,
       username: req.user.username,
     },
-    comments: []
+    comments: [],
   });
 
   res.end();
