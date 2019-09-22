@@ -59,7 +59,7 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
 
 export const loadPosts = (id) => async (dispatch, _, axios) => {
     try {
-        const posts = await axios.get(`/api/posts/groupPosts/${id}`);
+        const {data: posts} = await axios.get(`/api/posts/groupPosts/${id}`);
         if (!posts) {
             dispatch(_failedToLoadPost());
         } else {
@@ -72,7 +72,7 @@ export const loadPosts = (id) => async (dispatch, _, axios) => {
 
 export const createPost = (post) => async (dispatch, _, axios) => {
     try {
-        const created = await axios.post('/api/posts/createPost', post)
+        const {data: created} = await axios.post('/api/posts/createPost', post)
         if (created){
             dispatch(_createPost(created));
         } else {
