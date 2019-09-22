@@ -1,38 +1,67 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Grid, Item, List, Image, Segment, Button } from 'semantic-ui-react';
+import { Container, Grid, Item, List, Image, Segment, Button, Form } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import UpdateGroupForm from './UpdateGroupForm';
 
 class GroupContext extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    }
+  }
   render() {
     const { context, history, groupId, isMember, isAdmin, adminRemoveMember } = this.props;
-    if(this.props.groupDetailed[context] === undefined || context === undefined) return null;
+    if (this.props.groupDetailed[context] === undefined || context === undefined) return null;
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
-        { context === 'update' ? <UpdateGroupForm />
+        {context === 'update' ? <UpdateGroupForm />
           : <List relaxed>
-              {this.props.groupDetailed[context].map(i => {
-                switch(context) {
+            {this.props.groupDetailed[context].map(i => {
+              switch (context) {
                 case 'members':
-                  return <Members key={i.id} item={i}
-                  isAdmin={isAdmin}
-                  groupId={groupId}
-                  adminRemoveMember={adminRemoveMember}/>;
+                  return (<Members
+                    key={i.id} item={i}
+                    isAdmin={isAdmin}
+                    groupId={groupId}
+                    adminRemoveMember={adminRemoveMember} />);
                   break;
                 case 'events':
-                  return <Events key={i.id} item={i} history={history}/>;
+                  return <Events key={i.id} item={i} history={history} />;
                   break;
                 case 'chat':
-                  return <Chat item={i}/>;
+                  console.log('hit Chant!')
+                  return (
+                    <Fragment>
+                      {console.log('Inside the Fragment!')}
+                      <Form size="medium" onSubmit={this.handleSubmit}>
+                        <Form.Input
+                          fluid
+                          icon="pencil alternate"
+                          iconPosition="left"
+                          placeholder="Post Title"
+                          type="text"
+                          name="cTitle"
+                          value={this.state.cTitle}
+                          onChange={this.handleChange}
+                        />
+                        <Form.TextArea label = "Description" placeholder = "Give a description of your post." />
+                        <Form.Field>
+                          <Button size = "large" type = "submit">Create Post</Button>
+                        </Form.Field>
+                      </Form>
+                      <Chat item={i} />
+                    </Fragment>
+                  );
                   break;
                 default:
                   return null;
-                }
-              })}
-            </List>
+              }
+            })}
+          </List>
         }
       </Fragment>
     );
@@ -99,17 +128,17 @@ function Members({ item, isAdmin, groupId, adminRemoveMember }) {
       <List.Content>
         <List.Header>{item.username}</List.Header>
         <List.Description>
-          Is a {memberStatus} { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
+          Is a {memberStatus} {isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
         </List.Description>
       </List.Content>
     </List.Item>
   );
 }
 
-function Chat(post) {
+function Chat({post}) {
   return (
     <List.Item>
-      <List.Header>{post.title}</List.Header>
+      <List.Header><Link to={`/posts/${post.id}`}>{post.title}</Link></List.Header>
       <List.Content>
         <List.Description>
           Created by: <Image src={post.User.imageURL} avatar /> <span>{post.User.username}</span>
