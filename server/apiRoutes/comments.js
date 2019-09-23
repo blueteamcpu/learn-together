@@ -44,13 +44,7 @@ router.get('/:type/:id', async (req, res, next) => {
       attributes: {
         include: [
           [
-            sequelize.fn(
-              'COUNT',
-              // sequelize.col('Comment.threadId'),
-              sequelize.where({
-                threadId: comment.id,
-              })
-            ),
+            sequelize.fn('COUNT', sequelize.col('Comment.threadId')),
             'CommentCount',
           ],
         ],
