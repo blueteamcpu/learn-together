@@ -125,6 +125,7 @@ class Comments extends Component {
             value={values.content}
             onChange={handleChange}
             error={errors.content ? errors.content : null}
+            style={{ maxHeight: 50 }}
           />
           <Button
             content="Add Reply"
