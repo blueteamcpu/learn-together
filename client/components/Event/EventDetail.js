@@ -103,19 +103,20 @@ class EventDetail extends Component {
                             <Menu.Item name='edit' active={activeItem==='edit'} onClick={this.handleMenuClick}>Edit Event</Menu.Item>
                             : null 
                             }
-                            <Menu.Menu position='right'>
-                                { member ? 
-                                <Menu.Item>
-                                    { !going ? 
-                                        <Button onClick={this.rsvp} color='red'>Not Going</Button> :
-                                        <Button onClick={this.unrsvp} color='green'>I'm Going!</Button>
-                                    }
-                                </Menu.Item> :
-                                <Menu.Item>
-                                    You must be a group member to join this event.
-                                </Menu.Item>
-                                }
-                            </Menu.Menu>
+                            { member ? 
+                            <Menu.Item 
+                                active='true' 
+                                position='right' 
+                                name='goingStatus'
+                                content={ going ? 'I\'m Going!' : 'Not Going'}
+                                color={ going ? 'green' : 'red'}
+                                onClick={ going ? this.unrsvp : this.rsvp}
+                            >
+                            </Menu.Item> :
+                            <Menu.Item>
+                                You must be a group member to join this event.
+                            </Menu.Item>
+                            }
                         </Menu>
                         </Grid.Row>
                         </Grid>
