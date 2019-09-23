@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import { postNewGroup } from '../../reducers/groupReducer';
+import NewTopicForm from '../Topic/NewTopicForm';
 
 class GroupCreateForm extends Component {
   constructor(props) {
@@ -50,7 +51,6 @@ class GroupCreateForm extends Component {
 					    return status === 201 || status === 401;
 					  },
 					});
-      console.log(data);
       if (data.error) {
         this.setState(state => ({
           ...state,
@@ -70,10 +70,17 @@ class GroupCreateForm extends Component {
     }
   };
 
+  updateChangedTopics = (newTopic) => {
+    this.setState(state => ({ topicsList: [newTopic, ...this.state.topicsList]}));
+  }
+
   componentDidMount() {
     axios.get('/api/affiliates/topics/all')
       .then(response => {
-        this.setState({ topicsList: response.data});
+        const topicsList = response.data.sort((a, b) => {
+          return a.name < b.name ? -1 : 1;
+        });
+        this.setState({ topicsList: topicsList});
       })
       .catch(e => this.setState({errors: {...this.state.errors, e}}));
     axios.get('/api/affiliates/courses/all')
@@ -89,7 +96,9 @@ class GroupCreateForm extends Component {
           textAlign="center"
           style={{ height: '85vh' }}
           verticalAlign="middle"
-        >
+          stackable
+        > 
+          <Grid.Row>
           <Grid.Column style={{ maxWidth: 450 }}>
             <Header as="h2" color="teal" textAlign="center">
               Create Group
@@ -143,6 +152,10 @@ class GroupCreateForm extends Component {
               </Segment>
             </Form>
           </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <NewTopicForm updateChangedTopics={this.updateChangedTopics}/>
+          </Grid.Row>
         </Grid>
       </Fragment>
     );

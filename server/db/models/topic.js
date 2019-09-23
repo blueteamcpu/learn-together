@@ -13,6 +13,7 @@ Topic.init(
     name: {
       type: sequelize.TEXT,
       allowNull: false,
+      unique: true,
       validate: {
         notEmpty: true,
       },

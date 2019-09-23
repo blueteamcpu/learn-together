@@ -4,7 +4,6 @@ const sentenceCase = str => str.slice(0, 1).toUpperCase() + str.slice(1);
 const parseValidate = e => {
   const { validatorKey: key, path } = e;
   let msg = '';
-
   if (key === 'notEmpty') {
     if (path === 'firstName') {
       msg = 'First name is required.';
@@ -29,6 +28,8 @@ const parseValidate = e => {
     }
   } else if (key === 'isUrl') {
     msg = sentenceCase(`${path} must be a valid url.`);
+  } else if (key === 'not_unique') {
+    msg = sentenceCase(`${path} is already a topic`);
   }
 
   return msg;
@@ -58,7 +59,7 @@ const parseNotValidate = e => {
 };
 
 const parseError = e => {
-  return e.type === 'Validation error' ? parseValidate(e) : parseNotValidate(e);
+  return e.type === 'Validation error' || 'unique violation' ? parseValidate(e) : parseNotValidate(e);
 };
 
 module.exports = parseError;
