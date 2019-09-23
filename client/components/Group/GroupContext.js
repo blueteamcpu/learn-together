@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Grid, Item, List, Image, Segment, Button, ListList} from 'semantic-ui-react';
+import { Container, Grid, Item, List, Image, Segment, Button} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
