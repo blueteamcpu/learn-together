@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Container, Grid, Item, List, Image, Segment, Button} from 'semantic-ui-react';
+import { Container, Grid, Item, List, Image, Segment, Button, ListList} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -96,10 +96,13 @@ function Members({ item, isAdmin, groupId, adminRemoveMember }) {
     <List.Item>
       <Image avatar src={item.imageURL} />
       <List.Content>
-        <List.Header>{item.username}</List.Header>
+        <List.Header>{item.username} </List.Header>
         <List.Description>
-          Is a {memberStatus} { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
+          Is a {memberStatus} 
         </List.Description>
+      </List.Content>
+      <List.Content floated='right'>
+      { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
       </List.Content>
     </List.Item>    
   );
