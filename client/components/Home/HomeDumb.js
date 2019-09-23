@@ -196,15 +196,6 @@ class Home extends Component {
                     <List.Item as="a">Contact Us</List.Item>
                   </List>
                 </Grid.Column>
-                <Grid.Column width={7}>
-                  <Header as="h4" inverted>
-                    Footer Header
-                  </Header>
-                  <p>
-                    Extra space for a call to action inside the footer that
-                    could help re-engage users.
-                  </p>
-                </Grid.Column>
               </Grid.Row>
             </Grid>
           </Container>
