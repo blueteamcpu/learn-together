@@ -10,59 +10,42 @@ class GroupContext extends React.Component {
     super(props);
     this.state = {
 
-    }
+    };
   }
+  
   render() {
-    const { context, history, groupId, isMember, isAdmin, adminRemoveMember, posts } = this.props;
-    if (this.props.groupDetailed[context] === undefined || context === undefined) return null;
-    console.log('CONTEXT: ', context);
-    console.log('POSTS: ', posts);
+    const { context, history, groupId, isMember, isAdmin, adminRemoveMember, groupDetailed, posts } = this.props;
+    const listRender = context === 'chat' ? posts : groupDetailed[context];
+    if (listRender === undefined || context === undefined) return null;
+    if (listRender.length === 0) return null;
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
         {context === 'update' ? <UpdateGroupForm />
-          : <List relaxed>
-            {this.props.groupDetailed[context].map(i => {
-              switch (context) {
-                case 'members':
-                  return (<Members
-                    key={i.id} item={i}
-                    isAdmin={isAdmin}
-                    groupId={groupId}
-                    adminRemoveMember={adminRemoveMember} />);
-                  break;
-                case 'chat':
-                  return (
-                    <Fragment>
-                      {console.log('Inside the Fragment!')}
-                      <Form size="medium" onSubmit={this.handleSubmit}>
-                        <Form.Input
-                          fluid
-                          icon="pencil alternate"
-                          iconPosition="left"
-                          placeholder="Post Title"
-                          type="text"
-                          name="cTitle"
-                          value={this.state.cTitle}
-                          onChange={this.handleChange}
-                        />
-                        <Form.TextArea label = "Description" placeholder = "Give a description of your post." />
-                        <Form.Field>
-                          <Button size = "large" type = "submit">Create Post</Button>
-                        </Form.Field>
-                      </Form>
-                      <Chat item={i} />
-                    </Fragment>
-                  );
-                  break;
-                  case 'events':
-                  return <Events key={i.id} item={i} history={history} />;
-                  break;
-                default:
-                  return null;
-              }
-            })}
-          </List>
+         : <List relaxed>
+             {listRender.map(i => {
+               switch (context) {
+               case 'members':
+                 return (<Members
+                           key={i.id} item={i}
+                           isAdmin={isAdmin}
+                           groupId={groupId}
+                           adminRemoveMember={adminRemoveMember} />);
+                 break;
+               case 'chat':
+                 // NOTE: Conner - Pass down the props you need here to Chat
+                 return (
+                   <Chat key={i.id} item={i} />
+                 );
+                 break;
+               case 'events':
+                 return <Events key={i.id} item={i} history={history} />;
+                 break;
+               default:
+                 return null;
+               }
+             })}
+           </List>
         }
       </Fragment>
     );
@@ -136,17 +119,33 @@ function Members({ item, isAdmin, groupId, adminRemoveMember }) {
   );
 }
 
-function Chat({post}) {
+function Chat({item}) {
   return (
     <List.Item>
-      <List.Header><Link to={`/posts/${post.id}`}>{post.title}</Link></List.Header>
+      <List.Header><Link to={`/posts/${item.id}`}>{item.title}</Link></List.Header>
       <List.Content>
         <List.Description>
-          Created by: <Image src={post.User.imageURL} avatar /> <span>{post.User.username}</span>
+          {"Created by: <Image src={item.User.imageURL} avatar /> <span>{item.User.username}</span>"}
         </List.Description>
+        {/*<Form size="medium" onSubmit={this.handleSubmit}>
+           <Form.Input
+           fluid
+           icon="pencil alternate"
+           iconPosition="left"
+           placeholder="Post Title"
+           type="text"
+           name="cTitle"
+           value={this.state.cTitle}
+           onChange={this.handleChange}
+           />
+           <Form.TextArea label = "Description" placeholder = "Give a description of your post." />
+           <Form.Field>
+           <Button size = "large" type = "submit">Create Post</Button>
+           </Form.Field>
+           </Form>*/}
       </List.Content>
     </List.Item>
-  )
+  );
 }
 
 function dateDayAsString(dateString) {

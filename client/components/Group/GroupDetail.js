@@ -77,7 +77,7 @@ class GroupDetail extends Component {
 
 const mapStateToProps = ({ groups, authentication }) => ({
   groupDetailed: groups.groupDetailed,
-  user: authentication.user
+  user: authentication.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -58,16 +58,16 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
 };
 
 export const loadPosts = (id) => async (dispatch, _, axios) => {
-    try {
-        const {data: posts} = await axios.get(`/api/posts/groupPosts/${id}`);
-        if (!posts) {
-            dispatch(_failedToLoadPost());
-        } else {
-            dispatch(_loadPosts(posts));
-        }
-    } catch (err) {
-        console.error(err)
+  try {
+    const {data: posts} = await axios.get(`/api/posts/groupPosts/${id}`);
+    if (!posts) {
+      dispatch(_failedToLoadPost());
+    } else {
+      dispatch(_loadPosts(posts));
     }
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export const createPost = (post) => async (dispatch, _, axios) => {
