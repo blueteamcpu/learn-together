@@ -48,17 +48,27 @@ class Comments extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-
+    // validate logged in and socket auth'd
     try {
-      await Axios.post(
-        `/api/comments/${this.props.type}/${this.props.id}`,
-        this.state.values
-      );
+      if (!this.props.loggedIn) {
+        this.setState(state => ({
+          ...state,
+          errors: {
+            ...state.errors,
+            content: 'You must be logged in to comment.',
+          },
+        }));
+      } else {
+        await Axios.post(
+          `/api/comments/${this.props.type}/${this.props.id}`,
+          this.state.values
+        );
 
-      this.setState(state => ({
-        ...state,
-        values: { content: '' },
-      }));
+        this.setState(state => ({
+          ...state,
+          values: { content: '' },
+        }));
+      }
     } catch (error) {
       console.error(error);
     }

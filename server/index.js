@@ -27,7 +27,7 @@ io.on('connection', socket => {
   });
 
   // type: event / post
-  socket.on('leave-room', (type, id) => {
+  socket.on('leave-room', ({ type, id }) => {
     console.log('leaving room', type, id);
     socket.leave(`${type}-${id}`);
   });
