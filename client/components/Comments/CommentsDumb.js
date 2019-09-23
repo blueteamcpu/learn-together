@@ -50,7 +50,15 @@ class Comments extends Component {
     e.preventDefault();
     // validate logged in and socket auth'd
     try {
-      if (!this.props.loggedIn) {
+      if (this.state.values.content.length === 0) {
+        this.setState(state => ({
+          ...state,
+          errors: {
+            ...state.errors,
+            content: 'Comments cannot be empty.',
+          },
+        }));
+      } else if (!this.props.loggedIn) {
         this.setState(state => ({
           ...state,
           errors: {
