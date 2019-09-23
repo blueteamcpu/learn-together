@@ -67,8 +67,6 @@ class Comments extends Component {
   }
 
   componentWillUnmount() {
-    console.log('--------- unmounting');
-
     socket.emit('leave-room', {
       type: this.props.type,
       id: this.props.id,
@@ -195,6 +193,11 @@ class Comments extends Component {
             name="content"
             value={values.content}
             onChange={handleChange}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                this.handleSubmit(e);
+              }
+            }}
             error={errors.content ? errors.content : null}
             style={{ maxHeight: 50 }}
           />
