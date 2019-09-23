@@ -87,55 +87,58 @@ class Comments extends Component {
     const { handleChange, handleSubmit } = this;
 
     return (
-      <Container>
-      <Comment.Group>
-        <Header as="h3" dividing>
-          Comments
-        </Header>
+      <Container style={{ marginTop: '1em' }}>
+        <Comment.Group>
+          <Header as="h3" dividing>
+            Comments
+          </Header>
 
-        {this.props.comments.map(comment => {
-          const createdAt = new Date(comment.createdAt);
+          {this.props.comments.map(comment => {
+            const createdAt = new Date(comment.createdAt);
 
-          return (
-            <Comment key={comment.id}>
-              <Comment.Content>
-                <Comment.Author as="a">{comment.user.username}</Comment.Author>
-                <Comment.Metadata>
-                  <div>
-                    {createdAt.getMonth() + 1} / {createdAt.getDate()} /{' '}
-                    {createdAt.getFullYear()} at {createdAt.toLocaleTimeString()}
-                  </div>
-                </Comment.Metadata>
-                <Comment.Text>{comment.content}</Comment.Text>
-                <Comment.Actions>
-                  <Comment.Action>
-                    Reply{' '}
-                    {comment.comments.length
-                      ? `(${comment.comments.length})`
-                      : ''}
-                  </Comment.Action>
-                </Comment.Actions>
-              </Comment.Content>
-            </Comment>
-          );
-        })}
+            return (
+              <Comment key={comment.id}>
+                <Comment.Content>
+                  <Comment.Author as="a">
+                    {comment.user.username}
+                  </Comment.Author>
+                  <Comment.Metadata>
+                    <div>
+                      {createdAt.getMonth() + 1} / {createdAt.getDate()} /{' '}
+                      {createdAt.getFullYear()} at{' '}
+                      {createdAt.toLocaleTimeString()}
+                    </div>
+                  </Comment.Metadata>
+                  <Comment.Text>{comment.content}</Comment.Text>
+                  <Comment.Actions>
+                    <Comment.Action>
+                      Reply{' '}
+                      {comment.comments.length
+                        ? `(${comment.comments.length})`
+                        : ''}
+                    </Comment.Action>
+                  </Comment.Actions>
+                </Comment.Content>
+              </Comment>
+            );
+          })}
 
-        <Form reply onSubmit={handleSubmit}>
-          <Form.TextArea
-            name="content"
-            value={values.content}
-            onChange={handleChange}
-            error={errors.content ? errors.content : null}
-            style={{ maxHeight: 50 }}
-          />
-          <Button
-            content="Add Reply"
-            primary
-            labelPosition="left"
-            icon="edit"
-          />
-        </Form>
-      </Comment.Group>
+          <Form reply onSubmit={handleSubmit}>
+            <Form.TextArea
+              name="content"
+              value={values.content}
+              onChange={handleChange}
+              error={errors.content ? errors.content : null}
+              style={{ maxHeight: 50 }}
+            />
+            <Button
+              content="Add Reply"
+              primary
+              labelPosition="left"
+              icon="edit"
+            />
+          </Form>
+        </Comment.Group>
       </Container>
     );
   }
