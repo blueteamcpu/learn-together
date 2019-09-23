@@ -5,11 +5,13 @@ import {
   SINGLE_THREAD_COMMENT,
   REMOVE_COMMENT,
   REMOVE_THREAD_COMMENT,
+  NO_MORE_COMMENTS,
 } from '../actions/comments';
 
 const initialState = {
   comments: [],
   offset: 0,
+  noMoreToLoad: false,
 };
 
 export default (state = initialState, action) => {
@@ -21,11 +23,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         offset: state.offset + 1,
-        comments: [...action.comments, ...state.comments],
+        comments: [...state.comments, ...action.comments],
       };
     }
     case SINGLE_COMMENT: {
-      return { ...state, comments: [...state.comments, action.comment] };
+      return { ...state, comments: [action.comment, ...state.comments] };
     }
     case SINGLE_THREAD_COMMENT: {
       const comments = state.comments.map(c => {
@@ -56,6 +58,9 @@ export default (state = initialState, action) => {
       });
 
       return { ...state, comments };
+    }
+    case NO_MORE_COMMENTS: {
+      return { ...state, noMoreToLoad: true };
     }
     default:
       return state;

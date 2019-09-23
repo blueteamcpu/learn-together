@@ -1,5 +1,8 @@
 import { connect } from 'react-redux';
-import { getInitialComments as _getInitialComments } from '../../actions/comments';
+import {
+  getInitialComments as _getInitialComments,
+  getMoreComments as _getMoreComments,
+} from '../../actions/comments';
 import Comments from './CommentsDumb';
 
 const mapStateToProps = ({
@@ -10,6 +13,9 @@ const mapStateToProps = ({
 const mapDispatchToProps = dispatch => ({
   getInitialComments(type, id) {
     dispatch(_getInitialComments(type, id));
+  },
+  getMoreComments(type, id) {
+    dispatch(_getMoreComments(type, id));
   },
 });
 

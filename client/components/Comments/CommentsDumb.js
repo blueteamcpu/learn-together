@@ -30,7 +30,7 @@ class Comments extends Component {
     for (let mutation of mutationList) {
       if (mutation.type === 'childList') {
         this.setState({ showModal: true }, () =>
-          setTimeout(() => this.setState({ showModal: false }), 1000 * 10)
+          setTimeout(() => this.setState({ showModal: false }), 1000 * 5)
         );
       }
     }
@@ -61,11 +61,14 @@ class Comments extends Component {
     }
 
     if (prevProps.comments.length === 0 && this.props.comments.length !== 0) {
+      this.setState({ initialLoad: false });
       this.scrollToNewestComment();
     }
   }
 
   componentWillUnmount() {
+    console.log('--------- unmounting');
+
     socket.emit('leave-room', {
       type: this.props.type,
       id: this.props.id,
@@ -130,6 +133,21 @@ class Comments extends Component {
         <Comment.Group
           id="comment-box"
           style={{ overflow: 'auto', maxHeight: '50vh' }}
+          onScroll={e => {
+            e.preventDefault();
+
+            if (e.target.scrollTop === 0) {
+              console.log('yoooooo its the top');
+              if (
+                this.props.comments.length !== 0 &&
+                this.props.comments.length % 30 === 0 &&
+                this.props.noMoreToLoad === false
+              ) {
+                console.log('fetch me some comments');
+                this.props.getMoreComments(this.props.type, this.props.id);
+              }
+            }
+          }}
         >
           {this.props.comments.map(comment => {
             const createdAt = new Date(comment.createdAt);
@@ -143,7 +161,7 @@ class Comments extends Component {
                   <Comment.Metadata>
                     <div>
                       {createdAt.getMonth() + 1} / {createdAt.getDate()} /{' '}
-                      {createdAt.getFullYear()} at{' '}
+                      {createdAt.getFullYear()} @{' '}
                       {createdAt.toLocaleTimeString()}
                     </div>
                   </Comment.Metadata>
@@ -175,6 +193,7 @@ class Comments extends Component {
             </Button>
           </Container>
         )}
+
         <Form reply onSubmit={handleSubmit}>
           <Form.TextArea
             name="content"

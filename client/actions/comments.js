@@ -4,6 +4,7 @@ export const SINGLE_COMMENT = 'SINGLE_COMMENT';
 export const SINGLE_THREAD_COMMENT = 'SINGLE_THREAD_COMMENT';
 export const REMOVE_COMMENT = 'REMOVE_COMMENT';
 export const REMOVE_THREAD_COMMENT = 'REMOVE_THREAD_COMMENT';
+export const NO_MORE_COMMENTS = 'NO_MORE_COMMENTS';
 
 const gotInitComments = comments => ({ type: INITIAL_COMMENTS, comments });
 
@@ -24,6 +25,8 @@ export const removeThreadComment = (threadId, id) => ({
   id,
 });
 
+export const noMoreComments = () => ({ type: NO_MORE_COMMENTS });
+
 export const getInitialComments = (type, id) => async (dispatch, _, axios) => {
   try {
     const { data: comments } = await axios.get(`/api/comments/${type}/${id}`);
@@ -33,16 +36,25 @@ export const getInitialComments = (type, id) => async (dispatch, _, axios) => {
   }
 };
 
-export const getMoreComments = (type, id, offset = 0) => async (
+export const getMoreComments = (type, id) => async (
   dispatch,
-  _,
+  getState,
   axios
 ) => {
   try {
+    const currentOffset = getState().comments.offset;
+
+    console.log('in more comments', currentOffset);
+
     const { data: comments } = await axios.get(
-      `/api/comments/${type}/${id}?offset=${offset}`
+      `/api/comments/${type}/${id}?offset=${currentOffset + 1}`
     );
-    dispatch(gotMoreComments(comments));
+
+    if (comments.length === 0) {
+      dispatch(noMoreComments());
+    } else {
+      dispatch(gotMoreComments(comments));
+    }
   } catch (error) {
     console.error(error);
   }
