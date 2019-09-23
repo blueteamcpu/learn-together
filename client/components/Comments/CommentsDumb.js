@@ -167,7 +167,6 @@ class Comments extends Component {
                     </div>
                   </Comment.Metadata>
                   <Comment.Text>{comment.content}</Comment.Text>
-                  { this.props.type === 'post' ?
                     <Comment.Actions>
                       <Comment.Action>
                         Reply{' '}
@@ -176,8 +175,6 @@ class Comments extends Component {
                          : ''}
                       </Comment.Action>
                     </Comment.Actions>
-                    : null
-                  }
                 </Comment.Content>
               </Comment>
             );
