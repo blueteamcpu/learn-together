@@ -134,16 +134,12 @@ class Comments extends Component {
           id="comment-box"
           style={{ overflow: 'auto', maxHeight: '50vh' }}
           onScroll={e => {
-            e.preventDefault();
-
             if (e.target.scrollTop === 0) {
-              console.log('yoooooo its the top');
               if (
                 this.props.comments.length !== 0 &&
                 this.props.comments.length % 30 === 0 &&
                 this.props.noMoreToLoad === false
               ) {
-                console.log('fetch me some comments');
                 this.props.getMoreComments(this.props.type, this.props.id);
               }
             }

@@ -23,11 +23,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         offset: state.offset + 1,
-        comments: [...state.comments, ...action.comments],
+        comments: [...action.comments, ...state.comments],
       };
     }
     case SINGLE_COMMENT: {
-      return { ...state, comments: [action.comment, ...state.comments] };
+      return { ...state, comments: [...state.comments, action.comment] };
     }
     case SINGLE_THREAD_COMMENT: {
       const comments = state.comments.map(c => {

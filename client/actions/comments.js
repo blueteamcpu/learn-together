@@ -30,6 +30,7 @@ export const noMoreComments = () => ({ type: NO_MORE_COMMENTS });
 export const getInitialComments = (type, id) => async (dispatch, _, axios) => {
   try {
     const { data: comments } = await axios.get(`/api/comments/${type}/${id}`);
+    comments.reverse();
     dispatch(gotInitComments(comments));
   } catch (error) {
     console.error(error);
@@ -44,8 +45,6 @@ export const getMoreComments = (type, id) => async (
   try {
     const currentOffset = getState().comments.offset;
 
-    console.log('in more comments', currentOffset);
-
     const { data: comments } = await axios.get(
       `/api/comments/${type}/${id}?offset=${currentOffset + 1}`
     );
@@ -53,6 +52,7 @@ export const getMoreComments = (type, id) => async (
     if (comments.length === 0) {
       dispatch(noMoreComments());
     } else {
+      comments.reverse();
       dispatch(gotMoreComments(comments));
     }
   } catch (error) {
