@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Comment, Form, Header } from 'semantic-ui-react';
+import { Button, Comment, Form, Header, Container } from 'semantic-ui-react';
 import Axios from 'axios';
 import socket from '../../socket';
 
@@ -87,6 +87,7 @@ class Comments extends Component {
     const { handleChange, handleSubmit } = this;
 
     return (
+      <Container>
       <Comment.Group>
         <Header as="h3" dividing>
           Comments
@@ -102,7 +103,7 @@ class Comments extends Component {
                 <Comment.Metadata>
                   <div>
                     {createdAt.getMonth() + 1} / {createdAt.getDate()} /{' '}
-                    {createdAt.getFullYear()}
+                    {createdAt.getFullYear()} at {createdAt.toLocaleTimeString()}
                   </div>
                 </Comment.Metadata>
                 <Comment.Text>{comment.content}</Comment.Text>
@@ -125,6 +126,7 @@ class Comments extends Component {
             value={values.content}
             onChange={handleChange}
             error={errors.content ? errors.content : null}
+            style={{ maxHeight: 50 }}
           />
           <Button
             content="Add Reply"
@@ -134,6 +136,7 @@ class Comments extends Component {
           />
         </Form>
       </Comment.Group>
+      </Container>
     );
   }
 }
