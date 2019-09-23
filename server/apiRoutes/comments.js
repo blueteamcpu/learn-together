@@ -40,7 +40,7 @@ router.get('/:type/:id', async (req, res, next) => {
         { model: Comment, attributes: ['id'] },
         { model: User, attributes: ['id', 'username'] },
       ],
-      order: [['createdAt', 'ASC']],
+      order: [['createdAt', 'DESC']],
     };
 
     if (offset) {
