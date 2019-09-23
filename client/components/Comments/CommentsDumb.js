@@ -167,14 +167,17 @@ class Comments extends Component {
                     </div>
                   </Comment.Metadata>
                   <Comment.Text>{comment.content}</Comment.Text>
-                  <Comment.Actions>
-                    <Comment.Action>
-                      Reply{' '}
-                      {comment.comments.length
-                        ? `(${comment.comments.length})`
-                        : ''}
-                    </Comment.Action>
-                  </Comment.Actions>
+                  { this.props.type === 'post' ?
+                    <Comment.Actions>
+                      <Comment.Action>
+                        Reply{' '}
+                        {comment.comments.length
+                         ? `(${comment.comments.length})`
+                         : ''}
+                      </Comment.Action>
+                    </Comment.Actions>
+                    : null
+                  }
                 </Comment.Content>
               </Comment>
             );

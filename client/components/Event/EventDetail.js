@@ -64,11 +64,14 @@ class EventDetail extends Component {
   handleMenuClick = (e, { name }) => this.setState({ activeItem: name });
 
   render() {
-    const { event, user, match } = this.props;
+    const { event, user, groups, match } = this.props;
     const { going, activeItem } = this.state;
     const attendees = event.users;
 
     let member = false;
+    if(event.id && groups.length) {
+      member = groups.find(g => g.id === event.groupId);
+    }
 
     const weekday = dateDayAsString(event.day);
     const month = dateMonthAsString(event.day);
