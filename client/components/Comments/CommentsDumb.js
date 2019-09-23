@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Comment, Form, Header } from 'semantic-ui-react';
+import { Button, Comment, Form, Header, Container } from 'semantic-ui-react';
 import Axios from 'axios';
 import socket from '../../socket';
 
@@ -87,6 +87,7 @@ class Comments extends Component {
     const { handleChange, handleSubmit } = this;
 
     return (
+      <Container>
       <Comment.Group>
         <Header as="h3" dividing>
           Comments
@@ -135,6 +136,7 @@ class Comments extends Component {
           />
         </Form>
       </Comment.Group>
+      </Container>
     );
   }
 }
