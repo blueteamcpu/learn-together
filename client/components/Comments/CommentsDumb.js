@@ -12,6 +12,7 @@ class Comments extends Component {
       showModal: false,
       initialLoad: true,
     };
+    this.commentBoxScroll = 0;
   }
 
   joinRoom = () =>
@@ -22,8 +23,12 @@ class Comments extends Component {
 
   scrollToNewestComment = () => {
     const commentList = document.getElementById('comment-box');
-    const newestComment = commentList.lastChild;
-    newestComment.scrollIntoView();
+    //    const newestComment = commentList.lastChild;
+    //    const windowScrollY = window.scrollY;
+    //    const windowScrollX = window.scrollX;
+    commentList.scrollTo(0, commentList.scrollHeight - this.commentBoxScroll);
+    this.commentBoxScroll = commentList.scrollHeight;
+    //    window.scrollTo(windowScrollX, windowScrollY);
   };
 
   mutationCallback = mutationList => {
@@ -64,6 +69,8 @@ class Comments extends Component {
       this.setState({ initialLoad: false });
       this.scrollToNewestComment();
     }
+    else if (prevProps.comments.length !== this.props.comments.length)
+      this.scrollToNewestComment();
   }
 
   componentWillUnmount() {
