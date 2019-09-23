@@ -103,7 +103,7 @@ class Comments extends Component {
                 <Comment.Metadata>
                   <div>
                     {createdAt.getMonth() + 1} / {createdAt.getDate()} /{' '}
-                    {createdAt.getFullYear()}
+                    {createdAt.getFullYear()} at {createdAt.toLocaleTimeString()}
                   </div>
                 </Comment.Metadata>
                 <Comment.Text>{comment.content}</Comment.Text>
