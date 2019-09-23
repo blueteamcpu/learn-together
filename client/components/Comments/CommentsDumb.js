@@ -8,7 +8,9 @@ class Comments extends Component {
     super(props);
     this.state = {
       values: { content: '' },
-      errors: {},
+      errors: { content: '' },
+      showModal: false,
+      initialLoad: true,
     };
   }
 
@@ -24,6 +26,16 @@ class Comments extends Component {
     newestComment.scrollIntoView();
   };
 
+  mutationCallback = mutationList => {
+    for (let mutation of mutationList) {
+      if (mutation.type === 'childList') {
+        this.setState({ showModal: true }, () =>
+          setTimeout(() => this.setState({ showModal: false }), 1000 * 10)
+        );
+      }
+    }
+  };
+
   componentDidMount() {
     if (this.props.socketAuth) {
       this.joinRoom();
@@ -32,8 +44,15 @@ class Comments extends Component {
     this.props.getInitialComments(this.props.type, this.props.id);
 
     if (this.props.comments.length) {
+      this.setState({ initialLoad: false });
       this.scrollToNewestComment();
     }
+
+    this.observer = new MutationObserver(this.mutationCallback);
+
+    this.observer.observe(document.getElementById('comment-box'), {
+      childList: true,
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -51,6 +70,8 @@ class Comments extends Component {
       type: this.props.type,
       id: this.props.id,
     });
+
+    this.observer.disconnect();
   }
 
   handleChange = (_, { name, value }) => {
@@ -62,7 +83,7 @@ class Comments extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    // validate logged in and socket auth'd
+
     try {
       if (this.state.values.content.length === 0) {
         this.setState(state => ({
@@ -88,6 +109,7 @@ class Comments extends Component {
 
         this.setState(state => ({
           ...state,
+          errors: { content: '' },
           values: { content: '' },
         }));
       }
@@ -139,6 +161,20 @@ class Comments extends Component {
             );
           })}
         </Comment.Group>
+
+        {this.state.showModal && this.state.initialLoad === false && (
+          <Container style={{ marginBottom: '1em' }} textAlign="center">
+            <Button
+              basic
+              size="mini"
+              onClick={() =>
+                this.setState({ showModal: false }, this.scrollToNewestComment)
+              }
+            >
+              See new comments
+            </Button>
+          </Container>
+        )}
         <Form reply onSubmit={handleSubmit}>
           <Form.TextArea
             name="content"
