@@ -87,12 +87,11 @@ class Comments extends Component {
     const { handleChange, handleSubmit } = this;
 
     return (
-      <Container style={{ marginTop: '1em' }}>
-        <Comment.Group>
-          <Header as="h3" dividing>
-            Comments
-          </Header>
-
+      <Container style={{ marginTop: '1em', width: '30%' }}>
+        <Header as="h3" dividing>
+          Comments
+        </Header>
+        <Comment.Group style={{ overflow: 'auto', maxHeight: '50vh' }}>
           {this.props.comments.map(comment => {
             const createdAt = new Date(comment.createdAt);
 
@@ -122,23 +121,22 @@ class Comments extends Component {
               </Comment>
             );
           })}
-
-          <Form reply onSubmit={handleSubmit}>
-            <Form.TextArea
-              name="content"
-              value={values.content}
-              onChange={handleChange}
-              error={errors.content ? errors.content : null}
-              style={{ maxHeight: 50 }}
-            />
-            <Button
-              content="Add Reply"
-              primary
-              labelPosition="left"
-              icon="edit"
-            />
-          </Form>
         </Comment.Group>
+        <Form reply onSubmit={handleSubmit}>
+          <Form.TextArea
+            name="content"
+            value={values.content}
+            onChange={handleChange}
+            error={errors.content ? errors.content : null}
+            style={{ maxHeight: 50 }}
+          />
+          <Button
+            content="Add Reply"
+            primary
+            labelPosition="left"
+            icon="edit"
+          />
+        </Form>
       </Container>
     );
   }
