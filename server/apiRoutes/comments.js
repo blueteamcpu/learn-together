@@ -2,6 +2,7 @@ const router = require('express').Router();
 const uuid = require('uuid/v4');
 const { Comment, User } = require('../db/index');
 const { isLoggedIn } = require('../../utils/backend');
+const sequelize = require('sequelize');
 
 // type: post / event
 router.get('/thread/:id', async (req, res, next) => {
@@ -37,9 +38,28 @@ router.get('/:type/:id', async (req, res, next) => {
       where: { [type + 'Id']: id },
       limit: 30,
       include: [
-        { model: Comment, attributes: ['id'] },
+        { model: Comment, attributes: [] },
         { model: User, attributes: ['id', 'username'] },
       ],
+      attributes: {
+        include: [
+          [
+            sequelize.fn(
+              'COUNT',
+              // sequelize.col('Comment.threadId'),
+              sequelize.where({
+                threadId: comment.id,
+              })
+            ),
+            'CommentCount',
+          ],
+        ],
+      },
+      // include: [
+      //   // using the below for thread count. need to fix this.
+      //   { model: Comment, attributes: ['id'] },
+      //   { model: User, attributes: ['id', 'username'] },
+      // ],
       order: [['createdAt', 'DESC']],
     };
 
