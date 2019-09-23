@@ -5,6 +5,7 @@ import Comments from '../Comments'
 import { Link } from 'react-router-dom';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
 import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer'
+import { dateDayAsString, dateMonthAsString } from '../group/GroupContext'
 import {
     Button,
     Container,
@@ -73,6 +74,11 @@ class EventDetail extends Component {
             }
             });
 
+        const weekday = dateDayAsString(event.day);
+        const month = dateMonthAsString(event.day);
+        const dayNum = new Date(event.day).getDay();
+        const year = new Date(event.day).getFullYear();
+
         return ( 
 
             <Fragment>
@@ -126,7 +132,7 @@ class EventDetail extends Component {
                                 <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
                                 </List.Item>
                                 <List.Item>
-                                <List.Content><Icon name='calendar alternate outline'/>{event.day.slice(0,10)}</List.Content>
+                                <List.Content><Icon name='calendar alternate outline'/>{weekday}, {month} {dayNum}, {year}</List.Content>
                                 </List.Item>
                                 <List.Item>
                                 <List.Content><Icon name='clock outline'/>{event.startTime} - {event.endTime}</List.Content>
