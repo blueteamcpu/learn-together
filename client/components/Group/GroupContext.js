@@ -96,10 +96,13 @@ function Members({ item, isAdmin, groupId, adminRemoveMember }) {
     <List.Item>
       <Image avatar src={item.imageURL} />
       <List.Content>
-        <List.Header>{item.username}</List.Header>
+        <List.Header>{item.username} </List.Header>
         <List.Description>
-          Is a {memberStatus} { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
+          Is a {memberStatus} 
         </List.Description>
+      </List.Content>
+      <List.Content floated='right'>
+      { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
       </List.Content>
     </List.Item>    
   );
@@ -109,12 +112,12 @@ function Chat() {
   
 }
 
-function dateDayAsString(dateString) {
+export function dateDayAsString(dateString) {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednessday', 'Thursday', 'Friday', 'Saturday'];
   return daysOfWeek[new Date(dateString).getDay()];
 }
 
-function dateMonthAsString(dateString) {
+export function dateMonthAsString(dateString) {
   const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   return monthsOfYear[new Date(dateString).getMonth()];
 }

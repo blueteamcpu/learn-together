@@ -88,7 +88,7 @@ class UpdateGroupForm extends Component {
   }
 
   render() {
-    const { values } = this.state;
+    const { errors, values } = this.state;
     return (
       <Fragment>
         { this.state.updated ? <Message floating color='green'>Your event has been updated!</Message>
@@ -113,12 +113,14 @@ class UpdateGroupForm extends Component {
                   name="name"
                   value={values.name}
                   onChange={this.handleChange}
+                  error={errors.name ? errors.name : null}
                 />
                 <Form.TextArea
                   placeholder="Description"
                   name="description"
                   value={values.description}
                   onChange={this.handleChange}
+                  error={errors.description ? errors.description : null}
                 />
                 <Form.Field>
                   {
@@ -143,6 +145,7 @@ class UpdateGroupForm extends Component {
                   type="number"
                   value={values.zipCode}
                   onChange={this.handleChange}
+                  error={errors.zipcode ? errors.zipcode : null}
                 />
                 <Button color="teal" fluid size="large" type="submit">
                   Update
