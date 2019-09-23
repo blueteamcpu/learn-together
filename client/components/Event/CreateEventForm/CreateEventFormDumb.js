@@ -91,7 +91,6 @@ class CreateEventForm extends Component {
                         Group: {this.props.group.name}
                     </Header>
                     <Form.Input
-                        fluid
                         placeholder="Event Name"
                         name="name"
                         value={values.name}
@@ -99,7 +98,6 @@ class CreateEventForm extends Component {
                         error={errors.name ? errors.name : null}
                     />
                     <Form.TextArea
-                        fluid
                         placeholder="Description"
                         name="description"
                         value={values.description}
@@ -131,7 +129,6 @@ class CreateEventForm extends Component {
                     error={errors.endTime ? errors.endTime : null}
                     />
                     <Form.Input
-                        fluid
                         placeholder="Location"
                         name="location"
                         value={values.location}
@@ -139,7 +136,6 @@ class CreateEventForm extends Component {
                         error={errors.location ? errors.location : null}
                     />
                     <Form.Input
-                        fluid
                         placeholder="Zip Code"
                         name="zipcode"
                         value={values.zipcode}

@@ -5,6 +5,7 @@ import Comments from '../Comments'
 import { Link } from 'react-router-dom';
 import { getEvents as _getEvents, getEventDetail as _getEventDetail, joinEvent as _joinEvent, unjoinEvent as _unjoinEvent } from '../../actions/events';
 import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer'
+import { dateDayAsString, dateMonthAsString } from '../group/GroupContext'
 import {
     Button,
     Container,
@@ -73,6 +74,11 @@ class EventDetail extends Component {
             }
             });
 
+        const weekday = dateDayAsString(event.day);
+        const month = dateMonthAsString(event.day);
+        const dayNum = new Date(event.day).getDay();
+        const year = new Date(event.day).getFullYear();
+
         return ( 
 
             <Fragment>
@@ -97,19 +103,20 @@ class EventDetail extends Component {
                             <Menu.Item name='edit' active={activeItem==='edit'} onClick={this.handleMenuClick}>Edit Event</Menu.Item>
                             : null 
                             }
-                            <Menu.Menu position='right'>
-                                { member ? 
-                                <Menu.Item>
-                                    { !going ? 
-                                        <Button onClick={this.rsvp} color='red'>Not Going</Button> :
-                                        <Button onClick={this.unrsvp} color='green'>I'm Going!</Button>
-                                    }
-                                </Menu.Item> :
-                                <Menu.Item>
-                                    You must be a group member to join this event.
-                                </Menu.Item>
-                                }
-                            </Menu.Menu>
+                            { member ? 
+                            <Menu.Item 
+                                active='true' 
+                                position='right' 
+                                name='goingStatus'
+                                content={ going ? 'I\'m Going!' : 'Not Going'}
+                                color={ going ? 'green' : 'red'}
+                                onClick={ going ? this.unrsvp : this.rsvp}
+                            >
+                            </Menu.Item> :
+                            <Menu.Item>
+                                You must be a group member to join this event.
+                            </Menu.Item>
+                            }
                         </Menu>
                         </Grid.Row>
                         </Grid>
@@ -126,7 +133,7 @@ class EventDetail extends Component {
                                 <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
                                 </List.Item>
                                 <List.Item>
-                                <List.Content><Icon name='calendar alternate outline'/>{event.day.slice(0,10)}</List.Content>
+                                <List.Content><Icon name='calendar alternate outline'/>{weekday}, {month} {dayNum}, {year}</List.Content>
                                 </List.Item>
                                 <List.Item>
                                 <List.Content><Icon name='clock outline'/>{event.startTime} - {event.endTime}</List.Content>
