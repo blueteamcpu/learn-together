@@ -19,6 +19,9 @@ const NavLeft = ({ history, location, loggedIn }) => (
     >
       Explore
     </Menu.Item>
+    <Menu.Item as="a" onClick={() => history.push('/comments')}>
+      Comments
+    </Menu.Item>
     {loggedIn && (
       <Menu.Item
         as="a"

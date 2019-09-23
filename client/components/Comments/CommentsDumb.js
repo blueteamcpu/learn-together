@@ -18,17 +18,31 @@ class Comments extends Component {
       id: this.props.id,
     });
 
+  scrollToNewestComment = () => {
+    const commentList = document.getElementById('comment-box');
+    const newestComment = commentList.lastChild;
+    newestComment.scrollIntoView();
+  };
+
   componentDidMount() {
     if (this.props.socketAuth) {
       this.joinRoom();
     }
 
     this.props.getInitialComments(this.props.type, this.props.id);
+
+    if (this.props.comments.length) {
+      this.scrollToNewestComment();
+    }
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.socketAuth === false && this.props.socketAuth) {
       this.joinRoom();
+    }
+
+    if (prevProps.comments.length === 0 && this.props.comments.length !== 0) {
+      this.scrollToNewestComment();
     }
   }
 
@@ -91,7 +105,10 @@ class Comments extends Component {
         <Header as="h3" dividing>
           Comments
         </Header>
-        <Comment.Group style={{ overflow: 'auto', maxHeight: '50vh' }}>
+        <Comment.Group
+          id="comment-box"
+          style={{ overflow: 'auto', maxHeight: '50vh' }}
+        >
           {this.props.comments.map(comment => {
             const createdAt = new Date(comment.createdAt);
 
