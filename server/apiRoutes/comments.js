@@ -38,23 +38,12 @@ router.get('/:type/:id', async (req, res, next) => {
       where: { [type + 'Id']: id },
       limit: 30,
       include: [
-        { model: Comment, attributes: [] },
+        // using the below for thread count. need to fix this.
+        { model: Comment, attributes: ['id'] },
         { model: User, attributes: ['id', 'username'] },
       ],
-      attributes: {
-        include: [
-          [
-            sequelize.fn('COUNT', sequelize.col('Comment.threadId')),
-            'CommentCount',
-          ],
-        ],
-      },
-      // include: [
-      //   // using the below for thread count. need to fix this.
-      //   { model: Comment, attributes: ['id'] },
-      //   { model: User, attributes: ['id', 'username'] },
-      // ],
       order: [['createdAt', 'DESC']],
+      group: ['comment.id'],
     };
 
     if (offset) {
@@ -62,6 +51,11 @@ router.get('/:type/:id', async (req, res, next) => {
     }
 
     const comments = await Comment.findAll(query);
+
+    comments.forEach(c => {
+      c.dataValues.threadCount = c.comments.length;
+      delete c.dataValues.comments;
+    });
 
     res.json(comments);
   } catch (error) {
