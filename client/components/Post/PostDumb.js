@@ -59,8 +59,6 @@ class Post extends Component {
                             }
                             <Comment type={'post'} id={this.props.match.params.postId}/>
                         </Segment.Group>
-                        {/* <Segment.Group>
-                        </Segment.Group> */}
                     </Container>
                 </Fragment>
             )
