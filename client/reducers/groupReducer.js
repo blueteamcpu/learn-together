@@ -74,6 +74,7 @@ const initialState = {
   groupDetailed: {
     group: {},
     members: {},
+    posts: [],
     isMember: false,
     isAdmin: false,
   },

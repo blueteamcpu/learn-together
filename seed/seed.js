@@ -10,6 +10,7 @@ const { db } = models;
 const userList = require('./seedlings/userSeed');
 const groupList = require('./seedlings/groupSeed');
 const eventList = require('./seedlings/eventSeed');
+const postList = require('./seedlings/postSeed');
 
 // This spins everything up, all the functions are below
 doTheSeeding();
@@ -20,6 +21,12 @@ async function doTheSeeding() {
     const users = await Promise.all(genList(userList, models.User));
     const groups = await Promise.all(genList(groupList, models.Group));
     const events = await Promise.all(genList(eventList, models.Event));
+    postList.forEach(p => {
+      p.userId = users[Math.floor(Math.random() * users.length)].id;
+      p.groupId = groups[Math.floor(Math.random() * groups.length)].id;
+    });
+
+    await Promise.all(genList(postList, models.Post));
 
     // Associate groups to a user
     await Promise.all(

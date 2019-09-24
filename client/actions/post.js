@@ -19,7 +19,10 @@ export const _loadPosts = (posts) => ({
 
 const _failedtoRemovePost = () => ({ type: FAILEDTOREMOVEPOST });
 
-const _removePost = () => ({ type: REMOVEPOST });
+const _removePost = (postId) => ({
+    type: REMOVEPOST,
+    postId
+});
 
 const _failedToLoadPost = () => ({ type: FAILEDTOLOADPOST });
 
@@ -42,9 +45,9 @@ export const loadPost = (postId) => async (dispatch, _, axios) => {
 
 export const removePost = (postId) => async (dispatch, _, axios) => {
     try {
-        const { data: deleted } = await axios.delete(`/api/post/deletePost/${postId}`);
+        const { data: deleted } = await axios.delete(`/api/posts/deletePost/${postId}`);
         if (deleted) {
-            dispatch(_removePost());
+            dispatch(_removePost(postId));
         } else {
             dispatch(_failedtoRemovePost())
         }
@@ -55,22 +58,27 @@ export const removePost = (postId) => async (dispatch, _, axios) => {
 };
 
 export const loadPosts = (id) => async (dispatch, _, axios) => {
-    try {
-        const posts = await axios.get(`/api/posts/groupPosts/${id}`);
-        if (!posts) {
-            dispatch(_failedToLoadPost());
-        } else {
-            dispatch(_loadPosts(posts));
-        }
-    } catch (err) {
-        console.error(err)
+  try {
+    const {data: posts} = await axios.get(`/api/posts/groupPosts/${id}`);
+    if (!posts) {
+      dispatch(_failedToLoadPost());
+    } else {
+      dispatch(_loadPosts(posts));
     }
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export const createPost = (post) => async (dispatch, _, axios) => {
     try {
-        dispatch(_createPost(post));
+        const {data: created} = await axios.post('/api/posts/createPost', post)
+        if (created){
+            dispatch(_createPost(created));
+        } else {
+            dispatch(_failedToLoadPost());
+        }
     } catch (err) {
         console.error(err);
     }
-}
+};

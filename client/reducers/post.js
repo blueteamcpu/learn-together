@@ -24,7 +24,8 @@ export default (state = initialState, action) => {
             return {...state, posts: action.posts, loadingPost: false};
         }
         case REMOVEPOST: {
-            return { ...state, currentPost: {} }
+            const filteredPosts = state.posts.filter(post => post.id !== action.postId)
+            return { ...state, currentPost: {}, posts: filteredPosts }
         }
         case FAILEDTOLOADPOST: {
             return { ...state, failedToLoadPost: true, loadingPost: false }

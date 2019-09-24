@@ -2,6 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { Button, Container, Divider, Grid, Header, Menu, Segment} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { loadPosts as _loadPosts, createPost as _createPost } from '../../actions/post';
+
 
 import { getDetailGroup, joinGroup, leaveGroup, adminRemoveMember } from '../../reducers/groupReducer';
 
@@ -21,7 +23,11 @@ class GroupDetail extends Component {
 
   handleItemClick = (e, { name }) => {
     this.setState({ activeItem: name, context: name });
+    if (name === 'chat') {
+      this.props.loadPosts(this.props.match.params.groupId);
+    } else {
     this.props.getDetailGroup(this.props.match.params.groupId, name);
+    }
   };
 
   componentDidMount() {
@@ -71,13 +77,14 @@ class GroupDetail extends Component {
 
 const mapStateToProps = ({ groups, authentication }) => ({
   groupDetailed: groups.groupDetailed,
-  user: authentication.user
+  user: authentication.user,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   getDetailGroup(id, context) { dispatch(getDetailGroup(id, context)); },
   joinGroup() { dispatch(joinGroup());},
   leaveGroup() { dispatch(leaveGroup());},
+  loadPosts: (id) => dispatch(_loadPosts(id)),
   adminRemoveMember(userId, groupId) { dispatch(adminRemoveMember(userId, groupId));},
 });
 
@@ -104,7 +111,7 @@ function TabMenu ({ match, activeItem, handleItemClick, userId,
               active={activeItem === 'chat'}
               onClick={handleItemClick}
             >
-              Chat
+              Posts
             </Menu.Item>
           : null
         }

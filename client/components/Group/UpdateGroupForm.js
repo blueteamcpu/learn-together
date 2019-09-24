@@ -91,7 +91,7 @@ class UpdateGroupForm extends Component {
     const { errors, values } = this.state;
     return (
       <Fragment>
-        { this.state.updated ? <Message floating color='green'>Your event has been updated!</Message>
+        { this.state.updated ? <Message floating color='green'>Your group has been updated!</Message>
           : null
         }
         <Grid
