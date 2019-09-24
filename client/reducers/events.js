@@ -6,6 +6,7 @@ import {
   JOIN_EVENT,
   UNJOIN_EVENT,
   GET_MY_EVENTS,
+  CLEAR_STATE,
 } from '../actions/events';
 
 const initialState = {
@@ -56,6 +57,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         eventList: state.eventList.filter(ev => ev.id !== action.event.id),
+        detailedEvent: {},
+      };
+    }
+    case CLEAR_STATE: {
+      return {
+        eventList: [],
         detailedEvent: {},
       };
     }

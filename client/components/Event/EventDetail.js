@@ -9,8 +9,12 @@ import {
   getEventDetail as _getEventDetail,
   joinEvent as _joinEvent,
   unjoinEvent as _unjoinEvent,
+  clearState as _clearState,
 } from '../../actions/events';
-import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer';
+import {
+  getMyGroups as _getMyGroups,
+  clearState,
+} from '../../reducers/groupReducer';
 import {
   Button,
   Container,
@@ -52,6 +56,10 @@ class EventDetail extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.clearState();
+  }
+
   rsvp() {
     this.props.joinEvent(this.props.event);
     this.setState({ going: true });
@@ -69,7 +77,7 @@ class EventDetail extends Component {
     const attendees = event.users;
 
     let member = false;
-    if(event.id && groups.length) {
+    if (event.id && groups.length) {
       member = groups.find(g => g.id === event.groupId);
     }
 
@@ -79,13 +87,17 @@ class EventDetail extends Component {
     const year = new Date(event.day).getFullYear();
 
     return (
-
       <Fragment>
-        <Container stretch='true'>
+        <Container stretch="true">
           <Segment style={{ padding: '8em 0em' }} vertical>
-            { event.day ?
+            {event.day ? (
               <Fragment>
-                <Grid container stackable verticalAlign="middle" textAlign='center'>
+                <Grid
+                  container
+                  stackable
+                  verticalAlign="middle"
+                  textAlign="center"
+                >
                   <Grid.Row>
                     <Grid.Column>
                       <Header as="h3" style={{ fontSize: '2em' }}>
@@ -94,68 +106,97 @@ class EventDetail extends Component {
                     </Grid.Column>
                   </Grid.Row>
                   <Grid.Row>
-                    <Menu tabular attached='top'>
-                      <Menu.Item name='info' active={activeItem==='info'} onClick={this.handleMenuClick}/>
-                      <Menu.Item name='attendees' active={activeItem==='attendees'} onClick={this.handleMenuClick}>Attendees ({attendees.length})</Menu.Item>
-                      {
-                        event.hostId === user.id ?
-                          <Menu.Item name='edit' active={activeItem==='edit'} onClick={this.handleMenuClick}>Edit Event</Menu.Item>
-                        : null
-                      }
-                      { member ?
+                    <Menu tabular attached="top">
+                      <Menu.Item
+                        name="info"
+                        active={activeItem === 'info'}
+                        onClick={this.handleMenuClick}
+                      />
+                      <Menu.Item
+                        name="attendees"
+                        active={activeItem === 'attendees'}
+                        onClick={this.handleMenuClick}
+                      >
+                        Attendees ({attendees.length})
+                      </Menu.Item>
+                      {event.hostId === user.id ? (
                         <Menu.Item
-                          active='true'
-                          position='right'
-                          name='goingStatus'
-                          content={ going ? 'I\'m Going!' : 'Not Going'}
-                          color={ going ? 'green' : 'red'}
-                          onClick={ going ? this.unrsvp : this.rsvp}
+                          name="edit"
+                          active={activeItem === 'edit'}
+                          onClick={this.handleMenuClick}
                         >
-                        </Menu.Item> :
+                          Edit Event
+                        </Menu.Item>
+                      ) : null}
+                      {member ? (
+                        <Menu.Item
+                          active="true"
+                          position="right"
+                          name="goingStatus"
+                          content={going ? 'UN-RSVP' : 'RSVP'}
+                          color={going ? 'red' : 'green'}
+                          onClick={going ? this.unrsvp : this.rsvp}
+                        ></Menu.Item>
+                      ) : (
                         <Menu.Item>
                           You must be a group member to join this event.
                         </Menu.Item>
-                      }
+                      )}
                     </Menu>
                   </Grid.Row>
                 </Grid>
-                { activeItem === 'info' ?
+                {activeItem === 'info' ? (
                   <Fragment>
                     <Header sub>Group</Header>
-                    <Link to={`/groups/${event.groupId}`}>{event.group.name}</Link>
+                    <Link to={`/groups/${event.groupId}`}>
+                      {event.group.name}
+                    </Link>
                     <Header sub>Description</Header>
                     {event.description}
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     <List>
                       <List.Item>
-                        <List.Content><Icon name='map marker alternate'/>{event.location}, {event.zipcode}</List.Content>
+                        <List.Content>
+                          <Icon name="map marker alternate" />
+                          {event.location}, {event.zipcode}
+                        </List.Content>
                       </List.Item>
                       <List.Item>
-                        <List.Content><Icon name='calendar alternate outline'/>{weekday}, {month} {dayNum}, {year}</List.Content>
+                        <List.Content>
+                          <Icon name="calendar alternate outline" />
+                          {weekday}, {month} {dayNum}, {year}
+                        </List.Content>
                       </List.Item>
                       <List.Item>
-                        <List.Content><Icon name='clock outline'/>{event.startTime} - {event.endTime}</List.Content>
+                        <List.Content>
+                          <Icon name="clock outline" />
+                          {event.startTime} - {event.endTime}
+                        </List.Content>
                       </List.Item>
                     </List>
-                    <Comments type='event' id={match.params.eventId}/>
+                    <Comments type="event" id={match.params.eventId} />
                   </Fragment>
-                  :
-                  (activeItem === 'attendees' ?
-                   <List>
-                     {attendees.map(person =>
-                                    <List.Item key={person.id}>
-                                      <List.Content><Image avatar src={person.imageURL} />{person.username} {event.hostId === person.id ? '(Host)' : null}</List.Content>
-                                    </List.Item>
-                                   )
-                     }
-                   </List>
-                   :
-                   <UpdateEventForm eventId={event.id} history={this.props.history}/>
-                  )
-                }
+                ) : activeItem === 'attendees' ? (
+                  <List>
+                    {attendees.map(person => (
+                      <List.Item key={person.id}>
+                        <List.Content>
+                          <Image avatar src={person.imageURL} />
+                          {person.username}{' '}
+                          {event.hostId === person.id ? '(Host)' : null}
+                        </List.Content>
+                      </List.Item>
+                    ))}
+                  </List>
+                ) : (
+                  <UpdateEventForm
+                    eventId={event.id}
+                    history={this.props.history}
+                  />
+                )}
               </Fragment>
-              : null }
+            ) : null}
             <br />
             <br />
           </Segment>
@@ -184,6 +225,9 @@ const mapDispatchToProps = dispatch => ({
   },
   getMyGroups() {
     dispatch(_getMyGroups());
+  },
+  clearState() {
+    dispatch(_clearState());
   },
 });
 
