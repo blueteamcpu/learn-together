@@ -155,14 +155,14 @@ function Events({ item, history }) {
 }
 
 function Members({ item, isAdmin, groupId, adminRemoveMember }) {
-  const memberStatus = item.group_member.isAdmin ? 'Admin' : 'Member';
+  const memberStatus = item.group_member.isAdmin ? 'an Admin' : 'a Member';
   return(
     <List.Item>
       <Image avatar src={item.imageURL} />
       <List.Content>
         <List.Header>{item.username} </List.Header>
         <List.Description>
-          Is a {memberStatus} 
+          Is {memberStatus} 
         </List.Description>
       </List.Content>
       <List.Content floated='right'>
