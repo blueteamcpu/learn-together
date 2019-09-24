@@ -41,7 +41,7 @@ class GroupContext extends React.Component {
     sendObj.groupId = this.props.groupId;
     const post = this.props.createPost(sendObj);
     if (post) {
-      this.setState({ cTitle: '', cDescription: '' });
+      this.setState({ cTitle: '', cDescription: '', showPostForm: false });
     }
   }
 
@@ -135,7 +135,10 @@ class GroupContext extends React.Component {
               onChange={handleChange}
             />
             <Form.Field>
-              <Button size="large" disabled={cTitle.length > 0}>
+              <Button
+                size="large"
+                disabled={!(cTitle.length > 0 && cDescription.length > 0)}
+              >
                 Create Post
               </Button>
               <Button
