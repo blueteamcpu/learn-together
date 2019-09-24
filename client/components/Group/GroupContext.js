@@ -37,10 +37,13 @@ class GroupContext extends React.Component {
   }
 
   render() {
+    const { cTitle, cDescription } = this.state;
+    const { handleChange, handleSubmit } = this;
     const { context, history, groupId, isMember, isAdmin, adminRemoveMember, groupDetailed, posts } = this.props;
     const listRender = context === 'chat' ? posts : groupDetailed[context];
     if (listRender === undefined || context === undefined) return null;
-    if (listRender.length === 0) return null;
+    // if (listRender.length === 0) return null;
+    
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
@@ -62,7 +65,7 @@ class GroupContext extends React.Component {
                     last = true;
                   }
                   return (
-                    <Chat key={i.id} item={i} last={last} handleChange={this.handleChange} handleSubmit={this.handleSubmit} cTitle={this.state.cTitle} cDescription={this.state.cDescription} isMember={isMember} isAdmin={isAdmin} />
+                    <Chat key={i.id} item={i} />
                   );
                 }
                   break;
@@ -75,6 +78,24 @@ class GroupContext extends React.Component {
             })}
           </List>
         }
+        {(context === 'chat' && isMember) ?  
+        <Form size="large" onSubmit={handleSubmit}>
+          <Form.Input
+            fluid
+            icon="pencil alternate"
+            iconPosition="left"
+            placeholder="Post Title"
+            type="text"
+            name="cTitle"
+            value={cTitle}
+            onChange={handleChange}
+          />
+          <Form.TextArea label="Description" placeholder="Give a description of your post." name="cDescription" value={cDescription} onChange={handleChange} />
+          <Form.Field>
+            { cTitle.length > 0 ? <Button size="large" type="submit">Create Post</Button> : <Button size = "large" disabled>Create Post</Button>}
+          </Form.Field>
+        </Form>
+        : null}
       </Fragment>
     );
   }
@@ -149,45 +170,17 @@ function Members({ item, isAdmin, groupId, adminRemoveMember }) {
 }
 
 function Chat(props) {
-  const { item, cDescription, cTitle, handleChange, handleSubmit, last, isMember } = props;
+  const { item } = props;
   return (
     <Fragment>
-      {last && isMember ?
-        <Fragment>
-          <List.Item>
-            <List.Header><Link to={`/posts/${item.id}`}>{item.title}</Link></List.Header>
-            <List.Content>
-              <List.Description>
-                Created by: <Image src={item.user.imageURL} avatar /> <span>{item.user.username}</span>
-              </List.Description>
-            </List.Content>
-          </List.Item>
-          <Form size="large" onSubmit={handleSubmit}>
-            <Form.Input
-              fluid
-              icon="pencil alternate"
-              iconPosition="left"
-              placeholder="Post Title"
-              type="text"
-              name="cTitle"
-              value={cTitle}
-              onChange={handleChange}
-            />
-            <Form.TextArea label="Description" placeholder="Give a description of your post." name="cDescription" value={cDescription} onChange={handleChange} />
-            <Form.Field>
-              { cTitle.length > 0 ? <Button size="large" type="submit">Create Post</Button> : <Button size = "large" disabled>Create Post</Button>}
-            </Form.Field>
-          </Form>
-        </Fragment> :
-        <List.Item>
-          <List.Header><Link to={`/posts/${item.id}`}>{item.title}</Link></List.Header>
-          <List.Content>
-            <List.Description>
-              Created by: <Image src={item.user.imageURL} avatar /> <span>{item.user.username}</span>
-            </List.Description>
-          </List.Content>
-        </List.Item>
-      }
+      <List.Item>
+        <List.Header><Link to={`/posts/${item.id}`}>{item.title}</Link></List.Header>
+        <List.Content>
+          <List.Description>
+            Created by: <Image src={item.user.imageURL} avatar /> <span>{item.user.username}</span>
+          </List.Description>
+        </List.Content>
+      </List.Item>
     </Fragment>
   );
 }
