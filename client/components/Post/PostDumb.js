@@ -11,37 +11,30 @@ class Post extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: '',
-            description: '',
-            user: '',
-            creator: false,
-            admin: false,
-            loading: true,
             error: '',
         }
+        this.deletePost = this.deletePost.bind(this);
     }
 
     componentDidMount() {
-        const {loadPost } = this.props;
+        const {loadPost} = this.props;
         const id = this.props.match.params.postId;
-        const post = loadPost(id);
-        this.setState({ title: post.title, description: post.description, creator: post.creator, admin: post.admin, user: post.user, loading: false });
+        loadPost(id);
     }
 
     deletePost() {
-        const {removePost } = this.props;
-        const id = this.props.match.params.id;
-        const removed = removePost(id);
-        if (removed) {
-            history.push('/explore');
-        } else {
-            this.setState({ error: 'Sorry, this post couldn\'t be removed. Please try again.' })
-        }
+        const {removePost, currentPost, history } = this.props;
+        const id = this.props.match.params.postId;
+        removePost(id);
+        console.log(currentPost.groupId)
+        history.push(`/groups/${currentPost.groupId}`);
     }
 
     render() {
-        const { title, description, loading, creator, error, admin, user } = this.state;
-        if (loading) {
+        const { error } = this.state;
+        //const {title, description, loadingPost} = this.props.currentPost;
+        const {user, currentPost} = this.props
+        if (!currentPost.title) {
             return null
         } else {
             return (
@@ -49,12 +42,12 @@ class Post extends Component {
                     {error ? <Message negative>{error}</Message> : null}
                     <Container>
                         <Segment.Group>
-                            <Segment textAlign="left">{title}</Segment>
-                            <Segment textAlign="left"><Image src={user.imageURL} /><span>{user.username}</span></Segment>
+                            <Segment textAlign="left">{currentPost.title}</Segment>
+                            <Segment ><Image size = "mini" src={currentPost.user.imageURL} /><span>{currentPost.user.username}</span></Segment>
                             <Segment.Group>
-                                <Segment>{description}</Segment>
+                                <Segment>{currentPost.description}</Segment>
                             </Segment.Group>
-                            {creator || admin ?
+                            {currentPost.user.id === user.id || user.isAdmin ?
                                 <Button
                                     fluid
                                     size="large"
