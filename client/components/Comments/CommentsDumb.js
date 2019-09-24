@@ -135,7 +135,13 @@ class Comments extends Component {
     const { handleChange, handleSubmit } = this;
 
     return (
-      <Container style={{ marginTop: '1em', width: '50%' }}>
+      <Container
+        style={{
+          marginTop: '2em',
+          width: '50%',
+          marginBottom: '1.5em',
+        }}
+      >
         <Header as="h3" dividing>
           Comments
         </Header>
