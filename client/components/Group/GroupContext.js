@@ -24,7 +24,6 @@ class GroupContext extends React.Component {
 
   handleSubmit(ev) {
     ev.preventDefault();
-    console.log(this.props);
     const sendObj = {};
     sendObj.title = this.state.cTitle;
     sendObj.description = this.state.cDescription;
