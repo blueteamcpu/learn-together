@@ -15,6 +15,7 @@ class Comments extends Component {
     };
     this.commentBoxScroll = 0;
     this.commentAdded = false;
+    this.commentsRef = React.createRef();
   }
 
   joinRoom = () =>
@@ -25,11 +26,11 @@ class Comments extends Component {
 
   scrollToNewestComment = () => {
     const commentList = document.getElementById('comment-box');
+
     if (!this.commentAdded) {
       commentList.scrollTo(0, commentList.scrollHeight - this.commentBoxScroll);
       this.commentBoxScroll = commentList.scrollHeight;
-    }
-    else if (this.commentAdded) {
+    } else if (this.commentAdded) {
       this.commentAdded = false;
       this.commentBoxScroll += commentList.scrollHeight;
     }
@@ -39,7 +40,7 @@ class Comments extends Component {
     for (let mutation of mutationList) {
       if (mutation.type === 'childList') {
         this.setState({ showModal: true }, () =>
-          setTimeout(() => this.setState({ showModal: false }), 1000 * 5)
+          setTimeout(() => this.setState({ showModal: false }), 1000 * 8)
         );
       }
     }
@@ -72,8 +73,7 @@ class Comments extends Component {
     if (prevProps.comments.length === 0 && this.props.comments.length !== 0) {
       this.setState({ initialLoad: false });
       this.scrollToNewestComment();
-    }
-    else if (prevProps.comments.length !== this.props.comments.length)
+    } else if (prevProps.comments.length !== this.props.comments.length)
       this.scrollToNewestComment();
   }
 
@@ -134,6 +134,8 @@ class Comments extends Component {
   render() {
     const { values, errors } = this.state;
     const { handleChange, handleSubmit } = this;
+
+    console.log(this.commentsRef.current);
 
     return (
       <Container style={{ marginTop: '1em', width: '50%' }}>

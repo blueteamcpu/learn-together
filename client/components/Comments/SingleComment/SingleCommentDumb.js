@@ -74,7 +74,7 @@ class SingleComment extends Component {
   render() {
     const { comment, thread } = this.props;
     const { showThread, values, errors } = this.state;
-    const { openThread, handleChange, handleSubmit } = this;
+    const { openThread, closeThread, handleChange, handleSubmit } = this;
 
     const createdAt = new Date(comment.createdAt);
 
@@ -93,6 +93,9 @@ class SingleComment extends Component {
             <Comment.Action onClick={openThread}>
               Reply {comment.threadCount ? `(${comment.threadCount})` : ''}
             </Comment.Action>
+            {showThread && (
+              <Comment.Action onClick={closeThread}>Hide Thread</Comment.Action>
+            )}
           </Comment.Actions>
         </Comment.Content>
 
@@ -128,10 +131,10 @@ class SingleComment extends Component {
                     }
                   }}
                   error={errors.content ? errors.content : null}
-                  style={{ maxHeight: 50, width: '40%' }}
+                  style={{ maxHeight: 50, width: '50%' }}
                 />
                 <Button
-                  size="small"
+                  size="tiny"
                   content="Add Reply"
                   primary
                   labelPosition="left"
