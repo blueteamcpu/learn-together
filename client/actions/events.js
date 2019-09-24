@@ -7,9 +7,12 @@ export const JOIN_EVENT = 'JOIN_EVENT';
 export const UNJOIN_EVENT = 'UNJOIN_EVENT';
 export const UPDATE_EVENT = 'UPDATE_EVENT';
 export const GET_MY_EVENTS = 'GET_MY_EVENTS';
+export const CLEAR_STATE = 'CLEAR_STATE';
 
 // ACTIONS
 const gotMyEvents = events => ({ type: GET_MY_EVENTS, events });
+
+export const clearState = () => ({ type: CLEAR_STATE });
 
 // THUNKS
 
