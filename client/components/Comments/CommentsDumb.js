@@ -194,9 +194,10 @@ class Comments extends Component {
             <Button
               basic
               size="mini"
-              onClick={() =>
-                this.setState({ showModal: false }, this.scrollToNewestComment)
-              }
+              onClick={() => {
+                this.commentBoxScroll = 0;
+                this.setState({ showModal: false }, this.scrollToNewestComment);
+              }}
             >
               See new comments
             </Button>
