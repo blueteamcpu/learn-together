@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Button, Container, Divider, Grid, Header, Menu, Segment} from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import axios from 'axios';
-import { loadPosts as _loadPosts } from '../../actions/post';
+import { loadPosts as _loadPosts, createPost as _createPost } from '../../actions/post';
 
 
 import { getDetailGroup, joinGroup, leaveGroup, adminRemoveMember } from '../../reducers/groupReducer';

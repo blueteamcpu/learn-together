@@ -2,17 +2,40 @@ import React, { Component, Fragment } from 'react';
 import { Container, Grid, Item, List, Image, Segment, Button, Form } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-
+import { createPost as _createPost } from '../../actions/post';
 import UpdateGroupForm from './UpdateGroupForm';
 
 class GroupContext extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-
+      cTitle: '',
+      cDescription: '',
+      error: '',
     };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
-  
+
+  handleChange(ev) {
+    const { name, value } = ev.target;
+    this.setState({ [name]: value });
+  }
+
+  handleSubmit(ev) {
+    ev.preventDefault();
+    console.log(this.props);
+    const sendObj = {};
+    sendObj.title = this.state.cTitle;
+    sendObj.description = this.state.cDescription;
+    sendObj.userId = this.props.user.id;
+    sendObj.groupId = this.props.groupId;
+    const post = this.props.createPost(sendObj);
+    if (post) {
+      this.setState({ cTitle: '', cDescription: '' });
+    }
+  }
+
   render() {
     const { context, history, groupId, isMember, isAdmin, adminRemoveMember, groupDetailed, posts } = this.props;
     const listRender = context === 'chat' ? posts : groupDetailed[context];
@@ -22,46 +45,52 @@ class GroupContext extends React.Component {
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
         {context === 'update' ? <UpdateGroupForm />
-         : <List relaxed>
-             {listRender.map(i => {
-               switch (context) {
-               case 'members':
-                 return (<Members
-                           key={i.id} item={i}
-                           isAdmin={isAdmin}
-                           groupId={groupId}
-                           adminRemoveMember={adminRemoveMember} />);
-                 break;
-               case 'chat':
-                 // NOTE: Conner - Pass down the props you need here to Chat
-                 return (
-                   <Chat key={i.id} item={i} />
-                 );
-                 break;
-               case 'events':
-                 return <Events key={i.id} item={i} history={history} />;
-                 break;
-               default:
-                 return null;
-               }
-             })}
-           </List>
+          : <List relaxed>
+            {listRender.map((i, idx) => {
+              switch (context) {
+                case 'members':
+                  return (<Members
+                    key={i.id} item={i}
+                    isAdmin={isAdmin}
+                    groupId={groupId}
+                    adminRemoveMember={adminRemoveMember} />);
+                  break;
+                case 'chat': {
+                  // NOTE: Conner - Pass down the props you need here to Chat
+                  let last = false;
+                  if (idx === listRender.length - 1) {
+                    last = true;
+                  }
+                  return (
+                    <Chat key={i.id} item={i} last={last} handleChange={this.handleChange} handleSubmit={this.handleSubmit} cTitle={this.state.cTitle} cDescription={this.state.cDescription} isMember={isMember} isAdmin={isAdmin} />
+                  );
+                }
+                  break;
+                case 'events':
+                  return <Events key={i.id} item={i} history={history} />;
+                  break;
+                default:
+                  return null;
+              }
+            })}
+          </List>
         }
       </Fragment>
     );
   }
 }
 
-const mapStateToProps = ({ groups, posts }) => ({
+const mapStateToProps = ({ groups, posts, authentication }) => ({
   groupDetailed: groups.groupDetailed,
   posts: posts.posts,
+  user: authentication.user
 });
 
-// const mapDispatchToProps = (dispatch) => ({
-//   getDetailGroup(id) { dispatch(getDetailGroup(id)); }
-// });
+const mapDispatchToProps = (dispatch) => ({
+  createPost: (post) => dispatch(_createPost(post))
+});
 
-export default connect(mapStateToProps, null)(GroupContext);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupContext);
 
 // Any one of these things can be broken out into their own file
 // For the moment I'm not to worried about it though.
@@ -73,7 +102,7 @@ function Events({ item, history }) {
   const dayNum = new Date(item.day).getDay();
   const year = new Date(item.day).getFullYear();
   return (
-    <List.Item as='a' onClick={() => history.push(`/events/${item.id}`)}>
+    <List.Item as="a" onClick={() => history.push(`/events/${item.id}`)}>
       <List.Content>
         <Segment>
           <List.Description>
@@ -119,32 +148,47 @@ function Members({ item, isAdmin, groupId, adminRemoveMember }) {
   );
 }
 
-function Chat({item}) {
+function Chat(props) {
+  const { item, cDescription, cTitle, handleChange, handleSubmit, last, isMember } = props;
   return (
-    <List.Item>
-      <List.Header><Link to={`/posts/${item.id}`}>{item.title}</Link></List.Header>
-      <List.Content>
-        <List.Description>
-          {"Created by: <Image src={item.User.imageURL} avatar /> <span>{item.User.username}</span>"}
-        </List.Description>
-        {/*<Form size="medium" onSubmit={this.handleSubmit}>
-           <Form.Input
-           fluid
-           icon="pencil alternate"
-           iconPosition="left"
-           placeholder="Post Title"
-           type="text"
-           name="cTitle"
-           value={this.state.cTitle}
-           onChange={this.handleChange}
-           />
-           <Form.TextArea label = "Description" placeholder = "Give a description of your post." />
-           <Form.Field>
-           <Button size = "large" type = "submit">Create Post</Button>
-           </Form.Field>
-           </Form>*/}
-      </List.Content>
-    </List.Item>
+    <Fragment>
+      {last && isMember ?
+        <Fragment>
+          <List.Item>
+            <List.Header><Link to={`/posts/${item.id}`}>{item.title}</Link></List.Header>
+            <List.Content>
+              <List.Description>
+                Created by: <Image src={item.user.imageURL} avatar /> <span>{item.user.username}</span>
+              </List.Description>
+            </List.Content>
+          </List.Item>
+          <Form size="large" onSubmit={handleSubmit}>
+            <Form.Input
+              fluid
+              icon="pencil alternate"
+              iconPosition="left"
+              placeholder="Post Title"
+              type="text"
+              name="cTitle"
+              value={cTitle}
+              onChange={handleChange}
+            />
+            <Form.TextArea label="Description" placeholder="Give a description of your post." name="cDescription" value={cDescription} onChange={handleChange} />
+            <Form.Field>
+              { cTitle.length > 0 ? <Button size="large" type="submit">Create Post</Button> : <Button size = "large" disabled>Create Post</Button>}
+            </Form.Field>
+          </Form>
+        </Fragment> :
+        <List.Item>
+          <List.Header><Link to={`/posts/${item.id}`}>{item.title}</Link></List.Header>
+          <List.Content>
+            <List.Description>
+              Created by: <Image src={item.user.imageURL} avatar /> <span>{item.user.username}</span>
+            </List.Description>
+          </List.Content>
+        </List.Item>
+      }
+    </Fragment>
   );
 }
 
