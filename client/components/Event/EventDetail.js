@@ -133,8 +133,8 @@ class EventDetail extends Component {
                           active="true"
                           position="right"
                           name="goingStatus"
-                          content={going ? "I'm Going!" : 'Not Going'}
-                          color={going ? 'green' : 'red'}
+                          content={going ? 'UN-RSVP' : 'RSVP'}
+                          color={going ? 'red' : 'green'}
                           onClick={going ? this.unrsvp : this.rsvp}
                         ></Menu.Item>
                       ) : (
