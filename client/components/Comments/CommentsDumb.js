@@ -15,7 +15,6 @@ class Comments extends Component {
     };
     this.commentBoxScroll = 0;
     this.commentAdded = false;
-    this.commentsRef = React.createRef();
   }
 
   joinRoom = () =>
@@ -134,8 +133,6 @@ class Comments extends Component {
   render() {
     const { values, errors } = this.state;
     const { handleChange, handleSubmit } = this;
-
-    console.log(this.commentsRef.current);
 
     return (
       <Container style={{ marginTop: '1em', width: '50%' }}>
