@@ -42,7 +42,6 @@ class GroupContext extends React.Component {
     const listRender = context === 'chat' ? posts : groupDetailed[context];
     if (listRender === undefined || context === undefined) return null;
     
-    console.log('isAdmin', isAdmin)
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}

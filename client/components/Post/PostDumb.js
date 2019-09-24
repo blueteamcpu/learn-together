@@ -27,7 +27,6 @@ class Post extends Component {
         const {removePost, currentPost, history } = this.props;
         const id = this.props.match.params.postId;
         removePost(id);
-        console.log(currentPost.groupId)
         history.push(`/groups/${currentPost.groupId}`);
     }
 
