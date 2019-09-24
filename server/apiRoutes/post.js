@@ -10,7 +10,15 @@ router.post('/createPost', isLoggedIn, async (req, res, next) => {
             userId: req.user.id,
             groupId: req.body.groupId,
         });
-        res.json(post);
+        const allData = await Post.findOne({
+            where: {
+                id: post.id
+            },
+            include: [
+                { model: User, attributes: ['id', 'username', 'imageURL'] },
+            ]
+        })
+        res.json(allData);
     } catch (err) {
         next(err);
     }
@@ -32,12 +40,6 @@ router.get('/userPosts', isLoggedIn, async (req, res, next) => {
 
 //get all posts associated to a group
 router.get('/groupPosts/:groupId', async (req, res, next) => {
-  const fakePost = {
-    id: 1,
-    title: 'fun stuff',
-    description: 'this description is fun'
-  };
-  const arr = [fakePost];
   try {
     const posts = await Post.findAll({
       where: {
@@ -47,7 +49,7 @@ router.get('/groupPosts/:groupId', async (req, res, next) => {
         { model: User, attributes: ['id', 'username', 'imageURL'] },
       ],
     });
-    res.json(arr);
+    res.json(posts);
   } catch (err) {
     next(err);
   }
@@ -58,25 +60,25 @@ router.delete('/deletePost/:postId', isLoggedIn, async (req, res, next) => {
     if (req.user.isSiteAdmin) {
         const deleted = await Post.destroy({
             where: {
-                id: req.params.id,
+                id: req.params.postId,
             }
         });
         if (deleted) {
-            res.status(201);
+            res.status(201)
         } else {
-            res.status(400);
+            res.status(400)
         }
     } else {
         const deleted = Post.destroy({
             where: {
-                id: req.params.id,
+                id: req.params.postId,
                 userId: req.user.id
             }
         });
         if (deleted) {
-            res.status(201);
+            res.status(201).send(true);
         } else {
-            res.status(400);
+            res.status(400).send(false);
         }
     }
 });
@@ -87,7 +89,10 @@ router.get('/:postId', async (req, res, next) => {
         const post = await Post.findOne({
             where: {
                 id: req.params.postId
-            }
+            },
+            include: [
+                { model: User, attributes: ['id', 'username', 'imageURL'] },
+              ],
         });
         if (post.userId === req.user.id) {
             post.creator = true;
