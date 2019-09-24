@@ -42,7 +42,6 @@ class GroupContext extends React.Component {
     const { context, history, groupId, isMember, isAdmin, adminRemoveMember, groupDetailed, posts } = this.props;
     const listRender = context === 'chat' ? posts : groupDetailed[context];
     if (listRender === undefined || context === undefined) return null;
-    // if (listRender.length === 0) return null;
     
     return (
       <Fragment>
