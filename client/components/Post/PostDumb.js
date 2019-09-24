@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import Comment from '../Comments/Comments'
 import {
     Button,
     Container,
@@ -56,7 +57,10 @@ class Post extends Component {
                                 </Button> :
                                 null
                             }
+                            <Comment type={'post'} id={this.props.match.params.postId}/>
                         </Segment.Group>
+                        {/* <Segment.Group>
+                        </Segment.Group> */}
                     </Container>
                 </Fragment>
             )

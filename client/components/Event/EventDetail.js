@@ -5,6 +5,13 @@ import Comments from '../Comments/Comments';
 import { Link } from 'react-router-dom';
 import { dateDayAsString, dateMonthAsString } from '../Group/GroupContext';
 import {
+  getEvents as _getEvents,
+  getEventDetail as _getEventDetail,
+  joinEvent as _joinEvent,
+  unjoinEvent as _unjoinEvent,
+} from '../../actions/events';
+import { getMyGroups as _getMyGroups } from '../../reducers/groupReducer';
+import {
   Button,
   Container,
   Grid,
