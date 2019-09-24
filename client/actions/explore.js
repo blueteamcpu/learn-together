@@ -62,7 +62,7 @@ const generateUrl = (category, term, offset, distance) => {
     addedQueries = true;
   }
 
-  if (distance) {
+  if (distance && distance !== 'All') {
     queries.distance = distance;
     addedQueries = true;
   }

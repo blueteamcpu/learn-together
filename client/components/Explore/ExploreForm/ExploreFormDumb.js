@@ -3,14 +3,21 @@ import { Form, Responsive, Select, Button, FormField } from 'semantic-ui-react';
 
 const SelectDistance = ({ handleDistance, distance }) => (
   <Select
-    value={distance + '-mi'}
+    value={distance === 'All' ? distance : distance + '-mi'}
     options={['5', '10', '25', '50', '100']
       .map(s => s + '-mi')
       .map(value => ({
         key: value,
         value,
         text: value,
-      }))}
+      }))
+      .concat([
+        {
+          key: 'All',
+          value: 'All',
+          text: 'All',
+        },
+      ])}
     onChange={handleDistance}
   />
 );
@@ -44,17 +51,26 @@ class ExploreForm extends Component {
   };
 
   handleDistance = e => {
-    this.props.fetchData(
-      this.props.category,
-      this.props.term,
-      0,
-      e.target.innerText.split('-')[0]
-    );
+    if (e.target.innerText === 'All') {
+      this.props.fetchData(this.props.category, this.props.term, 0, 'All');
+    } else {
+      this.props.fetchData(
+        this.props.category,
+        this.props.term,
+        0,
+        e.target.innerText.split('-')[0]
+      );
+    }
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.fetchData(this.props.category, this.props.term, 0, this.props.distance);
+    this.props.fetchData(
+      this.props.category,
+      this.props.term,
+      0,
+      this.props.distance
+    );
   };
 
   render() {
