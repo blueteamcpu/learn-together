@@ -48,7 +48,6 @@ class App extends Component {
           <GuestOnly exact={true} path="/login" component={LoginForm} />
           <GuestOnly exact={true} path="/signup" component={SignUp} />
           <LoggedInOnly exact={true} path="/profile" component={UserProfile} />
-          <Route exact={true} path="/comments" render={() => <Comments type='event' id='c70fd89f-f912-47f9-b741-66cc29c1d7fa' />} />
         </Switch>
       </Fragment>
     );

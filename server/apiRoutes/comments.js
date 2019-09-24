@@ -12,8 +12,8 @@ router.get('/thread/:id', async (req, res, next) => {
 
     const comments = await Comment.findAll({
       where: { threadId: req.params.id },
-      include: [{ model: User, attributes: ['id', 'username'] }],
-      order: [['createdAt', 'ASC']],
+      include: [{ model: User, attributes: ['username'] }],
+      order: [['createdAt', 'DESC']],
     });
 
     res.json(comments);
@@ -38,7 +38,7 @@ router.get('/:type/:id', async (req, res, next) => {
       limit: 30,
       include: [
         { model: Comment, attributes: ['id'] },
-        { model: User, attributes: ['id', 'username'] },
+        { model: User, attributes: ['username'] },
       ],
       order: [['createdAt', 'DESC']],
     };
@@ -48,6 +48,11 @@ router.get('/:type/:id', async (req, res, next) => {
     }
 
     const comments = await Comment.findAll(query);
+
+    comments.forEach(c => {
+      c.dataValues.threadCount = c.comments.length;
+      delete c.dataValues.comments;
+    });
 
     res.json(comments);
   } catch (error) {
