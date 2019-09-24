@@ -59,7 +59,7 @@ const parseNotValidate = e => {
 };
 
 const parseError = e => {
-  return e.type === 'Validation error' || 'unique violation' ? parseValidate(e) : parseNotValidate(e);
+  return e.type === 'Validation error' ? parseValidate(e) : parseNotValidate(e);
 };
 
 module.exports = parseError;
