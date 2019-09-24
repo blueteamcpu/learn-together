@@ -13,6 +13,8 @@ class Comments extends Component {
       showModal: false,
       initialLoad: true,
     };
+    this.commentBoxScroll = 0;
+    this.commentAdded = false;
   }
 
   joinRoom = () =>
@@ -23,8 +25,14 @@ class Comments extends Component {
 
   scrollToNewestComment = () => {
     const commentList = document.getElementById('comment-box');
-    const newestComment = commentList.lastChild;
-    newestComment.scrollIntoView();
+    if (!this.commentAdded) {
+      commentList.scrollTo(0, commentList.scrollHeight - this.commentBoxScroll);
+      this.commentBoxScroll = commentList.scrollHeight;
+    }
+    else if (this.commentAdded) {
+      this.commentAdded = false;
+      this.commentBoxScroll += commentList.scrollHeight;
+    }
   };
 
   mutationCallback = mutationList => {
@@ -65,6 +73,8 @@ class Comments extends Component {
       this.setState({ initialLoad: false });
       this.scrollToNewestComment();
     }
+    else if (prevProps.comments.length !== this.props.comments.length)
+      this.scrollToNewestComment();
   }
 
   componentWillUnmount() {
@@ -104,6 +114,7 @@ class Comments extends Component {
           },
         }));
       } else {
+        this.commentAdded = true;
         await Axios.post(
           `/api/comments/${this.props.type}/${this.props.id}`,
           this.state.values
@@ -161,9 +172,10 @@ class Comments extends Component {
             <Button
               basic
               size="mini"
-              onClick={() =>
-                this.setState({ showModal: false }, this.scrollToNewestComment)
-              }
+              onClick={() => {
+                this.commentBoxScroll = 0;
+                this.setState({ showModal: false }, this.scrollToNewestComment);
+              }}
             >
               See new comments
             </Button>
