@@ -111,7 +111,7 @@ function TabMenu ({ match, activeItem, handleItemClick, userId,
               active={activeItem === 'chat'}
               onClick={handleItemClick}
             >
-              Chat
+              Posts
             </Menu.Item>
           : null
         }

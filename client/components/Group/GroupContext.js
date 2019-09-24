@@ -192,12 +192,12 @@ function Chat(props) {
   );
 }
 
-function dateDayAsString(dateString) {
+export function dateDayAsString(dateString) {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednessday', 'Thursday', 'Friday', 'Saturday'];
   return daysOfWeek[new Date(dateString).getDay()];
 }
 
-function dateMonthAsString(dateString) {
+export function dateMonthAsString(dateString) {
   const monthsOfYear = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   return monthsOfYear[new Date(dateString).getMonth()];
 }
