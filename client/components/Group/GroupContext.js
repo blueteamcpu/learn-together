@@ -43,6 +43,7 @@ class GroupContext extends React.Component {
     const listRender = context === 'chat' ? posts : groupDetailed[context];
     if (listRender === undefined || context === undefined) return null;
     
+    console.log('isAdmin', isAdmin)
     return (
       <Fragment>
         {(context === 'events' && isMember) ? <Button as={Link} to={`/groups/${groupId}/events/create`}>Create New Event</Button> : null}
@@ -155,16 +156,19 @@ function Events({ item, history }) {
 
 function Members({ item, isAdmin, groupId, adminRemoveMember }) {
   const memberStatus = item.group_member.isAdmin ? 'Admin' : 'Member';
-  return (
+  return(
     <List.Item>
       <Image avatar src={item.imageURL} />
       <List.Content>
-        <List.Header>{item.username}</List.Header>
+        <List.Header>{item.username} </List.Header>
         <List.Description>
-          Is a {memberStatus} {isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
+          Is a {memberStatus} 
         </List.Description>
       </List.Content>
-    </List.Item>
+      <List.Content floated='right'>
+      { isAdmin ? <Button onClick={() => adminRemoveMember(item.id, groupId)} basic negative floated='right' size='small'>Remove</Button> : null}
+      </List.Content>
+    </List.Item>    
   );
 }
 
