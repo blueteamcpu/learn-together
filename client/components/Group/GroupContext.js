@@ -187,7 +187,7 @@ function Chat(props) {
 }
 
 export function dateDayAsString(dateString) {
-  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednessday', 'Thursday', 'Friday', 'Saturday'];
+  const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   return daysOfWeek[new Date(dateString).getDay()];
 }
 
