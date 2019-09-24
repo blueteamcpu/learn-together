@@ -5,6 +5,7 @@ const SET_DETAIL_GROUP = 'SET_DETAIL_GROUP';
 const SET_DETAIL_ISMEMBER = 'SET_DETAIL_ISMEMBER';
 const FAILED_GROUPS_GET = 'FAILED_GROUPS_GET';
 const GET_MY_GROUPS = 'GET_MY_GROUPS';
+const CLEAR_STATE = 'CLEAR_STATE';
 
 // Eventually we will want to start passing the section here. Just not now
 export const getGroupList = (section = 0) => dispatch => {
@@ -30,23 +31,32 @@ export const getDetailGroup = (id, context) => dispatch => {
 };
 
 export const joinGroup = () => (dispatch, getState) => {
-  axios.post('/api/groups/addself', {groupId: getState().groups.groupDetailed.group.id})
+  axios
+    .post('/api/groups/addself', {
+      groupId: getState().groups.groupDetailed.group.id,
+    })
     .then(() => dispatch({ type: SET_DETAIL_ISMEMBER, isMember: true }))
     .catch(e => console.log('Failed to add user to group?'));
 };
 
 export const leaveGroup = () => (dispatch, getState) => {
-  axios.delete('/api/groups/removeself', {data: {groupId: getState().groups.groupDetailed.group.id}})
+  axios
+    .delete('/api/groups/removeself', {
+      data: { groupId: getState().groups.groupDetailed.group.id },
+    })
     .then(() => dispatch({ type: SET_DETAIL_ISMEMBER, isMember: false }))
-    .catch(e => console.log("I suck at math"));
+    .catch(e => console.log('I suck at math'));
 };
 
 export const adminRemoveMember = (userId, groupId) => (dispatch, getState) => {
-  axios.delete('/api/groups/removemember', { data: { userId: userId, groupId: groupId }})
+  axios
+    .delete('/api/groups/removemember', {
+      data: { userId: userId, groupId: groupId },
+    })
     .then(() => {
       dispatch(getDetailGroup(groupId, 'members'));
     })
-    .catch((e) => console.log('failed to remove member'));
+    .catch(e => console.log('failed to remove member'));
 };
 
 const gotMyGroups = groups => ({
@@ -62,6 +72,8 @@ export const getMyGroups = () => async (dispatch, _, axios) => {
     console.error(error);
   }
 };
+
+export const clearState = () => ({ type: CLEAR_STATE });
 
 //export const joinGroup = () => async (dispatch, _, axios)
 
@@ -89,13 +101,29 @@ export default (state = initialState, action) => {
       return { ...state, groupDetailed: { ...action.group } };
     }
     case SET_DETAIL_ISMEMBER: {
-      return { ...state, groupDetailed: {...state.groupDetailed, isMember: action.isMember}};
+      return {
+        ...state,
+        groupDetailed: { ...state.groupDetailed, isMember: action.isMember },
+      };
     }
     case FAILED_GROUPS_GET: {
       return { ...state, groupGetFailed: action.groupGetFailed };
     }
     case GET_MY_GROUPS: {
       return { ...state, groupList: action.groups };
+    }
+    case CLEAR_STATE: {
+      return {
+        groupGetFailed: false,
+        groupList: [],
+        groupDetailed: {
+          group: {},
+          members: {},
+          posts: [],
+          isMember: false,
+          isAdmin: false,
+        },
+      };
     }
     default:
       return { ...state };
