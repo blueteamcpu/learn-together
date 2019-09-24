@@ -4,6 +4,7 @@
   "description": "A social application to create local learning communities around online curriculum.",
   "main": "index.js",
   "scripts": {
+    "seed": "node ./seed/seed.js & node ./resources/grabs.js",
     "test": "jest",
     "start": "node ./server/index.js",
     "start:dev": "npm run build:dev & npm run server:dev",
