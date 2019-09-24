@@ -2,7 +2,6 @@ const router = require('express').Router();
 const uuid = require('uuid/v4');
 const { Comment, User } = require('../db/index');
 const { isLoggedIn } = require('../../utils/backend');
-const sequelize = require('sequelize');
 
 // type: post / event
 router.get('/thread/:id', async (req, res, next) => {
@@ -13,8 +12,8 @@ router.get('/thread/:id', async (req, res, next) => {
 
     const comments = await Comment.findAll({
       where: { threadId: req.params.id },
-      include: [{ model: User, attributes: ['id', 'username'] }],
-      order: [['createdAt', 'ASC']],
+      include: [{ model: User, attributes: ['username'] }],
+      order: [['createdAt', 'DESC']],
     });
 
     res.json(comments);
@@ -38,12 +37,10 @@ router.get('/:type/:id', async (req, res, next) => {
       where: { [type + 'Id']: id },
       limit: 30,
       include: [
-        // using the below for thread count. need to fix this.
         { model: Comment, attributes: ['id'] },
-        { model: User, attributes: ['id', 'username'] },
+        { model: User, attributes: ['username'] },
       ],
       order: [['createdAt', 'DESC']],
-      group: ['comment.id'],
     };
 
     if (offset) {

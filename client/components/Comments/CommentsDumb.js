@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Comment, Form, Header, Container } from 'semantic-ui-react';
 import Axios from 'axios';
 import socket from '../../socket';
+import SingleComment from './SingleComment/SingleComment';
 
 class Comments extends Component {
   constructor(props) {
@@ -124,7 +125,7 @@ class Comments extends Component {
     const { handleChange, handleSubmit } = this;
 
     return (
-      <Container style={{ marginTop: '1em', width: '30%' }}>
+      <Container style={{ marginTop: '1em', width: '50%' }}>
         <Header as="h3" dividing>
           Comments
         </Header>
@@ -144,32 +145,13 @@ class Comments extends Component {
           }}
         >
           {this.props.comments.map(comment => {
-            const createdAt = new Date(comment.createdAt);
-
             return (
-              <Comment key={comment.id}>
-                <Comment.Content>
-                  <Comment.Author as="a">
-                    {comment.user.username}
-                  </Comment.Author>
-                  <Comment.Metadata>
-                    <div>
-                      {createdAt.getMonth() + 1} / {createdAt.getDate()} /{' '}
-                      {createdAt.getFullYear()} @{' '}
-                      {createdAt.toLocaleTimeString()}
-                    </div>
-                  </Comment.Metadata>
-                  <Comment.Text>{comment.content}</Comment.Text>
-                  <Comment.Actions>
-                    <Comment.Action>
-                      Reply{' '}
-                      {comment.comments.length
-                        ? `(${comment.comments.length})`
-                        : ''}
-                    </Comment.Action>
-                  </Comment.Actions>
-                </Comment.Content>
-              </Comment>
+              <SingleComment
+                key={comment.id}
+                comment={comment}
+                type={this.props.type}
+                typeId={this.props.id}
+              />
             );
           })}
         </Comment.Group>
