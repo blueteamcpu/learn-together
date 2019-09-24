@@ -21,7 +21,7 @@ router.get('/explore', async (req, res, next) => {
 
     let zipCodes = null;
 
-    if (req.user && req.user.zipcode) {
+    if (req.user && req.user.zipcode && distance && distance !== 'All') {
       zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
     }
 
@@ -72,12 +72,13 @@ router.get('/explore', async (req, res, next) => {
 
 router.post('/newgroup', async (req, res, next) => {
   try {
-    const newGroup = await Group.create({ name: req.body.name,
-					  description: req.body.description,
-					  zipcode: req.body.zipCode,
-					  ownerId: req.user.id,
-					  topicId: req.body.topicId !== '' ? req.body.topicId : null,
-					});
+    const newGroup = await Group.create({
+      name: req.body.name,
+      description: req.body.description,
+      zipcode: req.body.zipCode,
+      ownerId: req.user.id,
+      topicId: req.body.topicId !== '' ? req.body.topicId : null,
+    });
     await GroupMember.create({
       isAdmin: true,
       groupId: newGroup.id,
@@ -92,10 +93,11 @@ router.post('/newgroup', async (req, res, next) => {
 
 router.put('/update/:groupId', async (req, res, next) => {
   try {
-    const update = await Group.update(req.body, { where: { id: req.params.groupId }});
+    const update = await Group.update(req.body, {
+      where: { id: req.params.groupId },
+    });
     res.status(202).send();
-  }
-  catch(e){
+  } catch (e) {
     next(e);
   }
 });
@@ -105,27 +107,43 @@ router.get('/detail/:groupId/:context?', async (req, res, next) => {
   const context = req.params.context;
   try {
     const group = await Group.findByPk(req.params.groupId);
-    const isMember = req.user ? await GroupMember.findOne({ where: {groupId: group.id, userId: req.user.id}}) : null;
+    const isMember = req.user
+      ? await GroupMember.findOne({
+          where: { groupId: group.id, userId: req.user.id },
+        })
+      : null;
     let isAdmin = false;
-    if(isMember !== null) isAdmin = isMember.isAdmin;
+    if (isMember !== null) isAdmin = isMember.isAdmin;
     switch (context) {
       case 'members': {
         const members = await group.getUsers({
           attributes: ['username', 'imageURL', 'id'],
         });
-        res.send({ group, members: [...members],
-		   isAdmin, isMember: isMember ? true : false });
+        res.send({
+          group,
+          members: [...members],
+          isAdmin,
+          isMember: isMember ? true : false,
+        });
         break;
       }
       case 'events': {
         const events = await group.getEvents();
-        res.send({ group, events: [...events], isAdmin,
-		   isMember: isMember ? true : false });
+        res.send({
+          group,
+          events: [...events],
+          isAdmin,
+          isMember: isMember ? true : false,
+        });
         break;
       }
       case 'update': {
-	res.send({group, isAdmin, update: true,
-		   isMember: isMember ? true : false});
+        res.send({
+          group,
+          isAdmin,
+          update: true,
+          isMember: isMember ? true : false,
+        });
       }
     }
   } catch (e) {

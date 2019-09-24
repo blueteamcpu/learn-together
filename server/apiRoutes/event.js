@@ -27,7 +27,7 @@ router.get('/explore', async (req, res, next) => {
 
     let zipCodes = null;
 
-    if (req.user && req.user.zipcode) {
+    if (req.user && req.user.zipcode && distance && distance !== 'All') {
       zipCodes = await getZipsNearMe(req.user.zipcode, distance || 25);
     }
 
@@ -124,7 +124,10 @@ router.get(
 router.post('/newevent', async (req, res, next) => {
   try {
     const day = req.body.day;
-    const formattedDay = `${day.slice(3,5)}-${day.slice(0,2)}-${day.slice(6,10)}`;
+    const formattedDay = `${day.slice(3, 5)}-${day.slice(0, 2)}-${day.slice(
+      6,
+      10
+    )}`;
 
     const newEvent = await Event.create({
       ...req.body,
@@ -196,10 +199,9 @@ router.post('/addattendee', async (req, res, next) => {
         eventId: req.body.id,
       });
       const user = await User.findOne({
-                    where: { id: attendee.userId },
-                    attributes: ['id', 'username', 'imageURL']
-                }
-      );
+        where: { id: attendee.userId },
+        attributes: ['id', 'username', 'imageURL'],
+      });
       res.send(user);
     } else
       throw new Error(
@@ -230,23 +232,20 @@ router.delete('/deleteattendee', async (req, res, next) => {
 //delete event
 router.delete('/:id', async (req, res, next) => {
   try {
-
     let validEventHost = await Event.findOne({
-        where: { id: req.params.id, hostId: req.user.id },
-      });
+      where: { id: req.params.id, hostId: req.user.id },
+    });
 
     if (validEventHost) {
-      const deletedEvent = await Event.destroy({ 
-          where: { id: req.params.id } 
+      const deletedEvent = await Event.destroy(
+        {
+          where: { id: req.params.id },
         },
         { returning: true }
-        );
+      );
       res.send(deletedEvent[1]);
-      } else
-        throw new Error(
-          'Events',
-          'You must be the host to delete this event'
-        );
+    } else
+      throw new Error('Events', 'You must be the host to delete this event');
   } catch (err) {
     next(err);
   }
