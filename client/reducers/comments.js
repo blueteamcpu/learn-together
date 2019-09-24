@@ -5,11 +5,13 @@ import {
   SINGLE_THREAD_COMMENT,
   REMOVE_COMMENT,
   REMOVE_THREAD_COMMENT,
-} from '../action/comments';
+  NO_MORE_COMMENTS,
+} from '../actions/comments';
 
 const initialState = {
   comments: [],
   offset: 0,
+  noMoreToLoad: false,
 };
 
 export default (state = initialState, action) => {
@@ -56,6 +58,9 @@ export default (state = initialState, action) => {
       });
 
       return { ...state, comments };
+    }
+    case NO_MORE_COMMENTS: {
+      return { ...state, noMoreToLoad: true };
     }
     default:
       return state;
