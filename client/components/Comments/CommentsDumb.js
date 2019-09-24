@@ -13,6 +13,7 @@ class Comments extends Component {
       initialLoad: true,
     };
     this.commentBoxScroll = 0;
+    this.commentAdded = false;
   }
 
   joinRoom = () =>
@@ -26,8 +27,14 @@ class Comments extends Component {
     //    const newestComment = commentList.lastChild;
     //    const windowScrollY = window.scrollY;
     //    const windowScrollX = window.scrollX;
-    commentList.scrollTo(0, commentList.scrollHeight - this.commentBoxScroll);
-    this.commentBoxScroll = commentList.scrollHeight;
+    if (!this.commentAdded) {
+      commentList.scrollTo(0, commentList.scrollHeight - this.commentBoxScroll);
+      this.commentBoxScroll = commentList.scrollHeight;
+    }
+    else if (this.commentAdded) {
+      this.commentAdded = false;
+      this.commentBoxScroll += commentList.scrollHeight;
+    }
     //    window.scrollTo(windowScrollX, windowScrollY);
   };
 
@@ -110,11 +117,12 @@ class Comments extends Component {
           },
         }));
       } else {
+        this.commentAdded = true;
         await Axios.post(
           `/api/comments/${this.props.type}/${this.props.id}`,
           this.state.values
         );
-
+        
         this.setState(state => ({
           ...state,
           errors: { content: '' },
