@@ -23,13 +23,6 @@ const findModel = async (name) => {
   return topic;
 }
 
-const testPrep = findModel('Test Prep');
-const math = findModel('Math');
-const artsAndHumanities = findModel('Arts and humanities');
-const eAndF = findModel('Economics and finance');
-const science = findModel('Science');
-const computing = findModel('Computing');
-
 const hasKeys = (obj) => {
   let count = 0
   for (let key in obj) {
@@ -70,10 +63,19 @@ async function doTheSeeding() {
   try {
     await db.sync({ force: true });
     await getAllCourses();
-    const topicArr = [await testPrep, await math, await artsAndHumanities, await eAndF, await science, await computing];
+
+    const testPrep = findModel('Test Prep');
+    const math = findModel('Math');
+    const artsAndHumanities = findModel('Arts and humanities');
+    const eAndF = findModel('Economics and finance');
+    const science = findModel('Science');
+    const computing = findModel('Computing');
+
+    const topicArr = [testPrep, math, artsAndHumanities, eAndF, science, computing];
     const topics = await topicNameIds(topicArr);
     const users = await Promise.all(genList(userList, models.User));
     const events = await Promise.all(genList(eventList, models.Event));
+
     const topicNames = {}
     if (hasKeys(topics)) {
       // eslint-disable-next-line guard-for-in
