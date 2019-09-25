@@ -248,6 +248,17 @@ router.post('/addmember', async (req, res, next) => {
   }
 });
 
+router.put('/changeadminstatus', async (req, res, next) => {
+  try {
+    const currentStatus = await GroupMember.findOne({ where: { userId: req.body.userId, groupId: req.body.groupId }});
+    await GroupMember.update({ isAdmin: currentStatus.isAdmin ? false : true }, { where: { userId: req.body.userId, groupId: req.body.groupId }});
+    res.status(202).send();
+  }
+  catch (error) {
+    next(error);
+  }
+});
+
 // This is for an admin/owner to remove a user from a group
 router.delete('/removemember', async (req, res, next) => {
   try {

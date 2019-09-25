@@ -59,6 +59,15 @@ export const adminRemoveMember = (userId, groupId) => (dispatch, getState) => {
     .catch(e => console.log('failed to remove member'));
 };
 
+export const adminChangeAdmin = (userId, groupId) => (dispatch, getState) => {
+  axios
+    .put('/api/groups/changeadminstatus', { userId: userId, groupId: groupId })
+    .then(() => {
+      dispatch(getDetailGroup(groupId, 'members'));
+    })
+    .catch(e => console.log('failed to promote member'));  
+};
+
 const gotMyGroups = groups => ({
   type: GET_MY_GROUPS,
   groups,
