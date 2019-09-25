@@ -21,7 +21,7 @@ doTheSeeding();
 async function doTheSeeding() {
   try {
     await db.sync({ force: true });
-    // NOTE Justin this is the call that populates the topics.
+    // NOTE this is the call that populates the topics.
     await getAllCourses();
 
     const users = await Promise.all(genList(userList, models.User));
