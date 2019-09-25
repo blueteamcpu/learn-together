@@ -86,6 +86,7 @@ class GroupDetail extends Component {
         </Segment>
         <TabMenu
           match={match}
+          history={history}
           activeItem={this.state.activeItem}
           handleItemClick={this.handleItemClick}
           userId={userId}
@@ -140,6 +141,7 @@ export default connect(
 
 function TabMenu({
   match,
+  history,
   activeItem,
   handleItemClick,
   userId,
@@ -194,7 +196,15 @@ function TabMenu({
             onClick={() => groupButtonFunction()}
             content={userId && !isMember ? 'Join' : 'Abandon'}
           />
-        ) : null}
+        )
+         : <Menu.Item
+             position="right"
+             name="memberStatus"
+             active={true}
+           >
+             <Segment basic>You aren't Logged in...<br/><a onClick={() => history.push('/login')}> Login </a> or <a onClick={() => history.push('/signup')}>SignUp</a> To Join this group</Segment>
+           </Menu.Item>
+        }
       </Menu>
     </div>
   );
