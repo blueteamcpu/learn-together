@@ -31,7 +31,7 @@ async function doTheSeeding() {
     groupList.forEach(g => {
       g.ownerId = users[Math.floor(Math.random() * users.length)].id
       g.zipcode = zipList[Math.floor(Math.random() * zipList.length)];
-      });
+    });
 
     const groups = await Promise.all(groupList.map(g => {
       return models.Group.create({
@@ -45,7 +45,7 @@ async function doTheSeeding() {
     //Associate groups to a user
     await Promise.all(
       groups.map(g => {
-       return models.GroupMember.create({
+        return models.GroupMember.create({
           userId: users[Math.floor(Math.random() * users.length)].id,
           groupId: g.id,
           isAdmin: Math.random() > 0.5 ? true : false,
