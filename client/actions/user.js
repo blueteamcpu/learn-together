@@ -9,10 +9,11 @@ export const updateUser = (
   lastName,
   username,
   email,
-  zipcode
+  zipcode,
+  imageURL,
 ) => async (dispatch, _, axios) => {
   try {
-    const user = { firstName, lastName, username, email, zipcode };
+    const user = { firstName, lastName, username, email, zipcode, imageURL };
     const { data: updatedUser } = await axios.put('api/user/updateUser', user);
     dispatch(gotUser(updatedUser));
   } catch (err) {

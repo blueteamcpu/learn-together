@@ -6,6 +6,7 @@ import {
   Header,
   Segment,
   Message,
+  Image
 } from 'semantic-ui-react';
 import axios from 'axios';
 
@@ -19,6 +20,7 @@ class UserProfileDumb extends Component {
         username: '',
         email: '',
         zipcode: 0,
+        imageURL: '',
         password: '',
         CNPass: '',
         NPass: '',
@@ -47,6 +49,7 @@ class UserProfileDumb extends Component {
           username: user.username,
           email: user.email,
           zipcode: user.zipcode,
+          imageURL: user.imageURL,
         },
         loading: false,
       }));
@@ -97,6 +100,7 @@ class UserProfileDumb extends Component {
         zipcode,
         password,
         NPass,
+        imageURL
       } = this.state.values;
 
       if (this.state.changePassword) {
@@ -104,7 +108,7 @@ class UserProfileDumb extends Component {
         await axios.put('/api/user/updateUserPass', passwords);
         this.makeSubmitted(true);
       } else {
-        this.props.updateUser(firstName, lastName, username, email, zipcode);
+        this.props.updateUser(firstName, lastName, username, email, zipcode, imageURL);
         this.makeSubmitted();
       }
     } catch (err) {
@@ -145,6 +149,7 @@ class UserProfileDumb extends Component {
         password,
         CNPass,
         NPass,
+        imageURL
       } = values;
 
       return (
@@ -174,6 +179,9 @@ class UserProfileDumb extends Component {
                 </Header>
                 <Form size="large" onSubmit={this.handleSubmit}>
                   <Segment stacked>
+                    <Image circular centered spaced size='tiny' src={imageURL}></Image>
+                    <br/>
+                    <br/>
                     <Form.Input
                       fluid
                       icon="user"
@@ -193,6 +201,16 @@ class UserProfileDumb extends Component {
                       type="text"
                       name="lastName"
                       value={lastName}
+                      onChange={this.handleChange}
+                    />
+
+                    <Form.Input
+                      fluid
+                      icon="image outline"
+                      iconPosition="left"
+                      placeholder="Profile photo URL (optional)"
+                      name="imageURL"
+                      value={imageURL}
                       onChange={this.handleChange}
                     />
 

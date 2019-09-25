@@ -16,6 +16,7 @@ router.put(
         email: req.body.email,
         zipcode: req.body.zipcode,
         username: req.body.username,
+        imageURL: req.body.imageURL
       });
       await setExAsync(
         req.session.userId,

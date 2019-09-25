@@ -93,7 +93,6 @@ router.post('/:type/:typeId/comment/:commentId', isLoggedIn, (req, res) => {
       id: req.user.id,
       username: req.user.username,
     },
-    comments: [],
   });
 
   res.end();
@@ -135,7 +134,7 @@ router.post('/:type/:typeId', isLoggedIn, (req, res) => {
       id: req.user.id,
       username: req.user.username,
     },
-    comments: [],
+    threadCount: 0,
   });
 
   res.end();
