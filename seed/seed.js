@@ -78,47 +78,37 @@ async function doTheSeeding() {
 
     const topicNames = {}
     if (hasKeys(topics)) {
-      // eslint-disable-next-line guard-for-in
       for (let key in topics) {
         const splitKey = key.split(' ');
         topicNames[key] = splitKey;
       }
     }
 
-    /// arts and humanities => ['arts', 'and', h]
-
+    // take array of split topic keys and check to see if the group name has one of those words in the title NOTE: needs to be case insensitive
     groupList.forEach(g => {
       g.ownerId = users[Math.floor(Math.random() * users.length)].id
       g.zipcode = zipList[Math.floor(Math.random() * zipList.length)];
-      // take array of split topic keys and check to see if the group name has one of those words in the title NOTE: needs to be case insensitive
-        // eslint-disable-next-line guard-for-in
         for (let key in topicNames ) {
           let included = false
-          //console.log('KEY: ', key);
           topicNames[key].forEach( piece => {
             if (included) return;
             const uName = g.name.toLowerCase();
             if (uName.includes(piece.toLowerCase())) {
-              //console.log('NAME: ', g.name)
               included = true
             }
           })
           if ( included ) {
-            //console.log('INCLUDED: ', g.name);
             g.topicId = topics[key]
             included = false
             return;
           } else {
-            //console.log('NOT INCLUDED: ', g.name);
             g.topicId = topics['Arts and humanities'];
             included = false
           }
         }
       });
 
-    //console.log('GROUPLIST: ', groupList);
     const groups = await Promise.all(groupList.map(g => {
-      console.log('TOPICID: ', g.topicId)
       return models.Group.create({
         name: g.name,
         zipcode: g.zipcode,
@@ -150,17 +140,10 @@ async function doTheSeeding() {
 
     await Promise.all(genList(postList, models.Post));
 
-    //console.log(posts)
     // Get all the associations taken care of for the events
     /* Caution, this code bit is commented out because it requires a newer version of Node
        than what you are most likely using. Node v 12 is required for the Array.flat() method
     */
-    // const test = await Promise.all(events.map(e => {
-    //   const result = [];
-    //   result.push(events[0].update({ hostId: users[0].id, groupId: groups[0].id }));
-    //   result.push(models.EventAttendee.create({ eventId: events[0].id, userId: users[0].id }));
-    //   return result;
-    // }).flat());
 
     // So this is a bit of a hack in getting a single event associated with the other
     // table associations.
