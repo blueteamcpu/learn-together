@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { createPost as _createPost } from '../../actions/post';
 import UpdateGroupForm from './UpdateGroupForm';
+import { adminChangeAdmin } from '../../reducers/groupReducer';
 
 class GroupContext extends React.Component {
   constructor(props) {
@@ -55,6 +56,7 @@ class GroupContext extends React.Component {
       isMember,
       isAdmin,
       adminRemoveMember,
+      adminChangeAdmin,
       groupDetailed,
       posts,
     } = this.props;
@@ -75,6 +77,44 @@ class GroupContext extends React.Component {
           </Button>
         )}
 
+        {context === 'update' ? (
+          <UpdateGroupForm />
+        ) : (
+          <List relaxed>
+            {listRender.map((i, idx) => {
+              switch (context) {
+                case 'members':
+                  return (
+                    <Members
+                      key={i.id}
+                      item={i}
+                      isMember={isMember}
+                      isAdmin={isAdmin}
+                      groupId={groupId}
+                      adminRemoveMember={adminRemoveMember}
+                      adminChangeAdmin={adminChangeAdmin}
+                    />
+                  );
+                  break;
+                case 'chat':
+                  {
+                    // NOTE: Conner - Pass down the props you need here to Chat
+                    let last = false;
+                    if (idx === listRender.length - 1) {
+                      last = true;
+                    }
+                    return <Chat key={i.id} item={i} />;
+                  }
+                  break;
+                case 'events':
+                  return <Events key={i.id} item={i} history={history} />;
+                  break;
+                default:
+                  return null;
+              }
+            })}
+          </List>
+        )}
         {context === 'chat' && isMember && showPostForm && (
           <Form
             style={{ marginTop: '.5em' }}
@@ -171,6 +211,7 @@ const mapStateToProps = ({ groups, posts, authentication }) => ({
 
 const mapDispatchToProps = dispatch => ({
   createPost: post => dispatch(_createPost(post)),
+  adminChangeAdmin: (userId, groupId) => dispatch(adminChangeAdmin(userId, groupId)),
 });
 
 export default connect(
@@ -220,14 +261,14 @@ function Events({ item, history }) {
   );
 }
 
-function Members({ item, isAdmin, groupId, adminRemoveMember }) {
+function Members({ item, isMember, isAdmin, groupId, adminRemoveMember, adminChangeAdmin }) {
   const memberStatus = item.group_member.isAdmin ? 'an Admin' : 'a Member';
   return (
     <List.Item>
       <Image avatar src={item.imageURL} />
       <List.Content>
         <List.Header>{item.username} </List.Header>
-        <List.Description>Is {memberStatus}</List.Description>
+        <List.Description>Is {memberStatus} { isMember && isAdmin ? !item.group_member.isAdmin ? <a onClick={() => adminChangeAdmin(item.id, groupId)}>Promote to Admin</a> : <a onClick={() => adminChangeAdmin(item.id, groupId)}>Remove Admin Status</a> : null }</List.Description>
       </List.Content>
       <List.Content floated="right">
         {isAdmin ? (
