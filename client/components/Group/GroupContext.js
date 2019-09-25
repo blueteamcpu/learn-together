@@ -76,45 +76,7 @@ class GroupContext extends React.Component {
             Create a post
           </Button>
         )}
-
-        {context === 'update' ? (
-          <UpdateGroupForm />
-        ) : (
-          <List relaxed>
-            {listRender.map((i, idx) => {
-              switch (context) {
-                case 'members':
-                  return (
-                    <Members
-                      key={i.id}
-                      item={i}
-                      isMember={isMember}
-                      isAdmin={isAdmin}
-                      groupId={groupId}
-                      adminRemoveMember={adminRemoveMember}
-                      adminChangeAdmin={adminChangeAdmin}
-                    />
-                  );
-                  break;
-                case 'chat':
-                  {
-                    // NOTE: Conner - Pass down the props you need here to Chat
-                    let last = false;
-                    if (idx === listRender.length - 1) {
-                      last = true;
-                    }
-                    return <Chat key={i.id} item={i} />;
-                  }
-                  break;
-                case 'events':
-                  return <Events key={i.id} item={i} history={history} />;
-                  break;
-                default:
-                  return null;
-              }
-            })}
-          </List>
-        )}
+        
         {context === 'chat' && isMember && showPostForm && (
           <Form
             style={{ marginTop: '.5em' }}
@@ -160,6 +122,44 @@ class GroupContext extends React.Component {
             </Form.Field>
           </Form>
         )}
+
+        {context === 'update' ? (
+          <UpdateGroupForm />
+        ) : (
+          <List relaxed>
+            {listRender.map((i, idx) => {
+              switch (context) {
+                case 'members':
+                  return (
+                    <Members
+                      key={i.id}
+                      item={i}
+                      isAdmin={isAdmin}
+                      groupId={groupId}
+                      adminRemoveMember={adminRemoveMember}
+                    />
+                  );
+                  break;
+                case 'chat':
+                  {
+                    // NOTE: Conner - Pass down the props you need here to Chat
+                    let last = false;
+                    if (idx === listRender.length - 1) {
+                      last = true;
+                    }
+                    return <Chat key={i.id} item={i} />;
+                  }
+                  break;
+                case 'events':
+                  return <Events key={i.id} item={i} history={history} />;
+                  break;
+                default:
+                  return null;
+              }
+            })}
+          </List>
+        )}
+        
       </Fragment>
     );
   }

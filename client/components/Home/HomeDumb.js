@@ -23,10 +23,6 @@ const getWidth = () => {
   return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth;
 };
 
-/* eslint-disable react/no-multi-comp */
-/* Heads up! HomepageHeading uses inline styling, however it's not the best practice. Use CSS or styled components for
- * such things.
- */
 const HomepageHeading = ({ mobile, history }) => (
   <Container text>
     <Header
@@ -61,10 +57,6 @@ HomepageHeading.propTypes = {
   mobile: PropTypes.bool,
 };
 
-/* Heads up!
- * Neither Semantic UI nor Semantic UI React offer a responsive navbar, however, it can be implemented easily.
- * It can be more complicated, but you can create really flexible markup.
- */
 class DesktopContainer extends Component {
   state = {};
 
@@ -73,6 +65,7 @@ class DesktopContainer extends Component {
 
   render() {
     const { children } = this.props;
+    const imageURL = 'https://images.unsplash.com/photo-1472289065668-ce650ac443d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3150&q=80'
 
     return (
       <Responsive getWidth={getWidth} minWidth={Responsive.onlyTablet.minWidth}>
@@ -84,7 +77,11 @@ class DesktopContainer extends Component {
           <Segment
             inverted
             textAlign="center"
-            style={{ minHeight: 700, padding: '1em 0em' }}
+            style={{ 
+                minHeight: 700, 
+                padding: '1em 0em',
+                backgroundImage: `url(${imageURL})`
+              }}
             vertical
           >
             <HomepageHeading history={this.props.history} />
@@ -100,7 +97,6 @@ DesktopContainer.propTypes = {
   children: PropTypes.node,
 };
 
-// Not dealing with the Mobile aspect of this yet.
 class MobileContainer extends Component {
   state = {};
 
@@ -111,6 +107,7 @@ class MobileContainer extends Component {
   render() {
     const { children } = this.props;
     const { sidebarOpened } = this.state;
+    const imageURL = 'https://images.unsplash.com/photo-1472289065668-ce650ac443d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3150&q=80';
 
     return (
       <Responsive
@@ -122,7 +119,11 @@ class MobileContainer extends Component {
           <Segment
             inverted
             textAlign="center"
-            style={{ minHeight: 350, padding: '1em 0em' }}
+            style={{ 
+                minHeight: 350, 
+                padding: '1em 0em',
+                backgroundImage: `url(${imageURL})`
+              }}
             vertical
           >
             <HomepageHeading mobile history={this.props.history} />
