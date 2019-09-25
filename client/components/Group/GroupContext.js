@@ -273,7 +273,7 @@ export function dateDayAsString(dateString) {
     'Sunday',
     'Monday',
     'Tuesday',
-    'Wednessday',
+    'Wednesday',
     'Thursday',
     'Friday',
     'Saturday',
