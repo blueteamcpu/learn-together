@@ -14,47 +14,6 @@ const eventList = require('./seedlings/eventSeed');
 const postList = require('./seedlings/postSeed');
 const zipList = require('./seedlings/zipSeed');
 
-const findModel = async (name) => {
-  const topic = await models.Topic.findOne({
-    where: {
-      name
-    }
-  })
-  return topic;
-}
-
-const hasKeys = (obj) => {
-  let count = 0
-  for (let key in obj) {
-    if (key) count++
-  }
-  if (count >= 1) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-const topicNameIds = async (modelArr) => {
-  try {
-    const topicAssociation = {};
-    modelArr.forEach(async t => {
-      try {
-        const top = await t
-        if (!top) {
-          return
-        } else {
-          topicAssociation[top.name] = top.id
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    });
-    return topicAssociation;
-  } catch (err) {
-    console.error(err);
-  }
-}
 
 // This spins everything up, all the functions are below
 doTheSeeding();
@@ -62,50 +21,16 @@ doTheSeeding();
 async function doTheSeeding() {
   try {
     await db.sync({ force: true });
+    // NOTE Justin this is the call that populates the topics.
     await getAllCourses();
 
-    const testPrep = findModel('Test Prep');
-    const math = findModel('Math');
-    const artsAndHumanities = findModel('Arts and humanities');
-    const eAndF = findModel('Economics and finance');
-    const science = findModel('Science');
-    const computing = findModel('Computing');
-
-    const topicArr = [testPrep, math, artsAndHumanities, eAndF, science, computing];
-    const topics = await topicNameIds(topicArr);
     const users = await Promise.all(genList(userList, models.User));
     const events = await Promise.all(genList(eventList, models.Event));
-
-    const topicNames = {}
-    if (hasKeys(topics)) {
-      for (let key in topics) {
-        const splitKey = key.split(' ');
-        topicNames[key] = splitKey;
-      }
-    }
 
     // take array of split topic keys and check to see if the group name has one of those words in the title NOTE: needs to be case insensitive
     groupList.forEach(g => {
       g.ownerId = users[Math.floor(Math.random() * users.length)].id
       g.zipcode = zipList[Math.floor(Math.random() * zipList.length)];
-        for (let key in topicNames ) {
-          let included = false
-          topicNames[key].forEach( piece => {
-            if (included) return;
-            const uName = g.name.toLowerCase();
-            if (uName.includes(piece.toLowerCase())) {
-              included = true
-            }
-          })
-          if ( included ) {
-            g.topicId = topics[key]
-            included = false
-            return;
-          } else {
-            g.topicId = topics['Arts and humanities'];
-            included = false
-          }
-        }
       });
 
     const groups = await Promise.all(groupList.map(g => {
@@ -114,7 +39,6 @@ async function doTheSeeding() {
         zipcode: g.zipcode,
         description: g.description,
         ownerId: g.ownerId,
-        topicId: g.topicId,
       });
     }));
 
@@ -122,7 +46,6 @@ async function doTheSeeding() {
     await Promise.all(
       groups.map(g => {
        return models.GroupMember.create({
-          zipcode: zipList[Math.floor(Math.random() * zipList.length)],
           userId: users[Math.floor(Math.random() * users.length)].id,
           groupId: g.id,
           isAdmin: Math.random() > 0.5 ? true : false,
