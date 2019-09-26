@@ -38,8 +38,6 @@ const listOfGets = filesToCheck.filter(file => {
   return false;
 });
 
-getAllCourses();
-
 async function getAllCourses() {
   // Once we have a seed file this can happen there
   // Presumably we wont want to sync if calling this periodically on the server
@@ -125,4 +123,8 @@ function createKhanCourse(data) {
     }
   }
   return { topics, courses };
+}
+
+module.exports = {
+  getAllCourses,
 }

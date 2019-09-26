@@ -5,31 +5,45 @@ const post = {
 
 module.exports = [
     {
-        title: 'Super Duper Post',
-        description: 'Super duper description'
+        title: 'Post 1',
+        description: 'Post 1 description',
+        userId: '',
+        groupId: '',
     },
     {
-        title: 'Crazy Awesome Post',
-        description: 'Crazy awesome description'
+        title: 'Post 2',
+        description: 'Post 2 description',
+        userId: '',
+        groupId: '',
     },
     {
-        title: 'Chill Post',
-        description: 'Chill description'
+        title: 'Post 3',
+        description: 'Post 3 description',
+        userId: '',
+        groupId: '',
     },
     {
-        title: 'Dope Post',
-        description: 'Dope description'
+        title: 'Post 4',
+        description: 'Post 4 description',
+        userId: '',
+        groupId: '',
     },
     {
-        title: 'Noice Post',
-        description: 'Noice description'
+        title: 'Post 5',
+        description: 'Post 5 description',
+        userId: '',
+        groupId: '',
     },
     {
-        title: ':) Post',
-        description: ':) description'
+        title: 'Post 6',
+        description: 'Post 6 description',
+        userId: '',
+        groupId: '',
     },
     {
-        title: ';) Post',
-        description: ';) description'
+        title: 'Post 7',
+        description: 'Post 7 description',
+        userId: '',
+        groupId: '',
     },
 ];
