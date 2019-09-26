@@ -12,7 +12,6 @@ const userList = require('./seedlings/userSeed');
 const { groupList } = require('./seedlings/groupSeed');
 const eventList = require('./seedlings/eventSeed');
 const postList = require('./seedlings/postSeed');
-const zipList = require('./seedlings/zipSeed');
 
 
 // This spins everything up, all the functions are below
@@ -30,7 +29,6 @@ async function doTheSeeding() {
     // take array of split topic keys and check to see if the group name has one of those words in the title NOTE: needs to be case insensitive
     groupList.forEach(g => {
       g.ownerId = users[Math.floor(Math.random() * users.length)].id
-      g.zipcode = zipList[Math.floor(Math.random() * zipList.length)];
     });
 
     const groups = await Promise.all(groupList.map(g => {
